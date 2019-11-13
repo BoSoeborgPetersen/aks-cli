@@ -22,6 +22,9 @@ RUN curl -LO https://git.io/get_helm.sh && \
     ./get_helm.sh && \
     helm init --client-only && \
     helm repo update
+    
+# Install Nano
+RUN apt-get install nano
 
 WORKDIR /app
 ENTRYPOINT ["pwsh"]
