@@ -7,14 +7,11 @@ RUN apt-get update && \
 
 # Install Azure-Cli (az)
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+# Install DevOps extension for Azure Cli (az devops)
+RUN az extension add --name azure-devops
  
 # Install Kubernetes-Cli (kubectl)
-RUN apt-get update && \
-    apt-get install -y apt-transport-https && \
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
-    apt-get update && \
-    apt-get install -y kubectl
+RUN az aks install-cli
 
 # Install Helm-Cli (helm)
 RUN curl -LO https://git.io/get_helm.sh && \
