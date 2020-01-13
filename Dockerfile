@@ -23,5 +23,8 @@ RUN curl -LO https://git.io/get_helm.sh && \
 # Install Nano
 RUN apt-get install nano
 
+# Install Powershell 'PS-Menu' module
+RUN pwsh -c "Install-Module PS-Menu -Force"
+
 WORKDIR /app
 ENTRYPOINT ["pwsh"]
