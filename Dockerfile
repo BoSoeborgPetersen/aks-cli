@@ -19,6 +19,13 @@ RUN curl -LO https://git.io/get_helm.sh && \
     ./get_helm.sh && \
     helm init --client-only && \
     helm repo update
+
+# Install Helm-Cli version 3 (helm3)
+RUN curl -LO https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz && \
+    mkdir helm3 && \
+    tar -xzf helm-v3.0.2-linux-amd64.tar.gz --directory helm3 && \
+    ln -s /helm3/linux-amd64/helm /usr/bin/helm3 && \
+    rm helm-v3.0.2-linux-amd64.tar.gz
     
 # Install Nano
 RUN apt-get install nano
