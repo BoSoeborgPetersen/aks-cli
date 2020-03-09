@@ -1,5 +1,5 @@
 # Base image with PowerShell
-FROM mcr.microsoft.com/powershell:debian-9
+FROM mcr.microsoft.com/powershell:7.0.0-debian-10
 
 # Install Curl, Git, Nano & Bash completion
 RUN apt-get update && \
