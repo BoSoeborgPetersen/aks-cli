@@ -1,0 +1,3 @@
+controller:
+  service:
+    externalTrafficPolicy: "Local"
