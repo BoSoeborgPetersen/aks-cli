@@ -14,7 +14,7 @@ SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 Write-Info ("Install Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
 
-ExecuteCommand ("az network public-ip create -g $resourceGroupName -n $ipName -l $($selectedCluster.Location) --allocation-method Static --dns-name $dnsName --sku $sku --idle-timeout 30 $debugString")
+ExecuteCommand ("az network public-ip create -g $resourceGroupName -n $ipName -l $($selectedCluster.Location) --allocation-method Static --sku $sku --idle-timeout 30 $debugString")
 $ip = ExecuteQuery ("az network public-ip show -g $resourceGroupName -n $ipName --query '[ipAddress]' -o tsv $debugString")
 ExecuteCommand ("kubectl create ns ingress $kubeDebugString")
 
@@ -24,4 +24,4 @@ if ($deploymentName)
 }
 
 # TODO: Replace ' with ", and " with '
-ExecuteCommand ("helm install -n $nginxDeploymentName --namespace ingress stable/nginx-ingress --set controller.service.loadBalancerIP='$ip' --set controller.replicaCount=1 --set controller.service.externalTrafficPolicy='Local' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName -f $PSScriptRoot/config/nginx-config.yaml $debugString")
+ExecuteCommand ("helm install -n $nginxDeploymentName --namespace ingress stable/nginx-ingress --set controller.service.loadBalancerIP='$ip' --set controller.replicaCount=1 --set controller.service.externalTrafficPolicy='Local' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/nginx-config.yaml $debugString")
