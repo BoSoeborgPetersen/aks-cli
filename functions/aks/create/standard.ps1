@@ -1,6 +1,7 @@
 # TODO: Refactor into smaller functions.
 # TODO: Switch to new cluster after it is created successfully.
-# TODO: Replace Azure subscription choice menu with optional parameter that defaults to the current subscription.
+# TODO: Replace Azure subscription choice menu with optional parameter that defaults to the current subscription. - Don't default to current subscription.
+# TODO: Clear the global list of clusters for the subscription.
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
 $usage = Write-Usage "aks create standard <resource group name> [location] [min node count] [max node count] [node size]"
@@ -52,6 +53,4 @@ if (!$servicePrincipalExist)
 $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
 
 $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
-ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $minNodeCount -k $clusterVersion $nodeSizeString1 '$nodeSizeString2' --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword --generate-ssh-keys --load-balancer-sku basic --vm-set-type VirtualMachineScaleSets --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"
-
-ExecuteCommand "kubectl apply -f aks-config.yaml $kubeDebugString"
+ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $minNodeCount -k $clusterVersion $nodeSizeString1 '$nodeSizeString2' --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword --load-balancer-sku basic --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"

@@ -1,31 +1,10 @@
 controller:
+  kind: DaemonSet
   config:
-    ## proxy-read-timeout: "1800"
-    ## proxy-send-timeout: "1800"
-    ## client-body-buffer-size: 16m
-    ## proxy-body-size: 1024m 
-
-    ssl-session-timeout: "100m"
-    proxy-protocol-header-timeout: "20s"
-    upstream-keepalive-timeout: "240"
-    proxy-next-upstream-timeout: "1800"
-    client-header-buffer-size: "1m"
-    client-body-buffer-size: "16m"
-    client-body-timeout: "1800"
-    client-header-timeout: "1800"
-    proxy-body-size: "512m"
-    proxy-buffer-size: "4m"
-    proxy-connect-timeout: "50"
-    proxy-read-timeout: "1800"
-    proxy-send-timeout: "1800"
-    proxy-stream-timeout: "6000s"
-    ssl-buffer-size: "4m"
-
-    http2-max-field-size: "4m"
-    http2-max-header-size: "16m"
-    http2-max-requests: "10000"
-    http2-max-concurrent-streams: "10000"
-    large-client-header-buffers: "40 8m"
+    proxy-buffer-size: 16k
+    ssl-ciphers: ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+    ssl-protocols: TLSv1.1 TLSv1.2  
   service:
+    externalTrafficPolicy: "Local"
     annotations:
       service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: 30

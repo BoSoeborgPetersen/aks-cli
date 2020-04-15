@@ -227,7 +227,7 @@ function ValidateNumberRange($usage, [ref] $variable, $variableName, $min, $max)
     VerifyVariable $usage $variable.Value $variableName
     ValidateNumberType $usage $variable $variableName
 
-    $valid = ($variable.Value -gt $min -and $variable.Value -lt $max)
+    $valid = ($variable.Value -ge $min -and $variable.Value -le $max)
     if (!$valid){
         Write-Info $usage
         Write-Error "Invalid variable <$variableName>, value outside range ($min - $max)"

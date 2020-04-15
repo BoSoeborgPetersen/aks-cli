@@ -1,3 +1,4 @@
+# TODO: Refactor to just create Public IP and then run "aks nginx install".
 param($sku, $deploymentName)
 
 $usage = Write-Usage "aks nginx install <sku> [deployment name]"
@@ -5,7 +6,7 @@ $usage = Write-Usage "aks nginx install <sku> [deployment name]"
 VerifyCurrentCluster $usage
 
 $resourceGroupName = $selectedCluster.ResourceGroup
-$dnsName = PrependWithDash $resourceGroupName $deploymentName
+$dnsName = PrependWithDash $selectedCluster.Name $deploymentName
 $ipName = ClusterToIpAddressName $selectedCluster.Name $deploymentName
 $nginxDeploymentName = GetNginxDeploymentName $deploymentName
 
@@ -13,6 +14,7 @@ SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 Write-Info ("Install Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
 
+ExecuteCommand ("az network public-ip create -g $resourceGroupName -n $ipName -l $($selectedCluster.Location) --allocation-method Static --sku $sku --idle-timeout 30 $debugString")
 $ip = ExecuteQuery ("az network public-ip show -g $resourceGroupName -n $ipName --query '[ipAddress]' -o tsv $debugString")
 ExecuteCommand ("kubectl create ns ingress $kubeDebugString")
 
@@ -25,4 +27,4 @@ ExecuteCommand "helm3 repo add stable https://kubernetes-charts.storage.googleap
 ExecuteCommand "helm3 repo update"
 
 # TODO: Replace ' with ", and " with '
-ExecuteCommand ("helm3 install '$nginxDeploymentName' stable/nginx-ingress --namespace ingress --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/identity-nginx-config.yaml $debugString")
+ExecuteCommand ("helm3 install '$nginxDeploymentName' stable/nginx-ingress --namespace ingress --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/nginx-config.yaml $debugString")

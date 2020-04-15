@@ -2,12 +2,17 @@
 # - 'aks logs <pod-name>' -> 'aks logs pod <pod-name>' (take partial pod names)
 # - 'aks logs deploy <deployment-name>' -> same
 # - 'aks logs job <job-name>' -> same
-param($deploymentName, $namespace)
 
-$usage = Write-Usage "aks logs <deployment/job name>"
+# TODO: Check IndexOutOfRange.
+# TODO: Use Stern.
+param($deploymentName, $namespace, $index)
+
+$usage = Write-Usage "aks logs <deployment/job name> [namespace] [pod index]"
 
 VerifyCurrentCluster $usage
 DeploymentChoiceMenu ([ref]$deploymentName)
+
+SetDefaultIfEmpty ([ref]$index) "0"
 
 if ($namespace)
 {
@@ -18,9 +23,9 @@ $deployNameIfExist = ExecuteQuery ("kubectl get deploy $deploymentName $namespac
 
 if ($deployNameIfExist)
 {
-    $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $namespaceString $kubeDebugString")
+    $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
     
-    Write-Info "Show pod '$podName' logs for the first pod in deployment '$deploymentName'"
+    Write-Info "Show pod '$podName' logs for pod number $index in deployment '$deploymentName'"
     
     ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
 }
@@ -30,9 +35,9 @@ else
     
     if ($jobNameIfExist)
     {
-        $podName = ExecuteQuery ("kubectl get po -l='job-name=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $namespaceString $kubeDebugString")
+        $podName = ExecuteQuery ("kubectl get po -l='job-name=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
         
-        Write-Info "Show pod '$podName' logs for the first pod for job '$deploymentName'"
+        Write-Info "Show pod '$podName' logs for pod number $index for job '$deploymentName'"
         
         ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
     }
@@ -42,9 +47,9 @@ else
     
         if ($daemonSetNameIfExist)
         {
-            $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $namespaceString $kubeDebugString")
+            $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
             
-            Write-Info "Show pod '$podName' logs for the first pod for daemonset '$deploymentName'"
+            Write-Info "Show pod '$podName' logs for pod number $index for daemonset '$deploymentName'"
             
             ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
         }

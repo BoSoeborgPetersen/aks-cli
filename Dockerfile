@@ -1,6 +1,9 @@
 # Base image with PowerShell
 FROM mcr.microsoft.com/powershell:7.0.0-debian-10
 
+ENV STERN_VERSION=1.11.0
+ENV COMPLETIONS=/usr/share/bash-completion/completions
+
 # Install Curl, Git, Nano & Bash completion
 RUN apt-get update && \
     apt-get install -y curl git nano bash-completion && \
@@ -13,7 +16,12 @@ RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
  
 # Install Kubernetes-Cli (kubectl), and completion
 RUN az aks install-cli && \
-    kubectl completion bash > /usr/share/bash-completion/completions/kubectl_completions.sh
+    kubectl completion bash > $COMPLETIONS/kubectl_completions.sh
+
+# Install Wercker\Stern, and completion
+RUN curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/${STERN_VERSION}/stern_linux_amd64 && \
+    chmod +x /usr/local/bin/stern && \
+    stern --completion bash > $COMPLETIONS/stern.bash
 
 # Install Helm-Cli (helm), and completion
 RUN curl -LO https://git.io/get_helm.sh && \
@@ -21,7 +29,7 @@ RUN curl -LO https://git.io/get_helm.sh && \
     ./get_helm.sh && \
     helm init --client-only && \
     helm repo update && \
-    helm completion bash > /usr/share/bash-completion/completions/helm_completions.sh
+    helm completion bash > $COMPLETIONS/helm_completions.sh
 
 # Install Helm-Cli version 3 (helm3)
 # Install 2to3 plugin for Helm-Cli version 3 (helm3 2to3)

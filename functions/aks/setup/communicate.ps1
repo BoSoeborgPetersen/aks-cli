@@ -1,6 +1,3 @@
-ExecuteCommand "aks tiller install"
-ExecuteCommand "aks tiller wait"
-ExecuteCommand "aks nginx install"
 ExecuteCommand "aks nginx install `"masterdata`""
 ExecuteCommand "aks nginx install `"dme`""
 ExecuteCommand "aks cert-manager install"

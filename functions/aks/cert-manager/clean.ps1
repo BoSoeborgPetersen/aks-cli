@@ -4,7 +4,7 @@ param($version)
 $usage = Write-Usage "aks cert-manager clean [version]"
 
 VerifyCurrentCluster $usage
-SetDefaultIfEmpty ([ref]$version) "0.12"
+SetDefaultIfEmpty ([ref]$version) "0.14"
 
 Write-Info ("Clean Cert-Manager namespace, and Custom Resource Definitions from current AKS cluster '$($selectedCluster.Name)', which will remove all custom Kubernetes resources (certificaterequests, certificates, challenges, clusterissuers, healthstates, issuers, orders)")
 

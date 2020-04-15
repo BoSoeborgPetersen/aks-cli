@@ -1,3 +1,4 @@
+# TODO: Only remove namespace with PURGE parameter.
 param($deploymentName)
 
 $usage = Write-Usage "aks nginx uninstall [deployment name]"
@@ -13,5 +14,5 @@ if ($deploymentName)
 
 Write-Info ("Uninstall Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
 
-ExecuteCommand "helm delete $nginxDeploymentName --purge $debugString"
-ExecuteCommand "kubectl delete namespace ingress $kubeDebugString"
+ExecuteCommand "helm3 uninstall $nginxDeploymentName -n ingress $debugString"
+#ExecuteCommand "kubectl delete namespace ingress $kubeDebugString"
