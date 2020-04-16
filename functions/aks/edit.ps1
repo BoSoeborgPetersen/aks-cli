@@ -1,12 +1,11 @@
-param($type, $name)
+param($type, $name, $namespace)
 
-# $usage = Write-Usage "aks nginx edit-configmap [deployment name]"
+$usage = Write-Usage "aks edit <resource type> <resource name> [namespace]"
 
-# VerifyCurrentCluster $usage
+VerifyCurrentCluster $usage
+SetDefaultIfEmpty ([ref]$namespace) "default"
 
-# $nginxDeploymentName = GetNginxDeploymentName $deploymentName
+Write-Info ("Edit '$type/$name' in namespace '$namespace' on current AKS cluster '$($selectedCluster.Name)'")
 
-# Write-Info ("Edit configmap for Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
-
-# TODO: Refactor.
-ExecuteCommand ("bash -c `"KUBE_EDITOR=```"nano```" kubectl edit $type $name`"")
+ExecuteCommand ("Set-Item -Path Env:KUBE_EDITOR -Value nano")
+ExecuteCommand ("kubectl edit $type $name")

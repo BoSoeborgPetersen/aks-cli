@@ -1,17 +1,17 @@
 param($deploymentName, $shellType)
 
 $subCommands=@{
-    "cmd" = "Command Prompt (Windows).";
-    "powershell" = "Powershell (Windows).";
-    "bash" = "Bash (Debian).";
-    "ash" = "Ash (Alpine).";
+    "cmd" = "Command Prompt (Windows)."
+    "powershell" = "Powershell (Windows)."
+    "bash" = "Bash (Debian)."
+    "ash" = "Ash (Alpine)."
 }
 
 function testShell([ref] $shellType, $podName, $type)
 {
     if (!$shellType.value)
     {
-        $output = ExecuteQuery "kubectl exec $podName $type 2>&1"
+        $output = ExecuteQuery "kubectl exec $podName -- $type 2>&1"
         if (!$output -or ($output -like "*Microsoft Corporation*"))
         {
             $shellType.value = $type
@@ -40,4 +40,4 @@ if (!$shellType)
     
 Write-Info "Open shell '$shellType' inside pod '$podName' for the first pod in deployment '$deploymentName'"
 
-ExecuteCommand "kubectl exec -it $podName $shellType $kubeDebugString"
+ExecuteCommand "kubectl exec -it $podName -- $shellType $kubeDebugString"

@@ -1,19 +1,19 @@
 param($resourceType, $deploymentName)
 
 $subCommands=@{
-    "all" = "Show all standard Kubernetes resources.";
-    "svc" = "Show Services.";
-    "deploy" = "Show Deployments.";
-    "po" = "Show Pods.";
-    "no" = "Show Nodes.";
-    "rs" = "Show Replica Sets.";
-    "hpa" = "Show Horizontal Pod Autoscalers.";
-    "ing" = "Show Ingress.";
-    "secret" = "Show Secrets.";
-    "cert" = "Show Certificates.";
-    "issuer" = "Show Issuers.";
-    "order" = "Show Orders.";
-    "challenge" = "Show Challenges.";
+    "all" = "Show all standard Kubernetes resources."
+    "svc" = "Show Services."
+    "deploy" = "Show Deployments."
+    "po" = "Show Pods."
+    "no" = "Show Nodes."
+    "rs" = "Show Replica Sets."
+    "hpa" = "Show Horizontal Pod Autoscalers."
+    "ing" = "Show Ingress."
+    "secret" = "Show Secrets."
+    "cert" = "Show Certificates."
+    "issuer" = "Show Issuers."
+    "order" = "Show Orders."
+    "challenge" = "Show Challenges."
 }
 
 if (!$resourceType)

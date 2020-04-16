@@ -1,8 +1,8 @@
 param($resourceType, $deploymentName)
 
 $subCommands=@{
-    "po" = "Show Pods.";
-    "no" = "Show Nodes.";
+    "po" = "Show Pods."
+    "no" = "Show Nodes."
 }
 
 if (!$resourceType)

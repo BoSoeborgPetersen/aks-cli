@@ -113,6 +113,11 @@ function ShowCommands($commands)
     Write-Host ''
 }
 
+function ValidateCommand($command, $commands)
+{
+    return $commands.Keys.Where({ $_ -eq $command}, 'First').Count -gt 0
+}
+
 function ShowSubMenu($command, $subCommands)
 {
     Logo

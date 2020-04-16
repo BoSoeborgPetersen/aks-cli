@@ -12,8 +12,6 @@ $usage = Write-Usage "aks logs <deployment/job name> [namespace] [pod index]"
 VerifyCurrentCluster $usage
 DeploymentChoiceMenu ([ref]$deploymentName)
 
-SetDefaultIfEmpty ([ref]$index) "0"
-
 if ($namespace)
 {
     $namespaceString = "-n $namespace"
@@ -23,39 +21,60 @@ $deployNameIfExist = ExecuteQuery ("kubectl get deploy $deploymentName $namespac
 
 if ($deployNameIfExist)
 {
-    $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+    if ($index)
+    {
+        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+        
+        Write-Info "Show pod '$podName' logs for pod (index: $index) in deployment '$deploymentName'"
+        
+        return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
+    }
+    else
+    {
+        Write-Info ("Show $deploymentName logs with Stern")
     
-    Write-Info "Show pod '$podName' logs for pod number $index in deployment '$deploymentName'"
-    
-    ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
+        ExecuteCommand "stern $deploymentName $namespaceString"
+    }
 }
-else 
+
+$jobNameIfExist = ExecuteQuery ("kubectl get job $deploymentName $namespaceString $kubeDebugString")
+
+if ($jobNameIfExist)
 {
-    $jobNameIfExist = ExecuteQuery ("kubectl get job $deploymentName $namespaceString $kubeDebugString")
-    
-    if ($jobNameIfExist)
+    if ($index)
     {
         $podName = ExecuteQuery ("kubectl get po -l='job-name=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
         
-        Write-Info "Show pod '$podName' logs for pod number $index for job '$deploymentName'"
+        Write-Info "Show pod '$podName' logs for pod (index: $index) for job '$deploymentName'"
         
-        ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
+        return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
     }
-    else 
+    else
     {
-        $daemonSetNameIfExist = ExecuteQuery ("kubectl get daemonset $deploymentName $namespaceString $kubeDebugString")
+        Write-Info ("Show $deploymentName logs with Stern")
     
-        if ($daemonSetNameIfExist)
-        {
-            $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
-            
-            Write-Info "Show pod '$podName' logs for pod number $index for daemonset '$deploymentName'"
-            
-            ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
-        }
-        else 
-        {
-            Write-Info "Deployment '$deploymentName' does not exist!"
-        }
+        ExecuteCommand "stern $deploymentName $namespaceString"
     }
 }
+
+$daemonSetNameIfExist = ExecuteQuery ("kubectl get daemonset $deploymentName $namespaceString $kubeDebugString")
+
+if ($daemonSetNameIfExist)
+{
+    if ($index)
+    {
+        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+        
+        Write-Info "Show pod '$podName' logs for pod (index: $index) for daemonset '$deploymentName'"
+        
+        return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
+    }
+    else
+    {
+        Write-Info ("Show $deploymentName logs with Stern")
+    
+        ExecuteCommand "stern $deploymentName $namespaceString"
+    }
+}
+
+Write-Info "Deployment/Job/DaemonSet '$deploymentName' does not exist!"

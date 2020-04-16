@@ -4,4 +4,4 @@ VerifyCurrentCluster $usage
 
 Write-Info ("Current AKS cluster")
 
-$selectedCluster.Name
+ExecuteCommand "kubectl config current-context"

@@ -1,7 +1,8 @@
 # TODO: Validate Version with Regex '^[\d]+\.[\d]+$'
+# TODO: Add "Are You Sure" question
 param($version)
 
-$usage = Write-Usage "aks cert-manager clean [version]"
+$usage = Write-Usage "aks cert-manager purge [version]"
 
 VerifyCurrentCluster $usage
 SetDefaultIfEmpty ([ref]$version) "0.14"

@@ -1,11 +1,21 @@
+param($index)
+
 $usage = Write-Usage "aks cert-manager logs"
 
 VerifyCurrentCluster $usage
 
 $deploymentName = GetCertManagerDeploymentName
 
-$podName = ExecuteQuery "kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $kubeDebugString"
+if($index)
+{
+    Write-Info "Show Cert-Manager logs from pod (index: $index) in deployment '$deploymentName'"
+    
+    $podName = ExecuteQuery "kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $kubeDebugString"
+    ExecuteCommand "kubectl logs $podName $kubeDebugString"
+}
+else
+{
+    Write-Info "Show Cert-Manager logs with Stern"
 
-Write-Info "Show pod '$podName' logs for the first pod in Cert-Manager deployment '$deploymentName'"
-
-ExecuteCommand "kubectl logs $podName $kubeDebugString"
+    ExecuteCommand "stern $deploymentName -n ingress"
+}

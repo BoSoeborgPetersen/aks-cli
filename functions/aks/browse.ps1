@@ -1,3 +1,5 @@
+# Currently does not work.
+# TODO: Does not work in container. Must use Port-Forwarding (if possible).
 $usage = Write-Usage "aks browse"
 
 VerifyCurrentCluster $usage
