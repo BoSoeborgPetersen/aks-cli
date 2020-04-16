@@ -1,15 +1,13 @@
-param($subCommand)
+param($command)
 
-if ($subCommand -eq "")
+if ($command -eq "")
 {
     ExecuteCommand "aks switch account"
 }
 else
 {
-    $subCommands=@{
+    SubMenu @{
         "account" = "(Interactive) Change current Azure subscription."
         "cluster" = "(Interactive) Change current AKS cluster."
     }
-    
-    SubMenu $PSScriptRoot $command $subCommand $subCommands
 }

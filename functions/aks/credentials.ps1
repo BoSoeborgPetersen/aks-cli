@@ -1,8 +1,4 @@
-param($subCommand)
-
-$subCommands=@{
+SubMenu @{
     "get" = "Get credentials."
     "get-clean" = "Clear credentials and get new ones."
 }
-
-SubMenu $PSScriptRoot $command $subCommand $subCommands

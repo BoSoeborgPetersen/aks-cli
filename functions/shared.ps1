@@ -1,14 +1,4 @@
-function Write-Error($message) {
-    [Console]::ForegroundColor = 'red'
-    [Console]::Error.WriteLine($message)
-    [Console]::ResetColor()
-}
 
-function Write-Info($message) {
-    [Console]::ForegroundColor = 'darkcyan'
-    [Console]::Error.WriteLine($message)
-    [Console]::ResetColor()
-}
 
 # TODO: Try to show menu on error or debug stream instead of output stream.
 function ChooseAzureAccount()
@@ -91,91 +81,6 @@ function ChooseAksDeployment()
     $global:globalDeploymentName = ChooseKubernetesDeploymentName
 }
 
-function Logo()
-{
-    Write-Host ''
-    Write-Host '      __       __   ___   _______  '
-    Write-Host '     /  \     |  | /  /  |  _____| '
-    Write-Host '    /    \    |  |/  /   |  |____  '
-    Write-Host '   /  /\  \   |     |    |____   | '
-    Write-Host '  /  ____  \  |  |\  \    ____|  | '
-    Write-Host ' /__/    \__\ |__| \__\  |_______| '
-    Write-Host ''
-}
-
-function ShowCommands($commands)
-{
-    Write-Host ''
-    $maxSubCommandLength = ($commands.Keys | Measure-Object -Maximum -Property Length).Maximum
-    ForEach ($key in ($commands.Keys | Sort-Object)) {
-        Write-Host ("    $($key.PadRight($maxSubCommandLength + 4)): $($commands["$key"])")
-    }
-    Write-Host ''
-}
-
-function ValidateCommand($command, $commands)
-{
-    return $commands.Keys.Where({ $_ -eq $command}, 'First').Count -gt 0
-}
-
-function ShowSubMenu($command, $subCommands)
-{
-    Logo
-    Write-Host "aks $command <sub-command>"
-    Write-Host ''
-    Write-Host 'Here are the sub-commands:'
-    ShowCommands $subCommands
-    Write-Host ("e.g. 'aks $command $($subCommands.keys[0] | Select-Object -first 1)'")
-    Write-Host ''
-}
-
-function ValidateSubMenu($pathPrefix, $command, $subCommand, $subCommands)
-{
-    if (!$subCommand) {
-        ShowSubMenu $command $subCommands
-        exit
-    }
-    
-    if (!$subCommands.Contains($subCommand)) {
-        Write-Error "Invalid sub command: $subCommand"
-        ShowSubMenu $command $subCommands
-        exit
-    }
-    
-    $path = "$pathPrefix/$command/$subCommand.ps1"
-    $scriptExists = [System.IO.File]::Exists($path)
-    if (!$scriptExists) {
-        Write-Error "Script for sub command does not exist: $path"
-        ShowSubMenu $command $subCommands
-        exit
-    }
-
-    return $path
-}
-
-function SubMenu($pathPrefix, $command, $subCommand, $subCommands)
-{
-    $path = ValidateSubMenu $pathPrefix $command $subCommand $subCommands
-
-    & $path $arg2 $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11
-}
-
-function SubSubMenu($pathPrefix, $command, $subCommand, $subCommands)
-{
-    $path = ValidateSubMenu $pathPrefix $command $subCommand $subCommands
-
-    & $path $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11
-}
-
-if ($PSCmdlet.MyInvocation.BoundParameters["Debug"].IsPresent){
-    $debugString = "--debug"
-    $kubeDebugString = "--v=4"
-}
-
-if ($PSCmdlet.MyInvocation.BoundParameters["WhatIf"].IsPresent){
-    $dryrun = $true
-}
-
 function VerifyCurrentSubscription($usage)
 {
     if (!$selectedAccount) {
@@ -246,13 +151,6 @@ function ValidateBooleanType($usage, $variable, $variableName){
         Write-Error ("$($variableName): Not a boolean '$variable'")
         exit
     }
-}
-
-function Write-Usage($usageText)
-{
-    $usage = "Usage: $usageText"
-    Write-Verbose $usage
-    return $usage
 }
 
 function ExecuteCommand($commandString)

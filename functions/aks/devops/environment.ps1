@@ -1,6 +1,4 @@
-param($subSubCommand)
-
-$subSubCommands=@{
+SubSubMenu @{
     "Show" = "Show a Azure DevOps Environment."
     "list" = "List Azure DevOps Environments."
     "create" = "Create Azure DevOps Environment."
@@ -12,5 +10,3 @@ $subSubCommands=@{
     "add-kubernetes" = "Add Kubernets resource to Azure DevOps Environment."
     "remove-kubernetes" = "Remove Kubernetes resource from Azure DevOps Environment."
 }
-
-SubSubMenu $PSScriptRoot $subCommand $subSubCommand $subSubCommands

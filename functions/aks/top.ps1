@@ -1,14 +1,12 @@
 param($resourceType, $deploymentName)
 
-$subCommands=@{
+$usage = Write-Usage "aks top <resource type> [deployment name]"
+
+VerifyCurrentCluster $usage
+
+ValidateNoScriptSubCommand @{
     "po" = "Show Pods."
     "no" = "Show Nodes."
-}
-
-if (!$resourceType)
-{
-    ShowSubMenu $command $subCommands
-    exit
 }
 
 if ($deploymentName) {

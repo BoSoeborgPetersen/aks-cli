@@ -32,7 +32,7 @@
 [cmdletbinding(SupportsShouldProcess=$True)]
 param
 (
-    [Parameter(Position=0)][string]$command,
+    [Parameter(Position=0)][string]$arg0,
     [Parameter(Position=1)][string]$arg1,
     [Parameter(Position=2)][string]$arg2,
     [Parameter(Position=3)][string]$arg3,
@@ -46,10 +46,12 @@ param
     [Parameter(Position=11)][string]$arg11
 )
 
+. "$PSScriptRoot/basic.ps1"
+. "$PSScriptRoot/menu.ps1"
 . "$PSScriptRoot/shared.ps1"
 . "$PSScriptRoot/naming-convention.ps1"
 
-$commands=@{
+MainMenu @{
     "analytics" = "Azure Monitor for containers - Monitor the performance of container workloads"
     # "browse" = "Opens the AKS dashboard."
     "cert-manager" = "Certificate Manager - Automatically provision and manage TLS certificates in Kubernetes."
@@ -83,31 +85,3 @@ $commands=@{
     "version" = "Get AKS cluster version."
     "versions" = "Get AKS versions."
 }
-
-function ShowUsage 
-{
-    Logo
-    'Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!'
-    ''
-    'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)'
-    'Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu'
-    ''
-    'Here are the commands:'
-    ShowCommands $commands
-    "e.g. try 'aks version'"
-    ''
-}
-
-if (!$command) {
-    ShowUsage
-    exit
-}
-
-if (!(ValidateCommand $command $commands))
-{
-    Write-Error "Invalid command '$command'"
-    ShowUsage
-    exit
-}
-
-& "$PSScriptRoot\aks\$command.ps1" $arg1 $arg2 $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11

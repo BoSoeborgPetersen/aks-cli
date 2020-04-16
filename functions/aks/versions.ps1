@@ -1,7 +1,7 @@
 # TODO: Include preview versions with prefix "(Preview) "
 param($location)
 
-$usage = Write-Usage "aks versions <location>"
+$usage = Write-Usage "aks versions [location]"
 
 VerifyCurrentClusterOrVariable $usage $location "<location>"
 

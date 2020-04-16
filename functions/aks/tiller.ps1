@@ -1,6 +1,4 @@
-param($subCommand)
-
-$subCommands=@{
+SubMenu @{
    "setup" = "Install or update the Helm server side component (Tiller)."
    "install" = "Install the Helm server side component (Tiller)."
    "upgrade" = "Upgrade the Helm server side component (Tiller)."
@@ -8,5 +6,3 @@ $subCommands=@{
    "wait" = "Wait for the Helm server side component (Tiller) to be ready."
    "uninstall" = "Uninstall the Helm server side component (Tiller)."
 }
-
-SubMenu $PSScriptRoot $command $subCommand $subCommands

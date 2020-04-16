@@ -1,6 +1,4 @@
-param($subCommand)
-
-$subCommands=@{
+SubMenu @{
     "install" = "Install Nginx-Ingress (Helm chart), using existing static public IP."
     "setup" = "Create static public IP, and Install Nginx-Ingress (Helm chart)."
     "upgrade" = "Upgrade Nginx-Ingress (Helm chart)."
@@ -10,5 +8,3 @@ $subCommands=@{
     "edit-configmap" = "Opens the Nginx configmap for editing in notepad."
     "uninstall" = "Uninstall Nginx-Ingress (Helm chart)."
 }
-
-SubMenu $PSScriptRoot $command $subCommand $subCommands

@@ -1,6 +1,11 @@
+# TODO: Replace selector-string '-l' as it is not fixed, and use resource name prefix instead.
 param($resourceType, $deploymentName)
 
-$subCommands=@{
+$usage = Write-Usage "aks get <resource type> [deployment name]"
+
+VerifyCurrentCluster $usage
+
+ValidateNoScriptSubCommand @{
     "all" = "Show all standard Kubernetes resources."
     "svc" = "Show Services."
     "deploy" = "Show Deployments."
@@ -16,17 +21,11 @@ $subCommands=@{
     "challenge" = "Show Challenges."
 }
 
-if (!$resourceType)
-{
-    ShowSubMenu $command $subCommands
-    exit
-}
-
 if ($deploymentName) {
-    Write-Info ("Show resources of type '$resourceType' for deployment '$deploymentName' in current AKS cluster '$($selectedCluster.Name)'")
+    Write-Info ("Show resources of type '$resourceType' for deployment '$deploymentName'")
 }
 else {
-    Write-Info ("Show all resources of type '$resourceType' in current AKS cluster '$($selectedCluster.Name)'")
+    Write-Info ("Show all resources of type '$resourceType'")
 }
 
 if ($deploymentName){
@@ -64,4 +63,4 @@ if ($deploymentName){
     }
 }
 
-ExecuteCommand "kubectl get $resourceType -o wide $selectorString $kubeDebugString"
+ExecuteCommand "kubectl get $resourceType $selectorString $kubeDebugString"

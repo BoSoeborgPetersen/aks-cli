@@ -1,13 +1,13 @@
-# TODO: Change to menu with 3 subcommands
+# TODO: Change to menu with 4 subcommands
 # - 'aks logs <pod-name>' -> 'aks logs pod <pod-name>' (take partial pod names)
 # - 'aks logs deploy <deployment-name>' -> same
 # - 'aks logs job <job-name>' -> same
+# - 'aks logs daemonset <job-name>' -> same
 
 # TODO: Check IndexOutOfRange.
-# TODO: Use Stern.
-param($deploymentName, $namespace, $index)
+param($deploymentName, $namespace, $podIndex)
 
-$usage = Write-Usage "aks logs <deployment/job name> [namespace] [pod index]"
+$usage = Write-Usage "aks logs <deployment/job/daemonset name> [namespace] [pod index]"
 
 VerifyCurrentCluster $usage
 DeploymentChoiceMenu ([ref]$deploymentName)
@@ -17,15 +17,15 @@ if ($namespace)
     $namespaceString = "-n $namespace"
 }
 
-$deployNameIfExist = ExecuteQuery ("kubectl get deploy $deploymentName $namespaceString $kubeDebugString")
+$deployment = ExecuteQuery ("kubectl get deploy $deploymentName $namespaceString $kubeDebugString")
 
-if ($deployNameIfExist)
+if ($deployment)
 {
-    if ($index)
+    if ($podIndex)
     {
-        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$podIndex].metadata.name}' $namespaceString $kubeDebugString")
         
-        Write-Info "Show pod '$podName' logs for pod (index: $index) in deployment '$deploymentName'"
+        Write-Info "Show pod '$podName' logs for pod (index: $podIndex) in deployment '$deploymentName'"
         
         return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
     }
@@ -37,15 +37,15 @@ if ($deployNameIfExist)
     }
 }
 
-$jobNameIfExist = ExecuteQuery ("kubectl get job $deploymentName $namespaceString $kubeDebugString")
+$job = ExecuteQuery ("kubectl get job $deploymentName $namespaceString $kubeDebugString")
 
-if ($jobNameIfExist)
+if ($job)
 {
-    if ($index)
+    if ($podIndex)
     {
-        $podName = ExecuteQuery ("kubectl get po -l='job-name=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+        $podName = ExecuteQuery ("kubectl get po -l='job-name=$deploymentName' -o jsonpath='{.items[$podIndex].metadata.name}' $namespaceString $kubeDebugString")
         
-        Write-Info "Show pod '$podName' logs for pod (index: $index) for job '$deploymentName'"
+        Write-Info "Show pod '$podName' logs for pod (index: $podIndex) for job '$deploymentName'"
         
         return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
     }
@@ -57,15 +57,15 @@ if ($jobNameIfExist)
     }
 }
 
-$daemonSetNameIfExist = ExecuteQuery ("kubectl get daemonset $deploymentName $namespaceString $kubeDebugString")
+$daemonset = ExecuteQuery ("kubectl get daemonset $deploymentName $namespaceString $kubeDebugString")
 
-if ($daemonSetNameIfExist)
+if ($daemonset)
 {
-    if ($index)
+    if ($podIndex)
     {
-        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$index].metadata.name}' $namespaceString $kubeDebugString")
+        $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[$podIndex].metadata.name}' $namespaceString $kubeDebugString")
         
-        Write-Info "Show pod '$podName' logs for pod (index: $index) for daemonset '$deploymentName'"
+        Write-Info "Show pod '$podName' logs for pod (index: $podIndex) for daemonset '$deploymentName'"
         
         return ExecuteCommand ("kubectl logs $podName $namespaceString $kubeDebugString")
     }

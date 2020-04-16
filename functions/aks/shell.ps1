@@ -1,6 +1,10 @@
 param($deploymentName, $shellType)
 
-$subCommands=@{
+$usage = Write-Usage "aks shell [deployment name] [shell type]"
+
+VerifyCurrentCluster $usage
+
+$commands=@{
     "cmd" = "Command Prompt (Windows)."
     "powershell" = "Powershell (Windows)."
     "bash" = "Bash (Debian)."
@@ -24,9 +28,11 @@ DeploymentChoiceMenu ([ref]$deploymentName)
 # TODO: Rewrite to use "-help"
 if ($deploymentName -eq "help")
 {
-    ShowSubMenu $command $subCommands
+    ShowSubMenu $commands
     exit
 }
+
+# TODO: Check that deployment exists.
 
 $podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $kubeDebugString")
 
@@ -37,7 +43,15 @@ if (!$shellType)
     testShell ([ref]$shellType) $podName "powershell"
     testShell ([ref]$shellType) $podName "cmd"
 }
+
+if (!$shellType)
+{
+    ShowSubMenu $commands
+    exit
+}
     
 Write-Info "Open shell '$shellType' inside pod '$podName' for the first pod in deployment '$deploymentName'"
+
+# Test shell before actually opening it, and if it fails, then print an error message.
 
 ExecuteCommand "kubectl exec -it $podName -- $shellType $kubeDebugString"
