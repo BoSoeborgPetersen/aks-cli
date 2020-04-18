@@ -163,7 +163,7 @@ function ExecuteCommand($commandString)
     }
     else 
     {
-        Write-Info "What if: $CommandString"
+        Write-Info "WhatIf: $CommandString"
     }
 }
 

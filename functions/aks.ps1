@@ -32,19 +32,14 @@
 [cmdletbinding(SupportsShouldProcess=$True)]
 param
 (
-    [Parameter(Position=0)][string]$arg0,
-    [Parameter(Position=1)][string]$arg1,
-    [Parameter(Position=2)][string]$arg2,
-    [Parameter(Position=3)][string]$arg3,
-    [Parameter(Position=4)][string]$arg4,
-    [Parameter(Position=5)][string]$arg5,
-    [Parameter(Position=6)][string]$arg6,
-    [Parameter(Position=7)][string]$arg7,
-    [Parameter(Position=8)][string]$arg8,
-    [Parameter(Position=9)][string]$arg9,
-    [Parameter(Position=10)][string]$arg10,
-    [Parameter(Position=11)][string]$arg11
+    [Parameter(ValueFromRemainingArguments=$True)]
+    [string[]] $params
 )
+
+if (!$params)
+{
+    $params = @()
+}
 
 . "$PSScriptRoot/basic.ps1"
 . "$PSScriptRoot/menu.ps1"
@@ -52,35 +47,35 @@ param
 . "$PSScriptRoot/naming-convention.ps1"
 
 MainMenu @{
-    "analytics" = "Azure Monitor for containers - Monitor the performance of container workloads"
-    # "browse" = "Opens the AKS dashboard."
-    "cert-manager" = "Certificate Manager - Automatically provision and manage TLS certificates in Kubernetes."
+    "analytics" = "Azure Container Monitor operations"
+    # "browse" = "Open Kubernetes dashboard."
+    "cert-manager" = "Certificate Manager operations."
     "create" = "Create AKS cluster."
     "credentials" = "Get AKS cluster credentials."
     "current" = "Get current AKS cluster."
     "delete" = "Delete AKS cluster."
-    "delete-pods" = "Delete pods for deployment"
-    "describe" = "Describe details for Kubernetes resources."
+    "delete-pods" = "Delete deployment pods"
+    "describe" = "Describe Kubernetes resources."
     "devops" = "Azure DevOps operations."
     "edit" = "Edit Kubernetes resource."
-    "get" = "Show Kubernetes resources."
-    "logs" = "Get Deployment logs."
-    "monitoring" = "Monitoring with Prometheus and Grafana."
-    "nginx" = "NGINX Ingress (Reverse Proxy Server) Controller for Kubernetes, which does SSL termination."
-    "node-autoscaler" = "Scale AKS VMs automatically - Automatic node scaling."
-    "pod-autoscaler" = "Scale AKS deployment automatically - Automatic pod scaling."
-    "pod-size" = "Get Deployment Pod used disk space."
+    "get" = "Get Kubernetes resources."
+    "logs" = "Get container logs."
+    "monitoring" = "Prometheus and Grafana operations."
+    "nginx" = "NGINX Ingress operations."
+    "node-autoscaler" = "Setup automatic AKS VM Scale Set scaling (Node scaling)."
+    "pod-autoscaler" = "Setup automatic AKS deployment scaling (Pod scaling)."
+    "pod-size" = "Get container disk space usage."
     "registry" = "Azure Container Registry operations."
-    "scale-nodes" = "Scale AKS VMs - Manual node scaling."
-    "scale-pods" = "Scale AKS deployment - Manual pod scaling."
+    "scale-nodes" = "Scale AKS VM Scale Set (Node scaling)."
+    "scale-pods" = "Scale AKS deployment (Pod scaling)."
     "service-principal" = "Azure Service Principal operations"
-    "setup" = "Create Kubernetes cluster, install add-ons and configure both."
-    "shell" = "Open shell inside container pod."
-    "switch" = "(Interactive) Change current Azure subscription, AKS cluster or AKS deployment."
-    "tiller" = "Helm server side component (Tiller)."
-    "top" = "Show resource utilization for Kubernetes resources."
-    "traffic-manager" = "Azure Traffic Manager operations"
-    "upgrade" = "Upgrades AKS cluster."
+    "setup" = "Install add-ons and configure AKS cluster."
+    "shell" = "Open shell inside container."
+    "switch" = "Switch Azure subscription/cluster."
+    "tiller" = "Helm server side component."
+    "top" = "Show Kubernetes resource utilization."
+    "traffic-manager" = "Azure Traffic Manager operations."
+    "upgrade" = "Upgrade AKS cluster."
     "upgrades" = "Get AKS cluster upgradable versions."
     "version" = "Get AKS cluster version."
     "versions" = "Get AKS versions."

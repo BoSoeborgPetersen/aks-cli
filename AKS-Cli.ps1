@@ -1,9 +1,5 @@
-# TODO: Clean Up
-
-Write-Host $PSScriptRoot
-
-Set-Location $PSScriptRoot
-$location = Get-Location
+$location = $PSScriptRoot
+Set-Location $location
 
 docker pull bo0petersen/aks-cli:latest
 

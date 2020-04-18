@@ -53,7 +53,7 @@ function ShowMenu($commandPrefix, $commands)
 
 function ShowSubMenu($commands)
 {
-    ShowMenu "aks $arg0" $commands
+    ShowMenu "aks $($params[0])" $commands
 }
 
 function ValidateCommand($commandPrefix, $command, $commands, $noScriptFile = $false)
@@ -91,26 +91,26 @@ function ValidateCommand($commandPrefix, $command, $commands, $noScriptFile = $f
 
 function ValidateNoScriptSubCommand($commands)
 {
-    ValidateCommand "aks $arg0" $arg1 $commands $true
+    ValidateCommand "aks $($params[0])" $params[1] $commands $true
 }
 
 function MainMenu($commands)
 {
-    $path = ValidateCommand "aks" $arg0 $commands
-
-    & $path $arg1 $arg2 $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11
+    $path = ValidateCommand "aks" $params[0] $commands
+    
+    Invoke-Expression "$path $($params | Select-Object -Skip 1)"
 }
 
 function SubMenu($commands)
 {
-    $path = ValidateCommand "aks $arg0" $arg1 $commands
+    $path = ValidateCommand "aks $($params[0])" $params[1] $commands
 
-    & $path $arg2 $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11
+    Invoke-Expression "$path $($params | Select-Object -Skip 2)"
 }
 
 function SubSubMenu($commands)
 {
-    $path = ValidateCommand "aks $arg0 $arg1" $arg2 $commands
+    $path = ValidateCommand "aks $($params[0]) $($params[1])" $params[2] $commands
 
-    & $path $arg3 $arg4 $arg5 $arg6 $arg7 $arg8 $arg9 $arg10 $arg11
+    Invoke-Expression "$path $($params | Select-Object -Skip 3)"
 }
