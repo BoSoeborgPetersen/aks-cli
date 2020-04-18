@@ -2,12 +2,15 @@
 # TODO: Create 'Migrate' menu
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
-$usage = Write-Usage "aks setup communicate <resource group name> <location> <min node count> <max node count> <node size>"
+$usage = Write-Usage "aks migrate communicate <resource group name> <location> [min node count] [max node count] [node size]"
 
 SetDefaultIfEmpty ([ref]$minNodeCount) 2
 SetDefaultIfEmpty ([ref]$maxNodeCount) 4
 $nodeSizeString = ""
-SetDefaultIfEmpty ([ref]$nodeSizeString) " --node-vm-size $nodeSize"
+if($nodeSize)
+{
+    $nodeSizeString = " --node-vm-size $nodeSize"
+}
 
 ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
 ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100

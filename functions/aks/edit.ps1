@@ -9,4 +9,4 @@ SetDefaultIfEmpty ([ref]$namespace) "default"
 Write-Info ("Edit '$resourceType/$resourceName' in namespace '$namespace'")
 
 ExecuteCommand ("Set-Item -Path Env:KUBE_EDITOR -Value nano")
-ExecuteCommand ("kubectl edit $resourceType $resourceName")
+ExecuteCommand ("kubectl edit $resourceType $resourceName -n $namespace")

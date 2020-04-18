@@ -1,14 +1,14 @@
 param($minNodeCount, $maxNodeCount)
 
-$usage = Write-Usage "aks node-autoscaler add <min node count> <max node count>"
+$usage = Write-Usage "aks node-autoscaler add [min node count] [max node count]"
+
+VerifyCurrentCluster $usage
 
 SetDefaultIfEmpty ([ref]$minNodeCount) 2
 SetDefaultIfEmpty ([ref]$maxNodeCount) 4
 
 ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
 ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100
-
-VerifyCurrentCluster $usage
 
 Write-Info ("Add node autoscaler (min count: $minNodeCount, max count: $maxNodeCount) to current AKS cluster '$($selectedCluster.Name)'")
 

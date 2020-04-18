@@ -2,7 +2,7 @@ $usage = Write-Usage "aks tiller install"
 
 VerifyCurrentCluster $usage
 
-Write-Info ("Installing Tiller (Helm server-side) on current AKS cluster '$($selectedCluster.Name)'")
+Write-Info ("Installing Tiller (Helm server-side)")
 
 ExecuteCommand ("kubectl create serviceaccount tiller -n kube-system $kubeDebugString")
 ExecuteCommand ("kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller $kubeDebugString")

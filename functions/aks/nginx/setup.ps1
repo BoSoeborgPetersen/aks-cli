@@ -1,18 +1,17 @@
 # TODO: Refactor to just create Public IP and then run "aks nginx install".
 param($sku, $deploymentName)
 
-$usage = Write-Usage "aks nginx install <sku> [deployment name]"
+$usage = Write-Usage "aks nginx setup [sku] [deployment name]"
 
 VerifyCurrentCluster $usage
+SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 $resourceGroupName = $selectedCluster.ResourceGroup
 $dnsName = PrependWithDash $selectedCluster.Name $deploymentName
 $ipName = ClusterToIpAddressName $selectedCluster.Name $deploymentName
 $nginxDeploymentName = GetNginxDeploymentName $deploymentName
 
-SetDefaultIfEmpty ([ref]$sku) "Basic"
-
-Write-Info ("Install Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
+Write-Info ("Install Nginx-Ingress")
 
 ExecuteCommand ("az network public-ip create -g $resourceGroupName -n $ipName -l $($selectedCluster.Location) --allocation-method Static --sku $sku --idle-timeout 30 $debugString")
 $ip = ExecuteQuery ("az network public-ip show -g $resourceGroupName -n $ipName --query '[ipAddress]' -o tsv $debugString")

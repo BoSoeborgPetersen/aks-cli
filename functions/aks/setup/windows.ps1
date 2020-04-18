@@ -1,3 +1,7 @@
+$usage = Write-Usage "aks setup windows"
+
+VerifyCurrentCluster $usage
+
 # TODO: Rename to CloudServices
 ExecuteCommand "aks tiller install"
 ExecuteCommand "aks tiller wait"

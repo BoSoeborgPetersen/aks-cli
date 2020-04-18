@@ -1,3 +1,7 @@
+$usage = Write-Usage "aks setup standard"
+
+VerifyCurrentCluster $usage
+
 ExecuteCommand ("aks tiller install")
 ExecuteCommand ("aks tiller wait")
 ExecuteCommand ("aks nginx install")

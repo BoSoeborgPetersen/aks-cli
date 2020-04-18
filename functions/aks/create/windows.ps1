@@ -1,14 +1,15 @@
 # TODO: Refactor into smaller functions.
-param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $location, $nodeCount, $nodeSize, $windowsNodeCount, $windowsNodeSize, $windowsNodePoolName)
+# TODO: Check Usage.
+param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $location, $nodeCount, $nodeSize, $windowsNodeCount, $windowsNodeSize, $windowsNodepoolName)
 
 $usage = Write-Usage "aks create windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
 
-SetDefaultIfEmpty ([ref]$windowsNodePoolName) 'winvms'
 SetDefaultIfEmpty ([ref]$nodeCount) 2
 $nodeSizeString = ""
 SetDefaultIfEmpty ([ref]$nodeSizeString) " --node-vm-size $nodeSize"
 SetDefaultIfEmpty ([ref]$windowsNodeCount) 2
 SetDefaultIfEmpty ([ref]$windowsNodeSize) "Standard_H8"
+SetDefaultIfEmpty ([ref]$windowsNodepoolName) 'winvms'
 
 ValidateNumberRange $usage ([ref]$nodeCount) "node count" 2 100
 ValidateNumberRange $usage ([ref]$windowsNodeCount) "windows node count" 2 100
@@ -53,4 +54,4 @@ ExecuteCommand "az feature register -n WindowsPreview --namespace Microsoft.Con
 ExecuteCommand "az extension add -n aks-preview $debugString"
 
 ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $nodeCount -k $clusterVersion --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword $nodeSizeString --generate-ssh-keys --vm-set-type VirtualMachineScaleSets --windows-admin-password $windowsAdminPassword --windows-admin-username $windowsAdminUsername --network-plugin azure $debugString"
-ExecuteCommand "az aks nodepool add --cluster-name $clusterName -n $windowsNodePoolName -g $resourceGroupName -c $windowsNodeCount -s $windowsNodeSize -k $clusterVersion --os-type Windows $debugString"
+ExecuteCommand "az aks nodepool add --cluster-name $clusterName -n $windowsNodepoolName -g $resourceGroupName -c $windowsNodeCount -s $windowsNodeSize -k $clusterVersion --os-type Windows $debugString"

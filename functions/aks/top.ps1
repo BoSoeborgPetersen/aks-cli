@@ -5,8 +5,8 @@ $usage = Write-Usage "aks top <resource type> [deployment name]"
 VerifyCurrentCluster $usage
 
 ValidateNoScriptSubCommand @{
-    "po" = "Show Pods."
     "no" = "Show Nodes."
+    "po" = "Show Pods."
 }
 
 if ($deploymentName) {
@@ -18,11 +18,11 @@ else {
 
 if ($deploymentName){
     Switch -Wildcard ($resourceType) {
-        'po*' { 
-            $selectorString = "-l='app=$deploymentName'"
-        }
         'no*' { 
             $selectorString = ""
+        }
+        'po*' { 
+            $selectorString = "-l='app=$deploymentName'"
         }
     }
 }

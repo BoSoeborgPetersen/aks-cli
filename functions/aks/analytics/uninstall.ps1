@@ -1,8 +1,8 @@
 $usage = Write-Usage "aks analytics uninstall"
 
-$analyticsName = ResourceGroupToAnalyticsName $selectedCluster.ResourceGroup
-
 VerifyCurrentCluster $usage
+
+$analyticsName = ResourceGroupToAnalyticsName $selectedCluster.ResourceGroup
 
 Write-Info ("Uninstalling Log Analytics '$analyticsName' for current AKS cluster '$($selectedCluster.Name)'")
 

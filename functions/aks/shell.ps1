@@ -5,10 +5,10 @@ $usage = Write-Usage "aks shell [deployment name] [shell type]"
 VerifyCurrentCluster $usage
 
 $commands=@{
+    "ash" = "Ash (Alpine)."
+    "bash" = "Bash (Debian)."
     "cmd" = "Command Prompt (Windows)."
     "powershell" = "Powershell (Windows)."
-    "bash" = "Bash (Debian)."
-    "ash" = "Ash (Alpine)."
 }
 
 function testShell([ref] $shellType, $podName, $type)
@@ -40,8 +40,8 @@ if (!$shellType)
 {
     testShell ([ref]$shellType) $podName "ash"
     testShell ([ref]$shellType) $podName "bash"
-    testShell ([ref]$shellType) $podName "powershell"
     testShell ([ref]$shellType) $podName "cmd"
+    testShell ([ref]$shellType) $podName "powershell"
 }
 
 if (!$shellType)

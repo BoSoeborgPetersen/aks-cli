@@ -7,18 +7,18 @@ VerifyCurrentCluster $usage
 
 ValidateNoScriptSubCommand @{
     "all" = "Show all standard Kubernetes resources."
-    "svc" = "Show Services."
+    "cert" = "Show Certificates."
+    "challenge" = "Show Challenges."
     "deploy" = "Show Deployments."
-    "po" = "Show Pods."
-    "no" = "Show Nodes."
-    "rs" = "Show Replica Sets."
     "hpa" = "Show Horizontal Pod Autoscalers."
     "ing" = "Show Ingress."
-    "secret" = "Show Secrets."
-    "cert" = "Show Certificates."
     "issuer" = "Show Issuers."
+    "no" = "Show Nodes."
     "order" = "Show Orders."
-    "challenge" = "Show Challenges."
+    "po" = "Show Pods."
+    "rs" = "Show Replica Sets."
+    "secret" = "Show Secrets."
+    "svc" = "Show Services."
 }
 
 if ($deploymentName) {
@@ -33,20 +33,14 @@ if ($deploymentName){
         'all' { 
             $selectorString = ""
         }
-        'svc' { 
+        'cert*' { 
+            $selectorString = "$deploymentName-certificate"
+        }
+        'challenge*' { 
             $selectorString = $deploymentName
         }
         'deploy*' { 
             $selectorString = $deploymentName
-        }
-        'po*' { 
-            $selectorString = "-l='app=$deploymentName'"
-        }
-        'no*' { 
-            $selectorString = ""
-        }
-        'rs' { 
-            $selectorString = "-l='app=$deploymentName'"
         }
         'hpa' { 
             $selectorString = $deploymentName
@@ -54,11 +48,26 @@ if ($deploymentName){
         'ing*' { 
             $selectorString = "$deploymentName-ingress"
         }
+        'issuer*' { 
+            $selectorString = $deploymentName
+        }
+        'no*' { 
+            $selectorString = ""
+        }
+        'order*' { 
+            $selectorString = $deploymentName
+        }
+        'po*' { 
+            $selectorString = "-l='app=$deploymentName'"
+        }
+        'rs' { 
+            $selectorString = "-l='app=$deploymentName'"
+        }
         'secret*' { 
             $selectorString = "$deploymentName-certificate"
         }
-        'cert*' { 
-            $selectorString = "$deploymentName-certificate"
+        'svc' { 
+            $selectorString = $deploymentName
         }
     }
 }

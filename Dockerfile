@@ -1,3 +1,6 @@
+# TODO: Include funtions as built in functions
+# TODO: Slim Down (currently 1.2 GB)
+
 # Base image with PowerShell
 FROM mcr.microsoft.com/powershell:7.0.0-debian-10
 

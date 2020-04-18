@@ -1,6 +1,6 @@
 param($sku, $deploymentName)
 
-$usage = Write-Usage "aks nginx install <sku> [deployment name]"
+$usage = Write-Usage "aks nginx install [sku] [deployment name]"
 
 VerifyCurrentCluster $usage
 
@@ -11,7 +11,7 @@ $nginxDeploymentName = GetNginxDeploymentName $deploymentName
 
 SetDefaultIfEmpty ([ref]$sku) "Basic"
 
-Write-Info ("Install Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
+Write-Info ("Install Nginx-Ingress")
 
 $ip = ExecuteQuery ("az network public-ip show -g $resourceGroupName -n $ipName --query '[ipAddress]' -o tsv $debugString")
 ExecuteCommand ("kubectl create ns ingress $kubeDebugString")

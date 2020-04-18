@@ -4,15 +4,9 @@ param($deploymentName)
 $usage = Write-Usage "aks nginx uninstall [deployment name]"
 
 VerifyCurrentCluster $usage
+$nginxDeploymentName = GetNginxDeploymentName $deploymentName
 
-$nginxDeploymentName = GetNginxDeploymentName
-
-if ($deploymentName)
-{
-    $nginxDeploymentName = "$deploymentName-$nginxDeploymentName"
-}
-
-Write-Info ("Uninstall Nginx-Ingress on current AKS cluster '$($selectedCluster.Name)'")
+Write-Info ("Uninstall Nginx-Ingress")
 
 ExecuteCommand "helm3 uninstall $nginxDeploymentName -n ingress $debugString"
 #ExecuteCommand "kubectl delete namespace ingress $kubeDebugString"

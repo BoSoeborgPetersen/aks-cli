@@ -1,6 +1,8 @@
 param($deploymentName)
 
-$usage = Write-Usage "aks pod-autoscaler remove <deployment name>"
+$usage = Write-Usage "aks pod-autoscaler remove [deployment name]"
+
+VerifyCurrentCluster $usage
 
 DeploymentChoiceMenu ([ref]$deploymentName)
 

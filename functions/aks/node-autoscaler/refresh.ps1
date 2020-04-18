@@ -1,6 +1,8 @@
 param($minNodeCount, $maxNodeCount)
 
-$usage = Write-Usage "aks node-autoscaler refresh <min node count> <max node count>"
+$usage = Write-Usage "aks node-autoscaler refresh [min node count] [max node count]"
+
+VerifyCurrentCluster $usage
 
 VerifyVariable $usage $minNodeCount "min node count"
 VerifyVariable $usage $maxNodeCount "max node count"

@@ -4,7 +4,7 @@
 # TODO: Clear the global list of clusters for the subscription.
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
-$usage = Write-Usage "aks create standard <resource group name> [location] [min node count] [max node count] [node size]"
+$usage = Write-Usage "aks create standard <resource group name> <location> [min node count] [max node count] [node size]"
 
 SetDefaultIfEmpty ([ref]$minNodeCount) 2
 SetDefaultIfEmpty ([ref]$maxNodeCount) 4

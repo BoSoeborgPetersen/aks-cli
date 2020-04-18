@@ -9,18 +9,18 @@ VerifyCurrentCluster $usage
 
 ValidateNoScriptSubCommand @{
     "all" = "Describe all standard Kubernetes resources."
-    "svc" = "Describe Services."
+    "cert" = "Describe Certificates."
+    "challenge" = "Describe Challenges."
     "deploy" = "Describe Deployments."
-    "po" = "Describe Pods."
-    "no" = "Describe Nodes."
-    "rs" = "Describe Replica Sets."
     "hpa" = "Describe Horizontal Pod Autoscalers."
     "ing" = "Describe Ingress."
-    "secret" = "Describe Secrets."
-    "cert" = "Describe Certificates."
     "issuer" = "Describe Issuers."
+    "no" = "Describe Nodes."
     "order" = "Describe Orders."
-    "challenge" = "Describe Challenges."
+    "po" = "Describe Pods."
+    "rs" = "Describe Replica Sets."
+    "secret" = "Describe Secrets."
+    "svc" = "Describe Services."
 }
 
 if ($deploymentName) {
