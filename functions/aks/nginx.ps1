@@ -3,6 +3,7 @@ SubMenu @{
     "edit" = "Opens the Nginx configmap for editing in notepad."
     "install" = "Install Nginx-Ingress (Helm chart), using existing static public IP."
     "logs" = "Get Nginx Deployment logs."
+    "purge" = "Remove Nginx-Ingress namespace."
     "setup" = "Create static public IP, and Install Nginx-Ingress (Helm chart)."
     "uninstall" = "Uninstall Nginx-Ingress (Helm chart)."
     "upgrade" = "Upgrade Nginx-Ingress (Helm chart)."

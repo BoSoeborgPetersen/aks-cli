@@ -22,11 +22,14 @@ $sourcePublicIpId = "/subscriptions/$azureAccountId/resourceGroups/$sourceResour
 $trafficManagers = ExecuteQuery ("az network traffic-manager profile list --query `"[?contains(endpoints[].targetResourceId, '$sourcePublicIpId')]`" $debugString") | ConvertFrom-Json
 
 # Step 6: Update Traffic Managers to point to the Public IP resource of the target cluster.
-$targetResourceGroup = $targetCluster.resourceGroup
-$targetPublicIpName = ClusterToIpAddressName ($targetCluster.name)
-$targetPublicIpId = "/subscriptions/$azureAccountId/resourceGroups/$targetResourceGroup/providers/Microsoft.Network/publicIPAddresses/$targetPublicIpName"
-foreach($trafficManager in $trafficManagers)
+if (AreYouSure)
 {
-    ExecuteCommand ("az network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($trafficManager.endpoints[0].name)' --type azureEndpoints $debugString")
-    ExecuteCommand ("az network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n 'AKS' --type azureEndpoints --target-resource-id $targetPublicIpId $debugString")
+    $targetResourceGroup = $targetCluster.resourceGroup
+    $targetPublicIpName = ClusterToIpAddressName ($targetCluster.name)
+    $targetPublicIpId = "/subscriptions/$azureAccountId/resourceGroups/$targetResourceGroup/providers/Microsoft.Network/publicIPAddresses/$targetPublicIpName"
+    foreach($trafficManager in $trafficManagers)
+    {
+        ExecuteCommand ("az network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($trafficManager.endpoints[0].name)' --type azureEndpoints $debugString")
+        ExecuteCommand ("az network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n 'AKS' --type azureEndpoints --target-resource-id $targetPublicIpId $debugString")
+    }
 }

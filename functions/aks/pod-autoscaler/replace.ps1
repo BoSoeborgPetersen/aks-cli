@@ -11,5 +11,5 @@ VerifyVariable $usage $deploymentName "deployment name"
 
 Write-Info "Replace pod autoscaler for deployment '$deploymentName'"
 
-ExecuteCommand "aks node-autoscaler add $cpuLimit $minPodCount $maxPodCount $deploymentName $debugString"
 ExecuteCommand "aks node-autoscaler remove $deploymentName $debugString"
+ExecuteCommand "aks node-autoscaler add $cpuLimit $minPodCount $maxPodCount $deploymentName $debugString"

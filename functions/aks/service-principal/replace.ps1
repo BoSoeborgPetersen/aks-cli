@@ -11,7 +11,10 @@ $keyVaultName = ResourceGroupToKeyVaultName $resourceGroupName
 $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
 $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
 
-$servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
-$servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
+if (AreYouSure)
+{
+    $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
+    $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
 
-ExecuteCommand "az aks update-credentials -n $clusterName -g $resourceGroupName --reset-service-principal --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword $debugString"
+    ExecuteCommand "az aks update-credentials -n $clusterName -g $resourceGroupName --reset-service-principal --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword $debugString"
+}

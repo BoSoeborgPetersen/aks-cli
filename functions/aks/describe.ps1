@@ -1,6 +1,7 @@
 # TODO: REWRITE!!!
 # TODO: Add pod index to choose which pod.
 # TODO: Add "All" option to describe all pods.
+# TODO: Add multi-choice commands (e.g. "po|pod|pods").
 param($resourceType, $deploymentName)
 
 $usage = Write-Usage "aks describe <resource type> [deployment name]"
@@ -9,18 +10,18 @@ VerifyCurrentCluster $usage
 
 ValidateNoScriptSubCommand @{
     "all" = "Describe all standard Kubernetes resources."
-    "cert" = "Describe Certificates."
+    "certificate" = "Describe Certificates."
     "challenge" = "Describe Challenges."
-    "deploy" = "Describe Deployments."
-    "hpa" = "Describe Horizontal Pod Autoscalers."
-    "ing" = "Describe Ingress."
+    "deployment" = "Describe Deployments."
+    "horizontalpodautoscaler" = "Describe Horizontal Pod Autoscalers."
+    "ingress" = "Describe Ingress."
     "issuer" = "Describe Issuers."
-    "no" = "Describe Nodes."
+    "node" = "Describe Nodes."
     "order" = "Describe Orders."
-    "po" = "Describe Pods."
-    "rs" = "Describe Replica Sets."
+    "pod" = "Describe Pods."
+    "replicaset" = "Describe Replica Sets."
     "secret" = "Describe Secrets."
-    "svc" = "Describe Services."
+    "service" = "Describe Services."
 }
 
 if ($deploymentName) {

@@ -185,3 +185,14 @@ function PrependWithDash($name, $prefix)
         return $name
     }
 }
+
+function AreYouSure()
+{
+    $esc = "$([char]27)"
+    $Red = "$esc[31m"
+    $question = '{0}{1}' -f $Red, 'Are you sure you want to proceed?'
+    $choices  = '&Yes', '&No'
+    $decision = $Host.UI.PromptForChoice("", $question, $choices, 1)
+
+    return $decision -eq 0
+}

@@ -28,48 +28,4 @@ else {
     Write-Info ("Show all resources of type '$resourceType'")
 }
 
-if ($deploymentName){
-    Switch -Wildcard ($resourceType) {
-        'all' { 
-            $selectorString = ""
-        }
-        'cert*' { 
-            $selectorString = "$deploymentName-certificate"
-        }
-        'challenge*' { 
-            $selectorString = $deploymentName
-        }
-        'deploy*' { 
-            $selectorString = $deploymentName
-        }
-        'hpa' { 
-            $selectorString = $deploymentName
-        }
-        'ing*' { 
-            $selectorString = "$deploymentName-ingress"
-        }
-        'issuer*' { 
-            $selectorString = $deploymentName
-        }
-        'no*' { 
-            $selectorString = ""
-        }
-        'order*' { 
-            $selectorString = $deploymentName
-        }
-        'po*' { 
-            $selectorString = "-l='app=$deploymentName'"
-        }
-        'rs' { 
-            $selectorString = "-l='app=$deploymentName'"
-        }
-        'secret*' { 
-            $selectorString = "$deploymentName-certificate"
-        }
-        'svc' { 
-            $selectorString = $deploymentName
-        }
-    }
-}
-
 ExecuteCommand "kubectl get $resourceType $selectorString $kubeDebugString"
