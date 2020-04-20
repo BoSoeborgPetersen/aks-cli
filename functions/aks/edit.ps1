@@ -1,15 +1,16 @@
-# TODO: Verify resource type, just like with describe and get (move it to shared.ps1).
-# TODO: Add multi-choice commands (e.g. "po|pod|pods").
-param($resourceType, $resourceName, $namespace)
+param($type, $regex, $namespace, $index)
 
-$usage = Write-Usage "aks edit <resource type> <resource name> [namespace]"
+$usage = Write-Usage "aks edit <type> <regex> [namespace] [index]"
 
 VerifyCurrentCluster $usage
-SetDefaultIfEmpty ([ref]$namespace) "default"
-VerifyVariable $usage $resourceType "resource type"
-VerifyVariable $usage $resourceName "resource name"
+ValidateKubectlCommand "Edit" -includeAll
+VerifyVariable $usage $regex "regex"
+$namespaceString = CreateNamespaceString $namespace
 
-Write-Info ("Edit '$resourceType/$resourceName' in namespace '$namespace'")
+Write-Info "Edit '$type/$regex'[$index] in namespace '$namespace'"
 
-ExecuteCommand ("Set-Item -Path Env:KUBE_EDITOR -Value nano")
-ExecuteCommand ("kubectl edit $resourceType $resourceName -n $namespace")
+ExecuteCommand "Set-Item -Path Env:KUBE_EDITOR -Value nano"
+
+$resource = KubectlRegexMatch $usage $type $regex $namespace $index
+
+ExecuteCommand "kubectl edit $type $resource $namespaceString $kubeDebugString"

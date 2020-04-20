@@ -2,12 +2,12 @@ $usage = Write-Usage "aks analytics uninstall"
 
 VerifyCurrentCluster $usage
 
-$analyticsName = ResourceGroupToAnalyticsName $selectedCluster.ResourceGroup
+$analytics = ResourceGroupToAnalyticsName $GlobalCurrentCluster.ResourceGroup
+
+Write-Info "Uninstalling Log Analytics '$analytics'"
 
 if (AreYouSure)
 {
-    Write-Info ("Uninstalling Log Analytics '$analyticsName' for current AKS cluster '$($selectedCluster.Name)'")
-
-    ExecuteCommand ("az aks disable-addons -a monitoring -g $($selectedCluster.ResourceGroup) -n $($selectedCluster.Name) $debugString")
-    ExecuteCommand ("az resource delete --resource-type Microsoft.OperationalInsights/workspaces -g $($selectedCluster.ResourceGroup) -n $analyticsName $debugString")
+    ExecuteCommand "az aks disable-addons -a monitoring -g $($GlobalCurrentCluster.ResourceGroup) -n $($GlobalCurrentCluster.Name) $debugString"
+    ExecuteCommand "az resource delete --resource-type Microsoft.OperationalInsights/workspaces -g $($GlobalCurrentCluster.ResourceGroup) -n $analytics $debugString"
 }

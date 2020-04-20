@@ -1,13 +1,13 @@
 param($command)
 
-if ($command -eq "")
+if (!$command)
 {
-    ExecuteCommand "aks switch account"
+    ExecuteCommand "aks switch subscription"
 }
 else
 {
     SubMenu @{
-        "account" = "(Interactive) Change current Azure subscription."
-        "cluster" = "(Interactive) Change current AKS cluster."
+        "subscription" = "Change current Azure subscription."
+        "cluster" = "Change current AKS cluster."
     }
 }

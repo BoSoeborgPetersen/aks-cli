@@ -1,10 +1,11 @@
 # TODO: Break up into sub functions
 # TODO: Refactor
+param($resourceGroupName, $location, $createGlobalResourcesIfNonExistant)
 
-param($resourceGroupName, $createGlobalResourcesIfNonExistant, $location)
+$usage = Write-Usage "aks service-principal create <resource group name> [location] [create global resources if non existant]"
 
-$usage = Write-Usage "aks service-principal create <resource group name> [create global resources if non existant] [location]"
-
+VerifyVariable $usage $resourceGroupName "resource group name"
+CheckLocationExists $location
 SetDefaultIfEmpty ([ref]$createGlobalResourcesIfNonExistant) $FALSE
 ValidateBooleanType $usage $createGlobalResourcesIfNonExistant "create global resources if non existent"
 
@@ -12,11 +13,11 @@ VerifyCurrentSubscription $usage
 
 # Clear-Host
 Write-Info "Select the Subscription of the Key Vault"
-$globalAccount = ChooseAzureAccount
-$globalAccountId = $globalAccount.Id
-$globalAccountName = $globalAccount.Name
+$globalSubscription = ChooseAzureSubscription
+$globalSubscriptionId = $globalSubscription.Id
+$globalSubscriptionName = $globalSubscription.Name
 
-$selectedAccountId = $selectedAccount.Id
+$subscriptionId = $GlobalCurrentSubscription.Id
 $clusterName = ResourceGroupToClusterName $resourceGroupName
 $servicePrincipalName = ClusterToServicePrincipalName $clusterName
 $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
@@ -35,44 +36,44 @@ if (!$resourceGroupExist -and !$location) {
 
 if ($resourceGroupExist)
 {
-    $location = ExecuteQuery ("az group show -g $resourceGroupName --query location $debugString")
+    $location = ExecuteQuery "az group show -g $resourceGroupName --query location $debugString"
 }
 else {
-    ExecuteCommand ("az group create -g $resourceGroupName -l $location $debugString")
+    ExecuteCommand "az group create -g $resourceGroupName -l $location $debugString"
 }
 
-$globalResourceGroupExist = ExecuteQuery "az group show -g $globalResourceGroupName --query name --subscription $globalAccountName -o tsv $debugString"
-$registryExist = ExecuteQuery "az acr show -n $registryName --subscription $globalAccountName -o tsv $debugString"
-$keyvaultExist = ExecuteQuery "az keyvault show -n $keyVaultName --subscription $globalAccountName -o tsv $debugString"
+$globalResourceGroupExist = ExecuteQuery "az group show -g $globalResourceGroupName --query name --subscription '$globalSubscriptionName' -o tsv $debugString"
+$registryExist = ExecuteQuery "az acr show -n $registryName --subscription '$globalSubscriptionName' -o tsv $debugString"
+$keyvaultExist = ExecuteQuery "az keyvault show -n $keyVaultName --subscription '$globalSubscriptionName' -o tsv $debugString"
 
 if ($createGlobalResourcesIfNonExistant -eq $True)
 {
     if (!$globalResourceGroupExist) {
-        ExecuteCommand "az group create -g $globalResourceGroupName -l $location --subscription $globalAccountName $debugString"
-        $globalResourceGroupExist = ExecuteQuery "az group show -g $globalResourceGroupName --query name --subscription $globalAccountName -o tsv $debugString"
+        ExecuteCommand "az group create -g $globalResourceGroupName -l $location --subscription '$globalSubscriptionName' $debugString"
+        $globalResourceGroupExist = ExecuteQuery "az group show -g $globalResourceGroupName --query name --subscription '$globalSubscriptionName' -o tsv $debugString"
     }
 
     if (!$registryExist) {
-        ExecuteCommand "az acr create -n $registryName -g $globalResourceGroupName --sku Standard --subscription $globalAccountName $debugString"
-        $registryExist = ExecuteQuery "az acr show -n $registryName --query name --subscription $globalAccountName -o tsv $debugString"
+        ExecuteCommand "az acr create -n $registryName -g $globalResourceGroupName --sku Standard --subscription '$globalSubscriptionName' $debugString"
+        $registryExist = ExecuteQuery "az acr show -n $registryName --query name --subscription '$globalSubscriptionName' -o tsv $debugString"
     }
     
     if (!$keyvaultExist) {
-        ExecuteCommand "az keyvault create -n $keyvaultName -g $globalResourceGroupName --subscription $globalAccountName $debugString"
-        $keyvaultExist = ExecuteQuery "az keyvault show -n $keyVaultName --query name --subscription $globalAccountName -o tsv $debugString"
+        ExecuteCommand "az keyvault create -n $keyvaultName -g $globalResourceGroupName --subscription '$globalSubscriptionName' $debugString"
+        $keyvaultExist = ExecuteQuery "az keyvault show -n $keyVaultName --query name --subscription '$globalSubscriptionName' -o tsv $debugString"
     }
 }
 
 # TODO: Continue refactor...
 if ($registryExist -and $keyvaultExist)
 {
-    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$selectedAccountId/resourceGroups/$resourceGroupName /subscriptions/$globalAccountId/resourceGroups/$globalResourceGroupName $debugString" | ConvertFrom-Json
+    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroupName $debugString" | ConvertFrom-Json
 
     $loggedInUsername = ExecuteQuery "az account show --query user.name -o tsv $debugString"
-    ExecuteCommand "az keyvault set-policy -n $keyvaultName --secret-permissions get list set --upn $loggedInUsername --subscription $globalAccountName $debugString"
+    ExecuteCommand "az keyvault set-policy -n $keyvaultName --secret-permissions get list set --upn $loggedInUsername --subscription '$globalSubscriptionName' $debugString"
 
-    ExecuteCommand ("az keyvault secret set -n $servicePrincipalIdName --vault-name $keyVaultName --value $($servicePrincipal.AppId) --subscription $globalAccountName $debugString")
-    ExecuteCommand ("az keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVaultName --value $($servicePrincipal.Password) --subscription $globalAccountName $debugString")
+    ExecuteCommand "az keyvault secret set -n $servicePrincipalIdName --vault-name $keyVaultName --value $($servicePrincipal.AppId) --subscription '$globalSubscriptionName' $debugString"
+    ExecuteCommand "az keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVaultName --value $($servicePrincipal.Password) --subscription '$globalSubscriptionName' $debugString"
 }
 else 
 {

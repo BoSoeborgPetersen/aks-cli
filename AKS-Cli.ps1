@@ -1,16 +1,17 @@
-$location = $PSScriptRoot
-Set-Location $location
+$path = $PSScriptRoot
+Set-path $path
 
+# TODO: Maybe add "git pull".
 docker pull bo0petersen/aks-cli:latest
 
-if(!(Test-Path $location/scripts))
+if(!(Test-Path $path/scripts))
 {
-    mkdir $location/scripts
+    mkdir $path/scripts
 }
 
-if(!(Test-Path $location/temp))
+if(!(Test-Path $path/temp))
 {
-    mkdir $location/temp
+    mkdir $path/temp
 }
 
-docker run --entrypoint "pwsh" -v $location/scripts:/app/scripts -v $location/temp:/app/temp -v $location/functions:/app/functions -it --rm bo0petersen/aks-cli:latest -NoExit -NoLogo -f functions/init.ps1
+docker run --entrypoint "pwsh" -v $path/scripts:/app/scripts -v $path/temp:/app/temp -v $path/functions:/app/functions -it --rm bo0petersen/aks-cli:latest -NoExit -NoLogo -f functions/init.ps1

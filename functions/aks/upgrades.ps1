@@ -1,8 +1,8 @@
-# TODO: Include preview versions with prefix "(Preview) "
 $usage = Write-Usage "aks upgrades"
 
 VerifyCurrentCluster $usage
 
-Write-Info ("Current AKS cluster '$($selectedCluster.Name)' upgradable versions")
+Write-Info "Current AKS cluster upgradable versions"
 
-ExecuteQuery ("az aks get-upgrades -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) --query 'controlPlaneProfile.upgrades[?!isPreview].kubernetesVersion | sort(@)' -o tsv $debugString")
+$input = ExecuteQuery "az aks get-upgrades -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --query controlPlaneProfile.upgrades $debugString"
+($input | ConvertFrom-Json | Sort-Object kubernetesVersion | Select-Object @{ name='Version';expression= { "$($_.kubernetesVersion) $($_.isPreview -replace 'True','(Preview)')" }} | Format-Table -HideTableHeaders | Out-String).Trim()

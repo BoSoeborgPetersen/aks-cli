@@ -1,30 +1,19 @@
-param($resourceType, $deploymentName)
+param($type, $regex, $namespace)
 
-$usage = Write-Usage "aks top <resource type> [deployment name]"
+$usage = Write-Usage "aks top <type> [regex] [namespace]"
 
 VerifyCurrentCluster $usage
 
 ValidateNoScriptSubCommand @{
-    "no" = "Show Nodes."
-    "po" = "Show Pods."
-}
+    "no|node|nodes" = "Show Resource Utilization for Nodes."
+    "po|pod|pods" = "Show Resource Utilization for Pods."
+} -multiKey
 
-if ($deploymentName) {
-    Write-Info ("Show resource utilization of Kubernetes resources of type '$resourceType' for deployment '$deploymentName' in current AKS cluster '$($selectedCluster.Name)'")
-}
-else {
-    Write-Info ("Show resource utilization of all Kubernetes resources of type '$resourceType' in current AKS cluster '$($selectedCluster.Name)'")
-}
+$namespaceString = CreateNamespaceString $namespace
 
-if ($deploymentName){
-    Switch -Wildcard ($resourceType) {
-        'no*' { 
-            $selectorString = ""
-        }
-        'po*' { 
-            $selectorString = "-l='app=$deploymentName'"
-        }
-    }
-}
+Write-Info "Show resource utilization of '$type' matching '$regex' in namespace '$namespace'"
 
-ExecuteCommand "kubectl top $resourceType $selectorString $kubeDebugString"
+$input = ExecuteQuery "kubectl top $type $namespaceString $kubeDebugString"
+
+$output = ($input | Select-Object -Skip 1) | Where-Object { $_ -match "^$regex" }
+($input[0..0] + $output)

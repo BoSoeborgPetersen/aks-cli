@@ -2,6 +2,6 @@ $usage = Write-Usage "aks node-autoscaler disable"
 
 VerifyCurrentCluster $usage
 
-Write-Info ("Disable node autoscaler for current AKS cluster '$($selectedCluster.Name)'")
+Write-Info "Disable node autoscaler"
 
-ExecuteCommand ("az aks update -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) --disable-cluster-autoscaler $debugString")
+ExecuteCommand "az aks update -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --disable-cluster-autoscaler $debugString"

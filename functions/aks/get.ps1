@@ -1,31 +1,22 @@
-# TODO: Replace selector-string '-l' as it is not fixed, and use resource name prefix instead.
-param($resourceType, $deploymentName)
+param($type, $regex, $namespace)
 
-$usage = Write-Usage "aks get <resource type> [deployment name]"
+$usage = Write-Usage "aks get <type> [regex] [namespace]"
 
 VerifyCurrentCluster $usage
+ValidateKubectlCommand "Get"
+$namespaceString = CreateNamespaceString $namespace
 
-ValidateNoScriptSubCommand @{
-    "all" = "Show all standard Kubernetes resources."
-    "cert" = "Show Certificates."
-    "challenge" = "Show Challenges."
-    "deploy" = "Show Deployments."
-    "hpa" = "Show Horizontal Pod Autoscalers."
-    "ing" = "Show Ingress."
-    "issuer" = "Show Issuers."
-    "no" = "Show Nodes."
-    "order" = "Show Orders."
-    "po" = "Show Pods."
-    "rs" = "Show Replica Sets."
-    "secret" = "Show Secrets."
-    "svc" = "Show Services."
-}
+if ($regex) 
+{
+    Write-Info "Get '$type' matching '$regex' in namespace '$namespace'"
 
-if ($deploymentName) {
-    Write-Info ("Show resources of type '$resourceType' for deployment '$deploymentName'")
+    $input = ExecuteQuery "kubectl get $type $namespaceString $debugString"
+    $output = ($input | Select-Object -Skip 1) | Where-Object { $_ -match "^$regex" }
+    ($input[0..0] + $output)
 }
-else {
-    Write-Info ("Show all resources of type '$resourceType'")
-}
+else 
+{
+    Write-Info "Get all '$type' in namespace '$namespace'"
 
-ExecuteCommand "kubectl get $resourceType $selectorString $kubeDebugString"
+    ExecuteCommand "kubectl get $type $namespaceString $kubeDebugString"
+}

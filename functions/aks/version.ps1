@@ -2,6 +2,6 @@ $usage = Write-Usage "aks version"
 
 VerifyCurrentCluster $usage
 
-Write-Info ("Current AKS cluster '$($selectedCluster.Name)' version")
+Write-Info "Current AKS cluster version"
 
-ExecuteQuery ("az aks show -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) --query 'kubernetesVersion' -o tsv $debugString")
+ExecuteQuery "az aks show -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --query 'kubernetesVersion' -o tsv $debugString"

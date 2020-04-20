@@ -1,22 +1,33 @@
-# TODO: Add parameter to use newest preview version 'usePreviewVersion'.
-param($version)
+param($version, [switch] $preview = $false)
 
-$usage = Write-Usage "aks upgrade [version]"
+$usage = Write-Usage "aks upgrade [version] [-preview]"
 
 VerifyCurrentCluster $usage
 
-if (AreYouSure)
+if ($version) 
 {
-    if ($version) 
+    CheckVersionExists $version $preview
+    Write-Info "Upgrading current cluster to version '$version'"
+}
+else
+{
+    $previewString = ConditionalOperator (!$preview) "?!isPreview"
+    # TODO: Fix version sorting (1.5.10 will come before 1.5.7).
+    $version = ExecuteQuery "az aks get-upgrades -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --query 'controlPlaneProfile.upgrades[$previewString].kubernetesVersion | sort(@) | [-1]' -o tsv $debugString"
+
+    if ($version)
     {
-        Write-Info ("Upgrading current cluster '$($selectedCluster.Name)' to version '$version'")
+        $previewString = ConditionalOperator $preview " (allow previews)"
+        Write-Info "Upgrading current cluster to version '$version', which is the newest upgradable version $previewString"
     }
     else
     {
-        $version = ExecuteQuery ("az aks get-upgrades -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) --query 'controlPlaneProfile.upgrades[?!isPreview].kubernetesVersion | sort(@) | [-1]' -o tsv $debugString")
-        # TODO: If new version is empty (cluster is newest version), then print this.
-        Write-Info ("Upgrading current cluster '$($selectedCluster.Name)' to version '$version', which is the newest upgradable version for the current AKS cluster")
+        Write-Info "Cluster has the newest available version"
+        exit
     }
+}
     
-    ExecuteCommand ("az aks upgrade -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) -k $version $debugString")
+if (AreYouSure)
+{
+    ExecuteCommand "az aks upgrade -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) -k $version $debugString"
 }

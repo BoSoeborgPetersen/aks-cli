@@ -11,20 +11,18 @@ SetDefaultIfEmpty ([ref]$nodeSizeString) " --node-vm-size $nodeSize"
 SetDefaultIfEmpty ([ref]$windowsNodeCount) 2
 SetDefaultIfEmpty ([ref]$windowsNodeSize) "Standard_H8"
 
-ValidateNumberRange $usage ([ref]$nodeCount) "node count" 2 100
-ValidateNumberRange $usage ([ref]$windowsNodeCount) "windows node count" 2 100
-
-VerifyVariable $usage $resourceGroupName "resource group name"
-VerifyVariable $usage $windowsAdminUsername "windows admin username"
-VerifyVariable $usage $windowsAdminPassword "windows admin password"
-
-$resourceGroupExist = ExecuteQuery ("az group exists -n $resourceGroupName $debugString")
-
+$resourceGroupExist = ExecuteQuery "az group exists -n $resourceGroupName $debugString"
 if (!$resourceGroupExist -and !$location) {
     Write-Host $usage
     Write-Info "When the resource group does not exist, the location must be specified: [location]"
     exit
 }
+CheckLocationExists $location
+ValidateNumberRange $usage ([ref]$nodeCount) "node count" 2 100
+ValidateNumberRange $usage ([ref]$windowsNodeCount) "windows node count" 2 100
+VerifyVariable $usage $resourceGroupName "resource group name"
+VerifyVariable $usage $windowsAdminUsername "windows admin username"
+VerifyVariable $usage $windowsAdminPassword "windows admin password"
 
 ExecuteCommand "aks create windows $resourceGroupName $windowsAdminUsername $windowsAdminPassword $location $nodeCount $nodeSize $windowsNodeCount $windowsNodeSize $windowsNodePoolName"
 

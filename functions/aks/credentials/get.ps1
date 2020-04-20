@@ -1,11 +1,12 @@
-param($resourceGroupName)
+param($resourceGroup)
 
-$usage = Write-Usage "aks credentials get <resource group name>"
+$usage = Write-Usage "aks credentials get <resource group>"
 
-VerifyVariable $usage $resourceGroupName "resource group name"
+VerifyCurrentCluster $usage
+VerifyVariable $usage $resourceGroup "resource group"
 
-$clusterName = ResourceGroupToClusterName $resourceGroupName
+$cluster = ResourceGroupToClusterName $resourceGroup
 
-Write-Info ("Get AKS cluster '$($selectedCluster.Name)' credentials")
+Write-Info "Get current AKS cluster credentials"
 
-ExecuteCommand ("az aks get-credentials -g $resourceGroupName -n $clusterName $debugString")
+ExecuteCommand "az aks get-credentials -g $resourceGroup -n $cluster $debugString"

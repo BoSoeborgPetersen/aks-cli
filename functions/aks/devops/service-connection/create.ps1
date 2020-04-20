@@ -1,27 +1,27 @@
 param($name, $namespace)
 
-$usage = Write-Usage "aks devops service-connection create <name>"
+$usage = Write-Usage "aks devops service-connection create <name> [namespace]"
 
 VerifyVariable $usage $name "name"
-
 SetDefaultIfEmpty ([ref]$namespace) "default"
+$namespaceString = CreateNamespaceString $namespace
 
 $unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
 $serviceAccountName = "$unixName-devops-sa"
 $roleBindingName = "$unixName-devops-rb"
 
 # Create Service Account
-ExecuteCommand ("kubectl create serviceaccount $serviceAccountName -n $namespace $kubeDebugString")
+ExecuteCommand ("kubectl create serviceaccount $serviceAccountName $namespaceString $kubeDebugString")
 # Create Role Binding
-ExecuteCommand ("kubectl create rolebinding $roleBindingName --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccountName`" -n $namespace $kubeDebugString")
+ExecuteCommand ("kubectl create rolebinding $roleBindingName --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccountName`" $namespaceString $kubeDebugString")
 
-$secretName = ExecuteQuery ("kubectl get serviceaccount $serviceAccountName -n $namespace -o jsonpath='{.secrets[0].name}' $kubeDebugString")
+$secretName = ExecuteQuery ("kubectl get serviceaccount $serviceAccountName $namespaceString -o jsonpath='{.secrets[0].name}' $kubeDebugString")
 
 $arguments=@{
     "authorization" = @{
         "parameters" = @{
             "azureEnvironment" = "AzureCloud"
-            "azureTenantId" = $selectedAccount.TenantId
+            "azureTenantId" = $GlobalCurrentSubscription.TenantId
             "roleBindingName" = $roleBindingName
             "secretName" = $secretName
             "serviceAccountName" = $serviceAccountName
@@ -30,12 +30,12 @@ $arguments=@{
     }
     "name" = $name
     "type" = "kubernetes"
-    "url" = ("https://$($selectedCluster.Fqdn)")
+    "url" = ("https://$($GlobalCurrentCluster.Fqdn)")
     "data" = @{
         "authorizationType" = "AzureSubscription"
-        "azureSubscriptionId" = $selectedAccount.Id
-        "azureSubscriptionName" = $selectedAccount.Name
-        "clusterId" = "/subscriptions/$($selectedAccount.Id)/resourcegroups/$($selectedCluster.ResourceGroup)/providers/Microsoft.ContainerService/managedClusters/$($selectedCluster.Name)"
+        "azureSubscriptionId" = $GlobalCurrentSubscription.Id
+        "azureSubscriptionName" = $GlobalCurrentSubscription.Name
+        "clusterId" = "/subscriptions/$($GlobalCurrentSubscription.Id)/resourcegroups/$($GlobalCurrentCluster.ResourceGroup)/providers/Microsoft.ContainerService/managedClusters/$($GlobalCurrentCluster.Name)"
         "namespace" = "$namespace"
     }
     "isShared" = "true"

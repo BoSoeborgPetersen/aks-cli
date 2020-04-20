@@ -2,6 +2,6 @@ $usage = Write-Usage "aks tiller upgrade"
 
 VerifyCurrentCluster $usage
 
-Write-Info ("Upgrading Tiller (Helm server-side) on current cluster '$($selectedCluster.Name)'")
+Write-Info "Upgrading Tiller (Helm server-side)"
 
-ExecuteCommand ("helm init --upgrade $debugString")
+ExecuteCommand "helm init --upgrade $debugString"

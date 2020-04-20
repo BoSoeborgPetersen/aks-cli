@@ -1,8 +1,12 @@
-param($deploymentName, $shellType)
+# TODO: Verify shell.
+param($regex, $shell, $namespace, $index, [switch] $help = $false)
 
-$usage = Write-Usage "aks shell [deployment name] [shell type]"
+$usage = Write-Usage "aks shell <regex> [shell] [namespace] [index] [-help]"
 
+VerifyVariable $usage $regex "regex"
 VerifyCurrentCluster $usage
+$namespaceString = CreateNamespaceString $namespace
+ValidateOptionalNumberRange $usage ([ref]$index) "index" 1 100
 
 $commands=@{
     "ash" = "Ash (Alpine)."
@@ -11,47 +15,42 @@ $commands=@{
     "powershell" = "Powershell (Windows)."
 }
 
-function testShell([ref] $shellType, $podName, $type)
-{
-    if (!$shellType.value)
-    {
-        $output = ExecuteQuery "kubectl exec $podName -- $type 2>&1"
-        if (!$output -or ($output -like "*Microsoft Corporation*"))
-        {
-            $shellType.value = $type
-        }
-    }
-}
-
-DeploymentChoiceMenu ([ref]$deploymentName)
-
-# TODO: Rewrite to use "-help"
-if ($deploymentName -eq "help")
+# LaterDo: Generalize.
+if ($help)
 {
     ShowSubMenu $commands
     exit
 }
 
-# TODO: Check that deployment exists.
-
-$podName = ExecuteQuery ("kubectl get po -l='app=$deploymentName' -o jsonpath='{.items[0].metadata.name}' $kubeDebugString")
-
-if (!$shellType)
+function testShell([ref] $shell, $pod, $tryShell)
 {
-    testShell ([ref]$shellType) $podName "ash"
-    testShell ([ref]$shellType) $podName "bash"
-    testShell ([ref]$shellType) $podName "cmd"
-    testShell ([ref]$shellType) $podName "powershell"
+    if (!$shell.Value)
+    {
+        $output = ExecuteQuery "kubectl exec $pod $namespaceString -- $tryShell 2>&1"
+        if (!$output -or ($output -like "*Microsoft Corporation*"))
+        {
+            $shell.Value = $tryShell
+        }
+    }
 }
 
-if (!$shellType)
+$pod = KubectlRegexMatch $usage "pod" $regex $namespace $index
+
+if (!$shell)
+{
+    testShell ([ref]$shell) $pod "bash"
+    testShell ([ref]$shell) $pod "ash"
+    testShell ([ref]$shell) $pod "powershell"
+    testShell ([ref]$shell) $pod "cmd"
+}
+
+if (!$shell)
 {
     ShowSubMenu $commands
     exit
 }
     
-Write-Info "Open shell '$shellType' inside pod '$podName' for the first pod in deployment '$deploymentName'"
+Write-Info "Open shell '$shell' inside pod '$pod' in namespace '$namespace'"
 
-# Test shell before actually opening it, and if it fails, then print an error message.
-
-ExecuteCommand "kubectl exec -it $podName -- $shellType $kubeDebugString"
+# TODO: Test shell before actually opening it, and if it fails, then print an error message.
+ExecuteCommand "kubectl exec -it $pod $namespaceString -- $shell $kubeDebugString"

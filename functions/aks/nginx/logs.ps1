@@ -1,22 +1,23 @@
-param($podIndex, $deploymentName)
+param($index, $deployment)
 
-$usage = Write-Usage "aks nginx logs [pod index] [deployment name]"
+$usage = Write-Usage "aks nginx logs [index] [deployment]"
 
 VerifyCurrentCluster $usage
-SetDefaultIfEmpty ([ref]$podIndex) "0"
+SetDefaultIfEmpty ([ref]$index) "1"
+$nginxDeployment = GetNginxDeploymentName $deployment
 
-$nginxDeploymentName = GetNginxDeploymentName $deploymentName
+VerifyDeployment $deployment
 
-if($podIndex)
+if($index)
 {
-    Write-Info "Show Nginx logs from pod (index: $podIndex) in deployment '$nginxDeploymentName'"
+    Write-Info "Show Nginx logs from pod (index: $index) in deployment '$nginxDeployment'"
 
-    $podName = ExecuteQuery "kubectl get po -l='release=$nginxDeploymentName' -o jsonpath='{.items[$podIndex].metadata.name}' -n ingress $kubeDebugString"
-    ExecuteCommand "kubectl logs -n ingress $podName $kubeDebugString"
+    $pod = KubectlGetPod $usage $nginxDeployment "ingress" $index
+    ExecuteCommand "kubectl logs -n ingress $pod $kubeDebugString"
 }
 else
 {
-    Write-Info ("Show Nginx-Ingress logs with Stern")
+    Write-Info "Show Nginx-Ingress logs with Stern"
 
-    ExecuteCommand "stern $nginxDeploymentName-controller -n ingress"
+    ExecuteCommand "stern $nginxDeployment-controller -n ingress"
 }

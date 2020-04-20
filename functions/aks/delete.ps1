@@ -2,9 +2,9 @@ $usage = Write-Usage "aks delete"
 
 VerifyCurrentCluster $usage
 
+Write-Info "Deleting current AKS cluster"
+    
 if (AreYouSure)
 {
-    Write-Info ("Deleting current AKS cluster")
-    
-    ExecuteCommand ("az aks delete -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) $debugString")
+    ExecuteCommand "az aks delete -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) $debugString"
 }

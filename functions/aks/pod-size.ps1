@@ -1,36 +1,29 @@
-# LaterDo: Add Windows Version (maybe use: IsLinux & IsWindows)
+param($regex, $namespace)
 
-param($deploymentName)
+$usage = Write-Usage "aks pod-size <regex> [namespace]"
 
-$usage = Write-Usage "aks pod-size <deployment name>"
-
-# function testCommand([ref] $shellCommand, $podName, $tryCommand)
-# {
-#     if (!$shellCommand.value)
-#     {
-#         $output = ExecuteQuery "kubectl exec $podName -- $tryCommand 2>&1"
-#         $output
-#         if ($output)
-#         {
-#             $shellCommand.value = $tryCommand
-#         }
-#     }
-# }
-
+VerifyVariable $usage $regex "regex"
 VerifyCurrentCluster $usage
-DeploymentChoiceMenu ([ref]$deploymentName)
+$namespaceString = CreateNamespaceString $namespace
 
-$podName = ExecuteQuery ("kubectl get po -l=`"app=$deploymentName`" -o jsonpath='{.items[0].metadata.name}' $kubeDebugString")
+$pod = KubectlRegexMatch $usage "pod" $regex $namespace
 
-Write-Info "Show pod '$podName' content size for the first pod in deployment '$deploymentName'"
+function testCommand([ref] $command, $tryCommand)
+{
+    if (!$command.value)
+    {
+        $output = ExecuteQuery "kubectl exec $pod $namespaceString -- $tryCommand 2>&1"
+        if (!($output -like "*command terminated with exit code 126*"))
+        {
+            $command.value = $tryCommand
+        }
+    }
+}
 
-# $shellCommand = ""
-# testCommand ([ref]$shellCommand) $podName "`"{0} GB`" -f (((Get-ChildItem c:\| Measure-Object -Property Length -sum).Sum / 1024) / 1024)"
-# testCommand ([ref]$shellCommand) $podName "du -h -s"
+Write-Info "Show pod '$pod' content size"
 
-# ExecuteCommand ("kubectl exec $podName -- $shellCommand $kubeDebugString")
-ExecuteCommand ("kubectl exec $podName -- du -h -s $kubeDebugString")
+$command = ""
+testCommand ([ref]$command) "du -h -s"
+testCommand ([ref]$command) "powershell -c `"'{0} MB' -f ((Get-ChildItem C:\app\ -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum / 1MB)`""
 
-# "{0} MB" -f ((Get-ChildItem C:\app\ -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum / 1MB)
-# "{0} GB" -f (((Get-ChildItem c:\| Measure-Object -Property Length -sum).Sum / 1024) / 1024)
-# "{0} MB" -f ((Get-ChildItem c:\| Measure-Object -Property Length -sum).Sum / 1MB)
+ExecuteCommand "kubectl exec $pod -- $command $kubeDebugString"

@@ -1,10 +1,10 @@
-param($nodeCount)
+param($count)
 
-$usage = Write-Usage "aks scale-nodes <node count>"
+$usage = Write-Usage "aks scale-nodes <count>"
 
 VerifyCurrentCluster $usage
-ValidateNumberRange $usage ([ref]$nodeCount) "node count" 2 100
+ValidateNumberRange $usage ([ref]$count) "count" 2 100
 
-Write-Info ("Scaling number of nodes to '$nodeCount', for cluster '$($selectedCluster.Name)'")
+Write-Info "Scaling cluster to '$count' nodes"
 
-ExecuteCommand ("az aks scale -n $($selectedCluster.Name) -g $($selectedCluster.ResourceGroup) -c $nodeCount $debugString")
+ExecuteCommand "az aks scale -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) -c $count $debugString"

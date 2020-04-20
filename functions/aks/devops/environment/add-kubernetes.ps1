@@ -2,7 +2,7 @@ param($environmentName, $namespace, $serviceEndpointId, $clusterName)
 
 $usage = Write-Usage "aks devops environment add-kubernetes <environment name> <namespace> <service endpoint id> <cluster name>"
 
-SetDefaultIfEmpty ([ref]$clusterName) ($selectedCluster.Name)
+SetDefaultIfEmpty ([ref]$clusterName) ($GlobalCurrentCluster.Name)
 
 if (!$serviceEndpointId){
     Write-Host ("Creating DevOps Service-Connection '$environmentName-$namespace, Namespace: $namespace'")

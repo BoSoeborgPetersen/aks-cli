@@ -1,19 +1,17 @@
-# TODO: Refactor.
-param($resourceGroupName)
+param($resourceGroup)
 
-$usage = Write-Usage "aks credentials get-clean <resource group name>"
+$usage = Write-Usage "aks credentials get-clean <resource group>"
 
-VerifyVariable $usage $resourceGroupName "resource group name"
+VerifyVariable $usage $resourceGroup "resource group"
 
-$clusterName = ResourceGroupToClusterName $resourceGroupName
+$clusterName = ResourceGroupToClusterName $resourceGroup
 
 $contexts = ExecuteQuery "kubectl config get-contexts -o=name $kubeDebugString"
 
 if ($contexts.Where({ $_ -eq $clusterName }, 'First').Count -gt 0)
 {
-    $newContext = $contexts.Where({ $_ -notlike $clusterName }) | Select-Object -Last 1
+    ExecuteCommand "kubectl config unset current-context $kubeDebugString"
 
-    ExecuteCommand "kubectl config use-context $newContext $kubeDebugString"
     ExecuteCommand "kubectl config delete-context $clusterName $kubeDebugString"
     ExecuteCommand "kubectl config delete-cluster $clusterName $kubeDebugString"
 
@@ -22,4 +20,4 @@ if ($contexts.Where({ $_ -eq $clusterName }, 'First').Count -gt 0)
     ExecuteCommand "kubectl config unset $username $kubeDebugString"
 }    
 
-ExecuteCommand "az aks get-credentials -g $resourceGroupName -n $clusterName $debugString"
+ExecuteCommand "az aks get-credentials -g $resourceGroup -n $clusterName $debugString"

@@ -11,15 +11,15 @@ if (!$newRegistryName)
     $newRegistryName = $oldRegistryName
 }
 
-Write-Info ("Migrate all docker images from registry/repo '$oldRegistryName/$oldRegistryRepoName' to registry/repo '$newRegistryName/$newRegistryRepoName'")
+Write-Info "Migrate all docker images from registry/repo '$oldRegistryName/$oldRegistryRepoName' to registry/repo '$newRegistryName/$newRegistryRepoName'"
 
-$imageTags = ExecuteQuery ("az acr repository show-tags -n $oldRegistryName --repository $oldRegistryRepoName $debugString") | ConvertFrom-Json
+$imageTags = ExecuteQuery "az acr repository show-tags -n $oldRegistryName --repository $oldRegistryRepoName $debugString" | ConvertFrom-Json
 
 foreach($imageTag in $imageTags.Split(" "))
 {
-    Write-Info ("Moving '$oldRegistryName.azurecr.io/${oldRegistryRepoName}:$imageTag' to '$newRegistryName.azurecr.io/${newRegistryRepoName}:$imageTag'")
-    ExecuteCommand ("az acr import -n $newRegistryName --source $oldRegistryName.azurecr.io/${oldRegistryRepoName}:$imageTag --image ${newRegistryRepoName}:$imageTag $debugString")
-    ExecuteCommand ("az acr repository delete -n $oldRegistryName --image ${oldRegistryRepoName}:$imageTag -y $debugString")
+    Write-Info "Moving '$oldRegistryName.azurecr.io/${oldRegistryRepoName}:$imageTag' to '$newRegistryName.azurecr.io/${newRegistryRepoName}:$imageTag'"
+    ExecuteCommand "az acr import -n $newRegistryName --source $oldRegistryName.azurecr.io/${oldRegistryRepoName}:$imageTag --image ${newRegistryRepoName}:$imageTag $debugString"
+    ExecuteCommand "az acr repository delete -n $oldRegistryName --image ${oldRegistryRepoName}:$imageTag -y $debugString"
 }
 
-ExecuteCommand ("az acr repository delete -n $oldRegistryName --repository $oldRegistryRepoName -y $debugString")
+ExecuteCommand "az acr repository delete -n $oldRegistryName --repository $oldRegistryRepoName -y $debugString"

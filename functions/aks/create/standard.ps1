@@ -15,18 +15,15 @@ if($nodeSize)
     $nodeSizeString2 = "$nodeSize"
 }
 
-ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100
-
-VerifyVariable $usage $resourceGroupName "resource group name"
-
 $resourceGroupExist = ExecuteQuery "az group list --query `"[?name!=null]|[?contains(name, '$resourceGroupName')].[name]`" -o tsv $debugString"
-
 if (!$resourceGroupExist -and !$location) {
     Write-Info $usage
     Write-Error "When the resource group does not exist, the location must be specified: [location]"
     exit
 }
+CheckLocationExists $location
+ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
+ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100
 
 if ($resourceGroupExist)
 {
@@ -47,10 +44,11 @@ $servicePrincipalExist = ExecuteQuery "az keyvault secret list --vault-name $key
 
 if (!$servicePrincipalExist)
 {
-    ExecuteCommand "aks service-principal create $resourceGroupName $True $location"
+    ExecuteCommand "aks service-principal create $resourceGroupName $location $True"
 }
 
 $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
 
 $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
-ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $minNodeCount -k $clusterVersion $nodeSizeString1 '$nodeSizeString2' --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword --load-balancer-sku basic --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"
+# TODO: Try to remove -l and see if it still works, because of the resource group being specified.
+ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $minNodeCount -k $clusterVersion $nodeSizeString1 '$nodeSizeString2' --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword --generate-ssh-keys --load-balancer-sku basic --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"

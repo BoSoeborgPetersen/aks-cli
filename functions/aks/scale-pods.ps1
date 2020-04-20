@@ -1,11 +1,14 @@
-param($podCount, $deploymentName)
+param($count, $deployment, $namespace)
 
-$usage = Write-Usage "aks scale-pods <pod count> [deployment name]"
+$usage = Write-Usage "aks scale-pods <count> [deployment] [namespace]"
 
 VerifyCurrentCluster $usage
-ValidateNumberRange $usage ([ref]$podCount) "pod count" 0 1000
-DeploymentChoiceMenu ([ref]$deploymentName)
+ValidateNumberRange $usage ([ref]$count) "count" 0 100
+DeploymentChoiceMenu ([ref]$deployment)
+$namespaceString = CreateNamespaceString $namespace
 
-Write-Info "Scaling number of pods to '$podCount', for deployment '$deploymentName'"
+VerifyDeployment $deployment $namespace
 
-ExecuteCommand "kubectl scale --replicas $podCount deploy/$deploymentName $kubeDebugString"
+Write-Info "Scaling number of pods to '$count', for deployment '$deployment' in namespace '$namespace'"
+
+ExecuteCommand "kubectl scale --replicas $count deploy/$deployment $namespaceString $kubeDebugString"

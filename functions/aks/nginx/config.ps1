@@ -1,12 +1,14 @@
-param($deploymentName)
+param($deployment, $index)
 
-$usage = Write-Usage "aks nginx config [deployment name]"
+$usage = Write-Usage "aks nginx config [deployment] [index]"
 
 VerifyCurrentCluster $usage
+$nginxDeployment = GetNginxDeploymentName $deployment
+SetDefaultIfEmpty ([ref]$index) "1"
 
-$nginxDeploymentName = GetNginxDeploymentName $deploymentName
+VerifyDeployment $deployment
 
-Write-Info ("Print config file for Nginx-Ingress")
+Write-Info "Print config file for Nginx-Ingress"
 
-$podName = ExecuteQuery ("kubectl get po -l='release=$nginxDeploymentName' -o jsonpath='{.items[0].metadata.name}' -n ingress $kubeDebugString")
-ExecuteCommand ("kubectl exec -n ingress $podName cat /etc/nginx/nginx.conf $kubeDebugString")
+$pod = KubectlGetPod $usage $nginxDeployment "ingress" $index
+ExecuteCommand "kubectl exec -n ingress $pod -- cat /etc/nginx/nginx.conf $kubeDebugString"
