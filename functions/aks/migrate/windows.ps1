@@ -2,7 +2,7 @@
 # TODO: Create 'Migrate' menu
 param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $location, $nodeCount, $nodeSize, $windowsNodeCount, $windowsNodeSize, $windowsNodePoolName)
 
-$usage = Write-Usage "aks setup windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
+WriteAndSetUsage "aks setup windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
 
 SetDefaultIfEmpty ([ref]$windowsNodePoolName) 'winvms'
 SetDefaultIfEmpty ([ref]$nodeCount) 2
@@ -13,16 +13,16 @@ SetDefaultIfEmpty ([ref]$windowsNodeSize) "Standard_H8"
 
 $resourceGroupExist = ExecuteQuery "az group exists -n $resourceGroupName $debugString"
 if (!$resourceGroupExist -and !$location) {
-    Write-Host $usage
+    WriteUsage
     Write-Info "When the resource group does not exist, the location must be specified: [location]"
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange $usage ([ref]$nodeCount) "node count" 2 100
-ValidateNumberRange $usage ([ref]$windowsNodeCount) "windows node count" 2 100
-VerifyVariable $usage $resourceGroupName "resource group name"
-VerifyVariable $usage $windowsAdminUsername "windows admin username"
-VerifyVariable $usage $windowsAdminPassword "windows admin password"
+ValidateNumberRange ([ref]$nodeCount) "node count" 2 100
+ValidateNumberRange ([ref]$windowsNodeCount) "windows node count" 2 100
+VerifyVariable $resourceGroupName "resource group name"
+VerifyVariable $windowsAdminUsername "windows admin username"
+VerifyVariable $windowsAdminPassword "windows admin password"
 
 ExecuteCommand "aks create windows $resourceGroupName $windowsAdminUsername $windowsAdminPassword $location $nodeCount $nodeSize $windowsNodeCount $windowsNodeSize $windowsNodePoolName"
 

@@ -1,9 +1,9 @@
 param($count)
 
-$usage = Write-Usage "aks scale-nodes <count>"
+WriteAndSetUsage "aks scale-nodes <count>"
 
-VerifyCurrentCluster $usage
-ValidateNumberRange $usage ([ref]$count) "count" 2 100
+VerifyCurrentCluster
+ValidateNumberRange ([ref]$count) "count" 2 100
 
 Write-Info "Scaling cluster to '$count' nodes"
 

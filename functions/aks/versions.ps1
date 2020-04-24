@@ -1,8 +1,8 @@
 param($location)
 
-$usage = Write-Usage "aks versions [location]"
+WriteAndSetUsage "aks versions [location]"
 
-VerifyCurrentClusterOrVariable $usage $location "[location]"
+VerifyCurrentClusterOrVariable $location "[location]"
 
 if ($location) 
 {

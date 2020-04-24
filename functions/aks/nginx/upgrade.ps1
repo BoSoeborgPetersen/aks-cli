@@ -1,10 +1,10 @@
 param($deploymentName)
 
-$usage = Write-Usage "aks nginx upgrade [deployment name]"
+WriteAndSetUsage "aks nginx upgrade [deployment name]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
-VerifyDeployment $deploymentName $namespace
+KubectlVerifyDeployment $deploymentName $namespace
 
 $nginxDeploymentName = GetNginxDeploymentName $deploymentName
 

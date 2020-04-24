@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks delete"
+WriteAndSetUsage "aks delete"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Deleting current AKS cluster"
     

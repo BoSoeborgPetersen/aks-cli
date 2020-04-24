@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks version"
+WriteAndSetUsage "aks version"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Current AKS cluster version"
 

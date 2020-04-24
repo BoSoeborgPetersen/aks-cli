@@ -177,3 +177,16 @@ function SubSubMenu($commands)
 
     Invoke-Expression "$path $($params | Select-Object -Skip 3)"
 }
+
+function AreYouSure()
+{
+    Write-Host ''
+    $esc = "$([char]27)"
+    $red = "$esc[31m"
+    $question = '{0}{1}' -f $red, 'Are you sure you want to proceed?'
+    $choices  = '&Yes', '&No'
+    $decision = $Host.UI.PromptForChoice("", $question, $choices, 1)
+    Write-Host ''
+
+    return $decision -eq 0
+}

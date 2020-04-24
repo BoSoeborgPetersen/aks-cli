@@ -1,8 +1,8 @@
 param($environmentName)
 
-$usage = Write-Usage "aks devops environment create-all <environment name>"
+WriteAndSetUsage "aks devops environment create-all <environment name>"
 
-VerifyVariable $usage $environmentName "environment name"
+VerifyVariable $environmentName "environment name"
 
 Write-Host ("Creating DevOps Environment '$environmentName'")
 aks devops environment create $environmentName

@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks monitoring uninstall"
+WriteAndSetUsage "aks monitoring uninstall"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Uninstalling Monitoring (Prometheus & Grafana)"
 

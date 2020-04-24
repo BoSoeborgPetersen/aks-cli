@@ -4,7 +4,7 @@
 # TODO: Clear the global list of clusters for the subscription.
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
-$usage = Write-Usage "aks create standard <resource group name> <location> [min node count] [max node count] [node size]"
+WriteAndSetUsage "aks create standard <resource group name> <location> [min node count] [max node count] [node size]"
 
 SetDefaultIfEmpty ([ref]$minNodeCount) 2
 SetDefaultIfEmpty ([ref]$maxNodeCount) 4
@@ -17,13 +17,13 @@ if($nodeSize)
 
 $resourceGroupExist = ExecuteQuery "az group list --query `"[?name!=null]|[?contains(name, '$resourceGroupName')].[name]`" -o tsv $debugString"
 if (!$resourceGroupExist -and !$location) {
-    Write-Info $usage
+    WriteUsage
     Write-Error "When the resource group does not exist, the location must be specified: [location]"
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100
+ValidateNumberRange ([ref]$minNodeCount) "min node count" 2 100
+ValidateNumberRange ([ref]$maxNodeCount) "max node count" 2 100
 
 if ($resourceGroupExist)
 {

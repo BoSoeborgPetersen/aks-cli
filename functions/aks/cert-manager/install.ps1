@@ -1,8 +1,8 @@
 param($version)
 
-$usage = Write-Usage "aks cert-manager install [version]"
+WriteAndSetUsage "aks cert-manager install [version]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 SetDefaultIfEmpty ([ref]$version) "0.14"
 $certManagerName = GetCertManagerDeploymentName
 

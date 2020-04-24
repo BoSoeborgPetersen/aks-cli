@@ -2,20 +2,20 @@
 # TODO: Create 'Migrate' menu
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
  
-$usage = Write-Usage "aks setup standard <resource group name> <location> <min node count> <max node count> <node size>"
+WriteAndSetUsage "aks setup standard <resource group name> <location> <min node count> <max node count> <node size>"
 
 SetDefaultIfEmpty ([ref]$minNodeCount) 2
 SetDefaultIfEmpty ([ref]$maxNodeCount) 4
 
 $resourceGroupExist = ExecuteQuery "az group list --query `"[?name!=null]|[?contains(name, '$resourceGroupName')].[name]`" -o tsv $debugString"
 if (!$resourceGroupExist -and !$location) {
-    Write-Host $usage
+    WriteUsage
     Write-Info "When the resource group does not exist, the location must be specified: [location]"
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange $usage ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange $usage ([ref]$maxNodeCount) "max node count" 2 100
+ValidateNumberRange ([ref]$minNodeCount) "min node count" 2 100
+ValidateNumberRange ([ref]$maxNodeCount) "max node count" 2 100
 
 ExecuteCommand "aks create standard $resourceGroupName $location $minNodeCount $maxNodeCount $nodeSize"
 

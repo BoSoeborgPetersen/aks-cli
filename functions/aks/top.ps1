@@ -1,15 +1,15 @@
 param($type, $regex, $namespace)
 
-$usage = Write-Usage "aks top <type> [regex] [namespace]"
+WriteAndSetUsage "aks top <type> [regex] [namespace]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 ValidateNoScriptSubCommand @{
     "no|node|nodes" = "Show Resource Utilization for Nodes."
     "po|pod|pods" = "Show Resource Utilization for Pods."
 } -multiKey
 
-$namespaceString = CreateNamespaceString $namespace
+$namespaceString = KubectlNamespaceString $namespace
 
 Write-Info "Show resource utilization of '$type' matching '$regex' in namespace '$namespace'"
 

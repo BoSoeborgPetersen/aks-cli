@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks service-principal get"
+WriteAndSetUsage "aks service-principal get"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Get current AKS cluster service principal"
 

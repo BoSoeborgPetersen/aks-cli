@@ -1,12 +1,12 @@
 param($deploymentName, $namespace)
 
-$usage = Write-Usage "aks pod-autoscaler remove [deployment name] [namespace]"
+WriteAndSetUsage "aks pod-autoscaler remove [deployment name] [namespace]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 DeploymentChoiceMenu ([ref]$deploymentName)
-$namespaceString = CreateNamespaceString $namespace
+$namespaceString = KubectlNamespaceString $namespace
 
-VerifyDeployment $deploymentName $namespace
+KubectlVerifyDeployment $deploymentName $namespace
 
 Write-Info "Remove pod autoscaler for deployment '$deploymentName' in namespace '$namespace'"
 

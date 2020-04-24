@@ -1,12 +1,12 @@
 # TODO: Verify shell.
 param($regex, $shell, $namespace, $index, [switch] $help = $false)
 
-$usage = Write-Usage "aks shell <regex> [shell] [namespace] [index] [-help]"
+WriteAndSetUsage "aks shell <regex> [shell] [namespace] [index] [-help]"
 
-VerifyVariable $usage $regex "regex"
-VerifyCurrentCluster $usage
-$namespaceString = CreateNamespaceString $namespace
-ValidateOptionalNumberRange $usage ([ref]$index) "index" 1 100
+VerifyVariable $regex "regex"
+VerifyCurrentCluster
+$namespaceString = KubectlNamespaceString $namespace
+ValidateOptionalNumberRange ([ref]$index) "index" 1 100
 
 $commands=@{
     "ash" = "Ash (Alpine)."
@@ -34,7 +34,7 @@ function testShell([ref] $shell, $pod, $tryShell)
     }
 }
 
-$pod = KubectlRegexMatch $usage "pod" $regex $namespace $index
+$pod = KubectlRegexMatch "pod" $regex $namespace $index
 
 if (!$shell)
 {

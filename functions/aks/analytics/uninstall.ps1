@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks analytics uninstall"
+WriteAndSetUsage "aks analytics uninstall"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 $analytics = ResourceGroupToAnalyticsName $GlobalCurrentCluster.ResourceGroup
 

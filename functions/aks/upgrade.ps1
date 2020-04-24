@@ -1,8 +1,8 @@
 param($version, [switch] $preview = $false)
 
-$usage = Write-Usage "aks upgrade [version] [-preview]"
+WriteAndSetUsage "aks upgrade [version] [-preview]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 if ($version) 
 {

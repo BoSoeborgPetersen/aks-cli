@@ -1,8 +1,8 @@
 param($index)
 
-$usage = Write-Usage "aks cert-manager logs [index]"
+WriteAndSetUsage "aks cert-manager logs [index]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 $deployment = GetCertManagerDeploymentName
 
@@ -10,7 +10,7 @@ if($index)
 {
     Write-Info "Show Cert-Manager logs from pod (index: $index) in deployment '$deployment'"
     
-    $pod = KubectlGetPod $usage $deployment "cert-manager" $index
+    $pod = KubectlGetPod $deployment "cert-manager" $index
     ExecuteCommand "kubectl logs $pod -n cert-manager $kubeDebugString"
 }
 else

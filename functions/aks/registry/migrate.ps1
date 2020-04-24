@@ -1,10 +1,10 @@
 param($oldRegistryName, $oldRegistryRepoName, $newRegistryRepoName, $newRegistryName)
 
-$usage = Write-Usage "aks registry migrate <old registry name> <old registry repo name> <new registry repo name> [new registry name]"
+WriteAndSetUsage "aks registry migrate <old registry name> <old registry repo name> <new registry repo name> [new registry name]"
 
-VerifyVariable $usage $oldRegistryName "old registry name"
-VerifyVariable $usage $oldRegistryRepoName "old registry repo name"
-VerifyVariable $usage $newRegistryRepoName "new registry repo name"
+VerifyVariable $oldRegistryName "old registry name"
+VerifyVariable $oldRegistryRepoName "old registry repo name"
+VerifyVariable $newRegistryRepoName "new registry repo name"
 
 if (!$newRegistryName)
 {

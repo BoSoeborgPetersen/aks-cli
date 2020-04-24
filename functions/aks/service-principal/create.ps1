@@ -2,14 +2,14 @@
 # TODO: Refactor
 param($resourceGroupName, $location, $createGlobalResourcesIfNonExistant)
 
-$usage = Write-Usage "aks service-principal create <resource group name> [location] [create global resources if non existant]"
+WriteAndSetUsage "aks service-principal create <resource group name> [location] [create global resources if non existant]"
 
-VerifyVariable $usage $resourceGroupName "resource group name"
+VerifyVariable $resourceGroupName "resource group name"
 CheckLocationExists $location
 SetDefaultIfEmpty ([ref]$createGlobalResourcesIfNonExistant) $FALSE
-ValidateBooleanType $usage $createGlobalResourcesIfNonExistant "create global resources if non existent"
+ValidateBooleanType $createGlobalResourcesIfNonExistant "create global resources if non existent"
 
-VerifyCurrentSubscription $usage
+VerifyCurrentSubscription
 
 # Clear-Host
 Write-Info "Select the Subscription of the Key Vault"
@@ -29,7 +29,7 @@ $keyVaultName = ResourceGroupToKeyVaultName $resourceGroupName
 $resourceGroupExist = ExecuteQuery "az group list --query `"[?contains(name, '$resourceGroupName')]`" -o tsv $debugString"
 
 if (!$resourceGroupExist -and !$location) {
-    Write-Info $usage
+    WriteUsage
     Write-Error "When the resource group does not exist, the location must be specified: [location]"
     exit
 }

@@ -2,9 +2,9 @@
 # TODO: Get rid of the this and add a flag to install.ps1 to add an ip.
 param($sku, $deploymentName)
 
-$usage = Write-Usage "aks nginx setup [sku] [deployment name]"
+WriteAndSetUsage "aks nginx setup [sku] [deployment name]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 $resourceGroupName = $GlobalCurrentCluster.ResourceGroup

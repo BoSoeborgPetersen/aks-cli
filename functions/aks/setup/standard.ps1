@@ -1,7 +1,7 @@
 # TODO: Refactor.
-$usage = Write-Usage "aks setup standard"
+WriteAndSetUsage "aks setup standard"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 ExecuteCommand "aks tiller install"
 ExecuteCommand "aks tiller wait"

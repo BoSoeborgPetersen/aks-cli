@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks analytics install"
+WriteAndSetUsage "aks analytics install"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 $analytics = ResourceGroupToAnalyticsName $GlobalCurrentCluster.ResourceGroup
 

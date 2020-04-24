@@ -1,8 +1,8 @@
 param($resourceGroup)
 
-$usage = Write-Usage "aks credentials get-clean <resource group>"
+WriteAndSetUsage "aks credentials get-clean <resource group>"
 
-VerifyVariable $usage $resourceGroup "resource group"
+VerifyVariable $resourceGroup "resource group"
 
 $clusterName = ResourceGroupToClusterName $resourceGroup
 

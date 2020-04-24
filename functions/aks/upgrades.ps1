@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks upgrades"
+WriteAndSetUsage "aks upgrades"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Current AKS cluster upgradable versions"
 

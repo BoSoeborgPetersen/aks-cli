@@ -27,9 +27,14 @@ if (!$params)
     $params = @()
 }
 
+. "$PSScriptRoot/powershell.ps1"
 . "$PSScriptRoot/basic.ps1"
 . "$PSScriptRoot/menu.ps1"
+. "$PSScriptRoot/extensions.ps1"
+. "$PSScriptRoot/verify.ps1"
 . "$PSScriptRoot/shared.ps1"
+. "$PSScriptRoot/choose.ps1"
+. "$PSScriptRoot/kubectl.ps1"
 . "$PSScriptRoot/naming-convention.ps1"
 
 MainMenu @{

@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks tiller wait"
+WriteAndSetUsage "aks tiller wait"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Wait for Tiller (Helm server-side) to be ready"
 

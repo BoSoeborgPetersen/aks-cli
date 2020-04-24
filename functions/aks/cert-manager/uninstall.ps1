@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks cert-manager uninstall"
+WriteAndSetUsage "aks cert-manager uninstall"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Uninstalling Cert-Manager"
 

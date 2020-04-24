@@ -1,10 +1,10 @@
 param($name, $namespace)
 
-$usage = "aks devops service-connection delete <name> [namespace]"
+WriteAndSetUsage "aks devops service-connection delete <name> [namespace]"
 
-VerifyVariable $usage $name "name"
+VerifyVariable $name "name"
 SetDefaultIfEmpty ([ref]$namespace) "default"
-$namespaceString = CreateNamespaceString $namespace
+$namespaceString = KubectlNamespaceString $namespace
 
 $unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
 $serviceAccountName = "$unixName-devops-sa"

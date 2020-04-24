@@ -1,12 +1,12 @@
 param($regex, $namespace)
 
-$usage = Write-Usage "aks pod-size <regex> [namespace]"
+WriteAndSetUsage "aks pod-size <regex> [namespace]"
 
-VerifyVariable $usage $regex "regex"
-VerifyCurrentCluster $usage
-$namespaceString = CreateNamespaceString $namespace
+VerifyVariable $regex "regex"
+VerifyCurrentCluster
+$namespaceString = KubectlNamespaceString $namespace
 
-$pod = KubectlRegexMatch $usage "pod" $regex $namespace
+$pod = KubectlRegexMatch "pod" $regex $namespace
 
 function testCommand([ref] $command, $tryCommand)
 {

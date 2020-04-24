@@ -1,14 +1,14 @@
 param($regex, $namespace, $index)
 
-$usage = Write-Usage "aks logs <regex> [namespace] [index]"
+WriteAndSetUsage "aks logs <regex> [namespace] [index]"
 
-VerifyVariable $usage $regex "regex"
-VerifyCurrentCluster $usage
-$namespaceString = CreateNamespaceString $namespace
+VerifyVariable $regex "regex"
+VerifyCurrentCluster
+$namespaceString = KubectlNamespaceString $namespace
 
 if ($index)
 {
-    $pod = KubectlRegexMatch $usage "pod" $regex $namespace $index
+    $pod = KubectlRegexMatch "pod" $regex $namespace $index
 
     Write-Info "Show pod '$pod' logs in namespace '$namespace'"
     

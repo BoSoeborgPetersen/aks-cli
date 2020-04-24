@@ -1,9 +1,9 @@
 # TODO: Add Approval/Check (e.g. '[Identity]\Contributors')
 param($environmentName)
 
-$usage = Write-Usage "aks devops environment create <environment name>"
+WriteAndSetUsage "aks devops environment create <environment name>"
 
-VerifyVariable $usage $environmentName "environment name"
+VerifyVariable $environmentName "environment name"
 
 $teamName = GetDevOpsTeamName
 

@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks pod-clean"
+WriteAndSetUsage "aks pod-clean"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Deleting all failed pods in all namespaces"
 

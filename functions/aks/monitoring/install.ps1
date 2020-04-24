@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks monitoring install"
+WriteAndSetUsage "aks monitoring install"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 ExecuteCommand "helm3 repo add stable https://kubernetes-charts.storage.googleapis.com $debugString"
 ExecuteCommand "helm3 repo update $debugString"

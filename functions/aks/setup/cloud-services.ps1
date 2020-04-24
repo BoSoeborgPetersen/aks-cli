@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks setup windows"
+WriteAndSetUsage "aks setup windows"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 ExecuteCommand "aks monitoring install"
 ExecuteCommand "aks analytics install"

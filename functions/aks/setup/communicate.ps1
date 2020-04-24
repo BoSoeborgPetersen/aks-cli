@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks setup communicate"
+WriteAndSetUsage "aks setup communicate"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 # TODO: Clean up deployment name.
 ExecuteCommand "aks nginx install -deploymentName `"masterdata`"" -add-ip $true

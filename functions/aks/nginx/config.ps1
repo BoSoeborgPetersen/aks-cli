@@ -1,14 +1,14 @@
 param($deployment, $index)
 
-$usage = Write-Usage "aks nginx config [deployment] [index]"
+WriteAndSetUsage "aks nginx config [deployment] [index]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 $nginxDeployment = GetNginxDeploymentName $deployment
 SetDefaultIfEmpty ([ref]$index) "1"
 
-VerifyDeployment $deployment
+KubectlVerifyDeployment $deployment
 
 Write-Info "Print config file for Nginx-Ingress"
 
-$pod = KubectlGetPod $usage $nginxDeployment "ingress" $index
+$pod = KubectlGetPod $nginxDeployment "ingress" $index
 ExecuteCommand "kubectl exec -n ingress $pod -- cat /etc/nginx/nginx.conf $kubeDebugString"

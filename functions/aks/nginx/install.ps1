@@ -2,9 +2,9 @@
 # TODO: add parameter to use different config file.
 param($sku, $deploymentName, $addIp)
 
-$usage = Write-Usage "aks nginx install [sku] [deployment name]"
+WriteAndSetUsage "aks nginx install [sku] [deployment name]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 $resourceGroupName = $GlobalCurrentCluster.ResourceGroup

@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks tiller uninstall"
+WriteAndSetUsage "aks tiller uninstall"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Uninstalling Tiller (Helm server-side)"
 

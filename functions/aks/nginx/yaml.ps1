@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks nginx yaml"
+WriteAndSetUsage "aks nginx yaml"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Edit manifest config file (yaml) used for installing Nginx-Ingress"
 

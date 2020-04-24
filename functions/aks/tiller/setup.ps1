@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks tiller setup"
+WriteAndSetUsage "aks tiller setup"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 $installed = ExecuteQuery "kubectl get deploy tiller-deploy -n kube-system $kubeDebugString"
 

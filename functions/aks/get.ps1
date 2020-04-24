@@ -1,10 +1,10 @@
 param($type, $regex, $namespace)
 
-$usage = Write-Usage "aks get <type> [regex] [namespace]"
+WriteAndSetUsage "aks get <type> [regex] [namespace]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 ValidateKubectlCommand "Get"
-$namespaceString = CreateNamespaceString $namespace
+$namespaceString = KubectlNamespaceString $namespace
 
 if ($regex) 
 {

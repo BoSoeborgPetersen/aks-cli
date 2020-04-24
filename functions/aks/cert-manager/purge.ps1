@@ -1,9 +1,9 @@
 # TODO: Maybe merge into uninstall as parameter.
 param($version)
 
-$usage = Write-Usage "aks cert-manager purge [version]"
+WriteAndSetUsage "aks cert-manager purge [version]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 SetDefaultIfEmpty ([ref]$version) "0.14"
 
 VerifyVersion $version

@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks tiller upgrade"
+WriteAndSetUsage "aks tiller upgrade"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Upgrading Tiller (Helm server-side)"
 

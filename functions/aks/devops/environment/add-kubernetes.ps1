@@ -1,6 +1,6 @@
 param($environmentName, $namespace, $serviceEndpointId, $clusterName)
 
-$usage = Write-Usage "aks devops environment add-kubernetes <environment name> <namespace> <service endpoint id> <cluster name>"
+WriteAndSetUsage "aks devops environment add-kubernetes <environment name> <namespace> <service endpoint id> <cluster name>"
 
 SetDefaultIfEmpty ([ref]$clusterName) ($GlobalCurrentCluster.Name)
 
@@ -13,10 +13,10 @@ if (!$serviceEndpointId){
     }
 }
 
-VerifyVariable $usage $environmentName "environment name"
-VerifyVariable $usage $namespace "namespace"
-VerifyVariable $usage $serviceEndpointId "service endpoint id"
-VerifyVariable $usage $clusterName "cluster name"
+VerifyVariable $environmentName "environment name"
+VerifyVariable $namespace "namespace"
+VerifyVariable $serviceEndpointId "service endpoint id"
+VerifyVariable $clusterName "cluster name"
 
 $teamName = GetDevOpsTeamName
 

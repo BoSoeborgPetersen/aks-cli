@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks nginx purge [deployment name]"
+WriteAndSetUsage "aks nginx purge [deployment name]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Remove Nginx-Ingress namespace"
 

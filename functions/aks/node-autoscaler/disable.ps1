@@ -1,6 +1,6 @@
-$usage = Write-Usage "aks node-autoscaler disable"
+WriteAndSetUsage "aks node-autoscaler disable"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 
 Write-Info "Disable node autoscaler"
 

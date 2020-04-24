@@ -2,9 +2,9 @@
 # TODO: Refactor
 # BUG: Problem observed when the dns name of public IP that the new endpoint points to has the dns name of the old IP that the old endpoint is pointing to. Replacing endpont instead of adding should fix it.
 
-$usage = Write-Usage "aks traffic-manager redirect-all"
+WriteAndSetUsage "aks traffic-manager redirect-all"
 
-VerifyCurrentSubscription $usage
+VerifyCurrentSubscription
 
 # Step 1: Choose source cluster
 Clear-Host

@@ -1,11 +1,11 @@
 param($deploymentName)
 
-$usage = Write-Usage "aks nginx edit [deployment name]"
+WriteAndSetUsage "aks nginx edit [deployment name]"
 
-VerifyCurrentCluster $usage
+VerifyCurrentCluster
 $nginxDeploymentName = GetNginxDeploymentName $deploymentName
 
-VerifyDeployment $deploymentName
+KubectlVerifyDeployment $deploymentName
 
 Write-Info "Edit configmap for Nginx-Ingress"
 
