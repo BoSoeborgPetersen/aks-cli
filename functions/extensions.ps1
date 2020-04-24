@@ -1,6 +1,7 @@
 function SetDefaultIfEmpty([ref] $variable, $defaultValue)
 {
-    if (!$variable.Value){
+    if (!$variable.Value)
+    {
         $variable.Value = $defaultValue
     }
 }

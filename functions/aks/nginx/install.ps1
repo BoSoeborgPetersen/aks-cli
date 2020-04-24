@@ -1,32 +1,33 @@
 # TODO: Change the naming-convention.ps1 to allow Communicate to use their own names somehow.
 # TODO: add parameter to use different config file.
-param($sku, $deploymentName, $addIp)
+param($sku, $deployment, $addIp)
 
 WriteAndSetUsage "aks nginx install [sku] [deployment name]"
 
-VerifyCurrentCluster
+$namespace = "ingress"
+CheckCurrentCluster
 SetDefaultIfEmpty ([ref]$sku) "Basic"
 
 $resourceGroupName = $GlobalCurrentCluster.ResourceGroup
-$dnsName = PrependWithDash $resourceGroupName $deploymentName
-$ipName = ClusterToIpAddressName $GlobalCurrentCluster.Name $deploymentName
-$nginxDeploymentName = GetNginxDeploymentName $deploymentName
+$dnsName = PrependWithDash $resourceGroupName $deployment
+$ipName = ClusterToIpAddressName $GlobalCurrentCluster.Name $deployment
+$nginxDeploymentName = GetNginxDeploymentName $deployment
 
 if (AreYouSure)
 {
-    Write-Info "Install Nginx-Ingress"
+    Write-Info "Install Nginx"
 
     $ip = ExecuteQuery "az network public-ip show -g $resourceGroupName -n $ipName --query '[ipAddress]' -o tsv $debugString"
-    ExecuteCommand "kubectl create ns ingress $kubeDebugString"
+    ExecuteCommand "kubectl create ns $namespace $kubeDebugString"
 
-    if ($deploymentName)
+    if ($deployment)
     {
-        $extraParams = "--set controller.electionID='$deploymentName-ingress-controller-leader' --set controller.ingressClass='$deploymentName' --set controller.extraArgs.default-ssl-certificate=default/$deploymentName-certificate"
+        $extraParams = "--set controller.electionID='$deployment-ingress-controller-leader' --set controller.ingressClass='$deployment' --set controller.extraArgs.default-ssl-certificate=default/$deployment-certificate"
     }
 
     ExecuteCommand "helm3 repo add stable https://kubernetes-charts.storage.googleapis.com $debugString"
     ExecuteCommand "helm3 repo update $debugString"
 
     # TODO: Replace ' with ", and " with '
-    ExecuteCommand "helm3 install '$nginxDeploymentName' stable/nginx-ingress --namespace ingress --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/nginx-config.yaml $debugString"
+    ExecuteCommand "helm3 install '$nginxDeploymentName' stable/nginx-ingress --namespace $namespace --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroupName --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/nginx-config.yaml $debugString"
 }

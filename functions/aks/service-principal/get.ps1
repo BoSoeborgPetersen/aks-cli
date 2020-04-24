@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks service-principal get"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Get current AKS cluster service principal"
 

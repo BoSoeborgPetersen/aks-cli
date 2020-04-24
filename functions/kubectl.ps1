@@ -1,14 +1,9 @@
 function KubectlNamespaceString($namespace)
 {
-    $namespaceString = ""
-    if ($namespace)
-    {
-        $namespaceString = "-n $namespace"
-    }
-    return $namespaceString
+    return ConditionalOperator $namespace "-n $namespace" ""
 }
 
-function KubectlVerifyDeployment($deploymentName, $namespace)
+function KubectlCheckDeployment($deploymentName, $namespace)
 {
     if ($deploymentName)
     {
@@ -16,11 +11,7 @@ function KubectlVerifyDeployment($deploymentName, $namespace)
         $deployments = ExecuteQuery ("kubectl get deploy $namespaceString -o jsonpath='{.items[*].metadata.name}' $kubeDebugString")
         $deployment = $deployments.Split(' ') | Where-Object { $_ -eq $deploymentName }
 
-        if (!$deployment)
-        {
-            Write-Info "Deployment '$deploymentName' in namespace '$namespace' does not exist!"
-            exit
-        }
+        Check $deployment "Deployment '$deploymentName' in namespace '$namespace' does not exist!"
     }
 }
 
@@ -34,14 +25,10 @@ function KubectlRegexMatch($type, $regex, $namespace, $index)
 {
     $namespaceString = KubectlNamespaceString $namespace
     $resourceNames = KubectlRegexMatchAll $type $regex $namespaceString
-    ValidateOptionalNumberRange ([ref]$index) "index" 1 ($resourceNames.Length + 1)
+    CheckOptionalNumberRange $index "index" 1 ($resourceNames.Length + 1)
     $resourceName = ArrayTakeIndexOrFirst $resourceNames $index
 
-    if (!$resourceName)
-    {
-        Write-Error "No $type matching '$regex' in namespace '$namespace'"
-        exit
-    }
+    Check $resourceName "No $type matching '$regex' in namespace '$namespace'"
     
     return $resourceName
 }
@@ -55,6 +42,6 @@ function KubectlGetPods($deployment, $namespace)
 function KubectlGetPod($deployment, $namespace, $index)
 {
     $pods = (KubectlGetPods $deployment $namespace) -split " "
-    ValidateNumberRange ([ref] $index) "index" 1 $pods.length
+    CheckNumberRange ([ref] $index) "index" -min 1 -max $pods.length
     return $pods | Select-Object -Index ($index - 1)
 }

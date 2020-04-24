@@ -2,9 +2,9 @@ param($type, $regex, $namespace, $index)
 
 WriteAndSetUsage "aks edit <type> <regex> [namespace] [index]"
 
-VerifyCurrentCluster
-ValidateKubectlCommand "Edit" -includeAll
-VerifyVariable $regex "regex"
+CheckCurrentCluster
+CheckKubectlCommand "Edit" -includeAll
+CheckVariable $regex "regex"
 $namespaceString = KubectlNamespaceString $namespace
 
 Write-Info "Edit '$type/$regex'[$index] in namespace '$namespace'"

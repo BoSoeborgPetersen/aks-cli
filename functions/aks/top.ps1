@@ -2,9 +2,9 @@ param($type, $regex, $namespace)
 
 WriteAndSetUsage "aks top <type> [regex] [namespace]"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
-ValidateNoScriptSubCommand @{
+CheckNoScriptSubCommand @{
     "no|node|nodes" = "Show Resource Utilization for Nodes."
     "po|pod|pods" = "Show Resource Utilization for Pods."
 } -multiKey

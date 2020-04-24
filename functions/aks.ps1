@@ -1,11 +1,12 @@
-# LaterDo: Add interactive nodepool menu
 # LaterDo: Add nodepools to functions
-# LaterDo: Add interactive namespace menu
 
 # TODO: Add menu and functions for state (aks state debugging enable/disable, aks state verbose enable/disable, aks state resource-group set/unset) (get feedback)
 #       - Maybe use 'PSDefaultParameterValue'.
 
 # TODO: Add better examples to 'using' descriptions.
+
+# TODO: When namespace parameter is not empty, then check that the namespace exists.
+# TODO: Namespace: Allow '-A' for all namespaces.
 
 # TODO: Use splatting to simplify long commands with many parameters (e.g. az aks create -c -n -g -?)..
 
@@ -31,14 +32,16 @@ if (!$params)
 . "$PSScriptRoot/basic.ps1"
 . "$PSScriptRoot/menu.ps1"
 . "$PSScriptRoot/extensions.ps1"
-. "$PSScriptRoot/verify.ps1"
+. "$PSScriptRoot/check.ps1"
+. "$PSScriptRoot/azure.ps1"
+. "$PSScriptRoot/kubectl.ps1"
 . "$PSScriptRoot/shared.ps1"
 . "$PSScriptRoot/choose.ps1"
-. "$PSScriptRoot/kubectl.ps1"
 . "$PSScriptRoot/naming-convention.ps1"
 
+CheckCurrentSubscription
+
 MainMenu @{
-    "analytics" = "Azure Container Monitor operations"
     "cert-manager" = "Certificate Manager operations."
     "create" = "Create AKS cluster."
     "credentials" = "Get AKS cluster credentials."
@@ -48,6 +51,7 @@ MainMenu @{
     "devops" = "Azure DevOps operations."
     "edit" = "Edit Kubernetes resource."
     "get" = "Get Kubernetes resources."
+    "insights" = "AKS insights operations."
     "logs" = "Get container logs."
     "monitoring" = "Prometheus and Grafana operations."
     "nginx" = "NGINX Ingress operations."

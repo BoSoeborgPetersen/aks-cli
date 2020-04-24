@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks monitoring uninstall"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Uninstalling Monitoring (Prometheus & Grafana)"
 

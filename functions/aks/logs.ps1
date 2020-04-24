@@ -2,8 +2,8 @@ param($regex, $namespace, $index)
 
 WriteAndSetUsage "aks logs <regex> [namespace] [index]"
 
-VerifyVariable $regex "regex"
-VerifyCurrentCluster
+CheckCurrentCluster
+CheckVariable $regex "regex"
 $namespaceString = KubectlNamespaceString $namespace
 
 if ($index)

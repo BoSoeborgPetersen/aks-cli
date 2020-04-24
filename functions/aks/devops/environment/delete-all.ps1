@@ -2,7 +2,7 @@ param($environmentName)
 
 WriteAndSetUsage "aks devops environment replace-all <environment name> <cluster name>"
 
-VerifyVariable $environmentName "environment name"
+CheckVariable $environmentName "environment name"
 
 Write-Host ("Removing Kubernetes resource from DevOps Environment '$environmentName, Namespace: default'")
 #aks devops environment remove-kubernetes default

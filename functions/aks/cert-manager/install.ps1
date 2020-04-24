@@ -2,11 +2,12 @@ param($version)
 
 WriteAndSetUsage "aks cert-manager install [version]"
 
-VerifyCurrentCluster
+CheckCurrentCluster
+# TODO: Somehow get the newest version from helm.
 SetDefaultIfEmpty ([ref]$version) "0.14"
 $certManagerName = GetCertManagerDeploymentName
 
-VerifyVersion $version
+CheckVersion $version
 
 Write-Info "Installing Cert-Manager"
 

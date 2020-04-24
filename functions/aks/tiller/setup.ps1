@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks tiller setup"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 $installed = ExecuteQuery "kubectl get deploy tiller-deploy -n kube-system $kubeDebugString"
 

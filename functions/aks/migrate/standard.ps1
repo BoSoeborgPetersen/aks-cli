@@ -4,9 +4,6 @@ param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
  
 WriteAndSetUsage "aks setup standard <resource group name> <location> <min node count> <max node count> <node size>"
 
-SetDefaultIfEmpty ([ref]$minNodeCount) 2
-SetDefaultIfEmpty ([ref]$maxNodeCount) 4
-
 $resourceGroupExist = ExecuteQuery "az group list --query `"[?name!=null]|[?contains(name, '$resourceGroupName')].[name]`" -o tsv $debugString"
 if (!$resourceGroupExist -and !$location) {
     WriteUsage
@@ -14,8 +11,8 @@ if (!$resourceGroupExist -and !$location) {
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange ([ref]$maxNodeCount) "max node count" 2 100
+CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
+CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
 
 ExecuteCommand "aks create standard $resourceGroupName $location $minNodeCount $maxNodeCount $nodeSize"
 
@@ -25,7 +22,7 @@ ExecuteCommand "aks tiller install"
 ExecuteCommand "aks tiller wait"
 ExecuteCommand "aks nginx install"
 ExecuteCommand "aks cert-manager install"
-ExecuteCommand "aks analytics install"
+ExecuteCommand "aks insights install"
 
 # DevOps
 $clusterName = ResourceGroupToClusterName $resourceGroupName

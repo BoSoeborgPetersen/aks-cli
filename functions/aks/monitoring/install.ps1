@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks monitoring install"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 ExecuteCommand "helm3 repo add stable https://kubernetes-charts.storage.googleapis.com $debugString"
 ExecuteCommand "helm3 repo update $debugString"

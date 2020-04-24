@@ -2,7 +2,7 @@ param($version, [switch] $preview = $false)
 
 WriteAndSetUsage "aks upgrade [version] [-preview]"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 if ($version) 
 {

@@ -2,11 +2,10 @@ param($type, $regex, $namespace, $index)
 
 WriteAndSetUsage "aks describe <type> <regex> [namespace] [index]"
 
-VerifyVariable $regex "regex"
-VerifyCurrentCluster
-ValidateKubectlCommand "Describe"
+CheckCurrentCluster
+CheckKubectlCommand "Describe"
+CheckVariable $regex "regex"
 $namespaceString = KubectlNamespaceString $namespace
-ValidateOptionalNumberRange ([ref]$index) "index" 1 100
 
 Write-Info "Describe '$type' matching '$regex' with index '$index' in namespace '$namespace'"
 

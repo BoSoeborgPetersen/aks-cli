@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks delete"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Deleting current AKS cluster"
     

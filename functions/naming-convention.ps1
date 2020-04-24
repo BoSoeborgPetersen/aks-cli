@@ -4,10 +4,10 @@ function ResourceGroupToClusterName($resourceGroupName)
     return $resourceGroupName+$clusterNamePostFix
 }
 
-$analyticsNamePostFix = "-aks-analytics"
-function ResourceGroupToAnalyticsName($resourceGroupName)
+$insightsNamePostFix = "-aks-insights"
+function ResourceGroupToInsightsName($resourceGroupName)
 {
-    return $resourceGroupName+$analyticsNamePostFix
+    return $resourceGroupName+$insightsNamePostFix
 }
 
 $registryPreFix = "gl-"

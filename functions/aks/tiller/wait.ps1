@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks tiller wait"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Wait for Tiller (Helm server-side) to be ready"
 

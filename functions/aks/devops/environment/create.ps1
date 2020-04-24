@@ -3,7 +3,7 @@ param($environmentName)
 
 WriteAndSetUsage "aks devops environment create <environment name>"
 
-VerifyVariable $environmentName "environment name"
+CheckVariable $environmentName "environment name"
 
 $teamName = GetDevOpsTeamName
 

@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks pod-clean"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Deleting all failed pods in all namespaces"
 

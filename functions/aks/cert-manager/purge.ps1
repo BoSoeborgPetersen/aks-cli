@@ -3,10 +3,11 @@ param($version)
 
 WriteAndSetUsage "aks cert-manager purge [version]"
 
-VerifyCurrentCluster
+CheckCurrentCluster
+# TODO: Somehow get the newest version from helm.
 SetDefaultIfEmpty ([ref]$version) "0.14"
 
-VerifyVersion $version
+CheckVersion $version
 
 Write-Info "Purge Cert-Manager namespace, and Custom Resource Definitions, which will remove resources (certificaterequests, certificates, challenges, clusterissuers, healthstates, issuers, orders)"
 

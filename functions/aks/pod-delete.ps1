@@ -2,11 +2,10 @@ param($deployment, $namespace)
 
 WriteAndSetUsage "aks pod-delete [deployment] [namespace]"
 
-VerifyCurrentCluster
-DeploymentChoiceMenu ([ref]$deployment)
+CheckCurrentCluster
+DeploymentChoiceMenu ([ref]$deployment) $namespace
+KubectlCheckDeployment $deployment $namespace
 $namespaceString = KubectlNamespaceString $namespace
-
-KubectlVerifyDeployment $deployment $namespace
 
 $pods = KubectlGetPods $deployment $namespace
 

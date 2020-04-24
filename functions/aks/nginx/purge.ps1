@@ -1,10 +1,11 @@
 WriteAndSetUsage "aks nginx purge [deployment name]"
 
-VerifyCurrentCluster
+$namespace = "ingress"
+CheckCurrentCluster
 
-Write-Info "Remove Nginx-Ingress namespace"
+Write-Info "Remove Nginx namespace"
 
 if (AreYouSure)
 {
-    ExecuteCommand "kubectl delete ns ingress $kubeDebugString"
+    ExecuteCommand "kubectl delete ns $namespace $kubeDebugString"
 }

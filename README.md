@@ -22,39 +22,40 @@ Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
 Here are the commands:
 
-    analytics            : Azure Monitor for containers - Monitor the performance of container workloads
-    cert-manager         : Certificate Manager - Automatically provision and manage TLS certificates in Kubernetes.
+    cert-manager         : Certificate Manager operations.
     create               : Create AKS cluster.
     credentials          : Get AKS cluster credentials.
     current              : Get current AKS cluster.
     delete               : Delete AKS cluster.
-    delete-pods          : Delete pods for deployment
-    describe             : Describe details for Kubernetes resources.
+    describe             : Describe Kubernetes resources.
     devops               : Azure DevOps operations.
     edit                 : Edit Kubernetes resource.
-    get                  : Show Kubernetes resources.
-    logs                 : Get Deployment logs.
-    monitoring           : Monitoring with Prometheus and Grafana.
-    nginx                : NGINX Ingress (Reverse Proxy Server) Controller for Kubernetes, which does SSL termination.
-    node-autoscaler      : Scale AKS VMs automatically - Automatic node scaling.
-    pod-autoscaler       : Scale AKS deployment automatically - Automatic pod scaling.
-    pod-size             : Get Deployment Pod used disk space.
+    get                  : Get Kubernetes resources.
+    insights             : AKS insights operations.
+    logs                 : Get container logs.
+    monitoring           : Prometheus and Grafana operations.
+    nginx                : NGINX Ingress operations.
+    node-autoscaler      : Setup automatic AKS VM Scale Set scaling (Node scaling).
+    pod-autoscaler       : Setup automatic AKS deployment scaling (Pod scaling).
+    pod-clean            : Get rid of all failed pods in all namespaces.
+    pod-delete           : Delete deployment pods
+    pod-size             : Get container disk space usage.
     registry             : Azure Container Registry operations.
-    scale-nodes          : Scale AKS VMs - Manual node scaling.
-    scale-pods           : Scale AKS deployment - Manual pod scaling.
+    scale-nodes          : Scale AKS VM Scale Set (Node scaling).
+    scale-pods           : Scale AKS deployment (Pod scaling).
     service-principal    : Azure Service Principal operations
-    setup                : Create Kubernetes cluster, install add-ons and configure both.
-    shell                : Open shell inside container pod.
-    switch               : (Interactive) Change current Azure subscription, AKS cluster or AKS deployment.
-    tiller               : Helm server side component (Tiller).
-    top                  : Show resource utilization for Kubernetes resources.
-    traffic-manager      : Azure Traffic Manager operations
-    upgrade              : Upgrades AKS cluster.
+    shell                : Open shell inside container.
+    switch               : Switch Azure subscription/cluster.
+    tiller               : Helm server side component.
+    top                  : Show Kubernetes resource utilization.
+    upgrade              : Upgrade AKS cluster.
     upgrades             : Get AKS cluster upgradable versions.
     version              : Get AKS cluster version.
     versions             : Get AKS versions.
 
-e.g. try 'aks logs'
+General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
+
+e.g. try 'aks cert-manager'
 
 # Getting Started
 To just run the container do:

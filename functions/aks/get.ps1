@@ -2,8 +2,8 @@ param($type, $regex, $namespace)
 
 WriteAndSetUsage "aks get <type> [regex] [namespace]"
 
-VerifyCurrentCluster
-ValidateKubectlCommand "Get"
+CheckCurrentCluster
+CheckKubectlCommand "Get"
 $namespaceString = KubectlNamespaceString $namespace
 
 if ($regex) 

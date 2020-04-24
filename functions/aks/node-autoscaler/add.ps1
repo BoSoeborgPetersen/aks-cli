@@ -2,12 +2,9 @@ param($min, $max)
 
 WriteAndSetUsage "aks node-autoscaler add [min] [max]"
 
-VerifyCurrentCluster
-SetDefaultIfEmpty ([ref]$min) 2
-SetDefaultIfEmpty ([ref]$max) 4
-
-ValidateNumberRange ([ref]$min) "min" 2 100
-ValidateNumberRange ([ref]$max) "max" 2 100
+CheckCurrentCluster
+CheckNumberRange ([ref]$min) "min" -min 2 -max 100 -default 2
+CheckNumberRange ([ref]$max) "max" -min 2 -max 100 -default 4
 
 Write-Info "Add node autoscaler"
 

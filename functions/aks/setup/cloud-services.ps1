@@ -1,6 +1,7 @@
+# TODO: Change to script.
 WriteAndSetUsage "aks setup windows"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 ExecuteCommand "aks monitoring install"
-ExecuteCommand "aks analytics install"
+ExecuteCommand "aks insights install"

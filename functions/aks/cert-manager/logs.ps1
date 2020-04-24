@@ -2,7 +2,7 @@ param($index)
 
 WriteAndSetUsage "aks cert-manager logs [index]"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 $deployment = GetCertManagerDeploymentName
 

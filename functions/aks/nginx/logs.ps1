@@ -2,22 +2,22 @@ param($index, $deployment)
 
 WriteAndSetUsage "aks nginx logs [index] [deployment]"
 
-VerifyCurrentCluster
+$namespace = "ingress"
+CheckCurrentCluster
 SetDefaultIfEmpty ([ref]$index) "1"
 $nginxDeployment = GetNginxDeploymentName $deployment
-
-KubectlVerifyDeployment $deployment
+KubectlCheckDeployment $deployment -namespace $namespace
 
 if($index)
 {
     Write-Info "Show Nginx logs from pod (index: $index) in deployment '$nginxDeployment'"
 
-    $pod = KubectlGetPod $nginxDeployment "ingress" $index
-    ExecuteCommand "kubectl logs -n ingress $pod $kubeDebugString"
+    $pod = KubectlGetPod $nginxDeployment $namespace $index
+    ExecuteCommand "kubectl logs -n $namespace $pod $kubeDebugString"
 }
 else
 {
-    Write-Info "Show Nginx-Ingress logs with Stern"
+    Write-Info "Show Nginx logs with Stern"
 
-    ExecuteCommand "stern $nginxDeployment-controller -n ingress"
+    ExecuteCommand "stern $nginxDeployment-controller -n $namespace"
 }

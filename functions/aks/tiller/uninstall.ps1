@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks tiller uninstall"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Uninstalling Tiller (Helm server-side)"
 

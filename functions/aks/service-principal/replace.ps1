@@ -4,7 +4,7 @@
 
 WriteAndSetUsage "aks service-principal replace"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 $resourceGroupName = $GlobalCurrentCluster.ResourceGroup
 $clusterName = $GlobalCurrentCluster.Name

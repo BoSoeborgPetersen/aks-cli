@@ -1,15 +1,15 @@
 # TODO: Break up into sub functions
 # TODO: Refactor
-param($resourceGroupName, $location, $createGlobalResourcesIfNonExistant)
+# TODO: Fix parameter name 'createGlobalResourcesIfNonExistant'.
+param($group, $location, $createGlobalResourcesIfNonExistant)
 
-WriteAndSetUsage "aks service-principal create <resource group name> [location] [create global resources if non existant]"
+WriteAndSetUsage "aks service-principal create <group> [location] [create global resources if non existant]"
 
-VerifyVariable $resourceGroupName "resource group name"
+CheckVariable $group "resource group name"
 CheckLocationExists $location
+# TODO: Join next two functions.
 SetDefaultIfEmpty ([ref]$createGlobalResourcesIfNonExistant) $FALSE
-ValidateBooleanType $createGlobalResourcesIfNonExistant "create global resources if non existent"
-
-VerifyCurrentSubscription
+CheckBooleanType $createGlobalResourcesIfNonExistant "create global resources if non existent"
 
 # Clear-Host
 Write-Info "Select the Subscription of the Key Vault"
@@ -18,15 +18,15 @@ $globalSubscriptionId = $globalSubscription.Id
 $globalSubscriptionName = $globalSubscription.Name
 
 $subscriptionId = $GlobalCurrentSubscription.Id
-$clusterName = ResourceGroupToClusterName $resourceGroupName
+$clusterName = ResourceGroupToClusterName $group
 $servicePrincipalName = ClusterToServicePrincipalName $clusterName
 $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
 $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
-$globalResourceGroupName = ResourceGroupToGlobalResourceGroupName $resourceGroupName
-$registryName = ResourceGroupToRegistryName $resourceGroupName
-$keyVaultName = ResourceGroupToKeyVaultName $resourceGroupName
+$globalResourceGroupName = ResourceGroupToGlobalResourceGroupName $group
+$registryName = ResourceGroupToRegistryName $group
+$keyVaultName = ResourceGroupToKeyVaultName $group
 
-$resourceGroupExist = ExecuteQuery "az group list --query `"[?contains(name, '$resourceGroupName')]`" -o tsv $debugString"
+$resourceGroupExist = ExecuteQuery "az group list --query `"[?contains(name, '$group')]`" -o tsv $debugString"
 
 if (!$resourceGroupExist -and !$location) {
     WriteUsage
@@ -36,10 +36,10 @@ if (!$resourceGroupExist -and !$location) {
 
 if ($resourceGroupExist)
 {
-    $location = ExecuteQuery "az group show -g $resourceGroupName --query location $debugString"
+    $location = ExecuteQuery "az group show -g $group --query location $debugString"
 }
 else {
-    ExecuteCommand "az group create -g $resourceGroupName -l $location $debugString"
+    ExecuteCommand "az group create -g $group -l $location $debugString"
 }
 
 $globalResourceGroupExist = ExecuteQuery "az group show -g $globalResourceGroupName --query name --subscription '$globalSubscriptionName' -o tsv $debugString"
@@ -67,7 +67,7 @@ if ($createGlobalResourcesIfNonExistant -eq $True)
 # TODO: Continue refactor...
 if ($registryExist -and $keyvaultExist)
 {
-    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroupName $debugString" | ConvertFrom-Json
+    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$subscriptionId/resourceGroups/$group /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroupName $debugString" | ConvertFrom-Json
 
     $loggedInUsername = ExecuteQuery "az account show --query user.name -o tsv $debugString"
     ExecuteCommand "az keyvault set-policy -n $keyvaultName --secret-permissions get list set --upn $loggedInUsername --subscription '$globalSubscriptionName' $debugString"

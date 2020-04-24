@@ -4,8 +4,6 @@
 
 WriteAndSetUsage "aks traffic-manager redirect-all"
 
-VerifyCurrentSubscription
-
 # Step 1: Choose source cluster
 Clear-Host
 Write-Info "Choose source AKS cluster"

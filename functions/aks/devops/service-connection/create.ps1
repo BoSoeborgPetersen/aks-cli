@@ -2,7 +2,7 @@ param($name, $namespace)
 
 WriteAndSetUsage "aks devops service-connection create <name> [namespace]"
 
-VerifyVariable $name "name"
+CheckVariable $name "name"
 SetDefaultIfEmpty ([ref]$namespace) "default"
 $namespaceString = KubectlNamespaceString $namespace
 

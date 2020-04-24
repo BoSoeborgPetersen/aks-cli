@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks tiller upgrade"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Upgrading Tiller (Helm server-side)"
 

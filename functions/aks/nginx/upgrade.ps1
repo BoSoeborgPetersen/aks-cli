@@ -1,13 +1,12 @@
-param($deploymentName)
+param($deployment)
 
 WriteAndSetUsage "aks nginx upgrade [deployment name]"
 
-VerifyCurrentCluster
+$namespace = "ingress"
+CheckCurrentCluster
+$nginxDeployment = GetNginxDeployment $deployment
+KubectlCheckDeployment $deployment -namespace $namespace
 
-KubectlVerifyDeployment $deploymentName $namespace
+Write-Info "Upgrade Nginx"
 
-$nginxDeploymentName = GetNginxDeploymentName $deploymentName
-
-Write-Info "Upgrade Nginx-Ingress"
-
-ExecuteCommand "helm upgrade --reuse-values $nginxDeploymentName stable/nginx-ingress $debugString"
+ExecuteCommand "helm3 upgrade $nginxDeployment stable/nginx-ingress -n $namespace --reuse-values $debugString"

@@ -1,13 +1,12 @@
-param($deploymentName)
+param($deployment)
 
 WriteAndSetUsage "aks nginx uninstall [deployment name]"
 
-VerifyCurrentCluster
+$namespace = "ingress"
+CheckCurrentCluster
+$nginxDeployment = GetNginxDeployment $deployment
+KubectlCheckDeployment $deployment -namespace $namespace
 
-KubectlVerifyDeployment $deploymentName $namespace
+Write-Info "Uninstall Nginx"
 
-$nginxDeploymentName = GetNginxDeploymentName $deploymentName
-
-Write-Info "Uninstall Nginx-Ingress"
-
-ExecuteCommand "helm3 uninstall $nginxDeploymentName -n ingress $debugString"
+ExecuteCommand "helm3 uninstall $nginxDeployment -n $namespace $debugString"

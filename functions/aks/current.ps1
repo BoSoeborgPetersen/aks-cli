@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks current"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Current AKS cluster"
 

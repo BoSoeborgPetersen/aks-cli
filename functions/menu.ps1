@@ -68,7 +68,7 @@ function ShowSubMenu($commands)
     ShowMenu "aks $($params[0])" $commands
 }
 
-function ValidateCommand($commandPrefix, $command, $commands, $noScriptFile = $false, $multiKey = $false)
+function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $false, $multiKey = $false)
 {
     if ($command) 
     {
@@ -117,13 +117,14 @@ function ValidateCommand($commandPrefix, $command, $commands, $noScriptFile = $f
     exit
 }
 
-function ValidateNoScriptSubCommand($commands, [switch] $multiKey = $false)
+# TODO: Determine multikey in function.
+function CheckNoScriptSubCommand($commands, [switch] $multiKey = $false)
 {
-    ValidateCommand "aks $($params[0])" $params[1] $commands $true $multiKey
+    CheckCommand "aks $($params[0])" $params[1] $commands $true $multiKey
 }
 
 # TODO: Take command as parameter for clarity.
-function ValidateKubectlCommand($operationName, [switch] $includeAll)
+function CheckKubectlCommand($operationName, [switch] $includeAll)
 {
     $allCommand = @{
         "all" = "$operationName standard Kubernetes resources."
@@ -154,26 +155,26 @@ function ValidateKubectlCommand($operationName, [switch] $includeAll)
     {
         $commands = $nonAllCommands
     }
-    ValidateNoScriptSubCommand $commands -multiKey
+    CheckNoScriptSubCommand $commands -multiKey
 }
 
 function MainMenu($commands)
 {
-    $path = ValidateCommand "aks" $params[0] $commands
+    $path = CheckCommand "aks" $params[0] $commands
     
     Invoke-Expression "$path $($params | Select-Object -Skip 1)"
 }
 
 function SubMenu($commands)
 {
-    $path = ValidateCommand "aks $($params[0])" $params[1] $commands
+    $path = CheckCommand "aks $($params[0])" $params[1] $commands
 
     Invoke-Expression "$path $($params | Select-Object -Skip 2)"
 }
 
 function SubSubMenu($commands)
 {
-    $path = ValidateCommand "aks $($params[0]) $($params[1])" $params[2] $commands
+    $path = CheckCommand "aks $($params[0]) $($params[1])" $params[2] $commands
 
     Invoke-Expression "$path $($params | Select-Object -Skip 3)"
 }

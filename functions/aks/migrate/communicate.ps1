@@ -14,8 +14,8 @@ if (!$resourceGroupExist -and !$location) {
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange ([ref]$maxNodeCount) "max node count" 2 100
+CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
+CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
 
 $ip = ExecuteQuery "az network public-ip show -g $resourceGroupName -n $ipName --query `"[ipAddress]`" -o tsv $debugString"
 
@@ -29,4 +29,4 @@ ExecuteCommand "aks nginx install"
 ExecuteCommand "aks nginx install `"masterdata`""
 ExecuteCommand "aks nginx install `"dme`""
 ExecuteCommand "aks cert-manager install"
-ExecuteCommand "aks analytics install"
+ExecuteCommand "aks insights install"

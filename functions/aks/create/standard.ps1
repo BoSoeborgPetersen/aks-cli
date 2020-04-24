@@ -6,9 +6,6 @@ param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
 WriteAndSetUsage "aks create standard <resource group name> <location> [min node count] [max node count] [node size]"
 
-SetDefaultIfEmpty ([ref]$minNodeCount) 2
-SetDefaultIfEmpty ([ref]$maxNodeCount) 4
-
 if($nodeSize)
 {
     $nodeSizeString1 = "-s"
@@ -22,8 +19,8 @@ if (!$resourceGroupExist -and !$location) {
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange ([ref]$minNodeCount) "min node count" 2 100
-ValidateNumberRange ([ref]$maxNodeCount) "max node count" 2 100
+CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
+CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
 
 if ($resourceGroupExist)
 {

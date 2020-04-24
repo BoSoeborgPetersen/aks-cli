@@ -13,10 +13,10 @@ if (!$serviceEndpointId){
     }
 }
 
-VerifyVariable $environmentName "environment name"
-VerifyVariable $namespace "namespace"
-VerifyVariable $serviceEndpointId "service endpoint id"
-VerifyVariable $clusterName "cluster name"
+CheckVariable $environmentName "environment name"
+CheckVariable $namespace "namespace"
+CheckVariable $serviceEndpointId "service endpoint id"
+CheckVariable $clusterName "cluster name"
 
 $teamName = GetDevOpsTeamName
 

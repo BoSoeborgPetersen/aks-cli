@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks node-autoscaler disable"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Disable node autoscaler"
 

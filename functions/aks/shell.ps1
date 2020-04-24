@@ -3,10 +3,9 @@ param($regex, $shell, $namespace, $index, [switch] $help = $false)
 
 WriteAndSetUsage "aks shell <regex> [shell] [namespace] [index] [-help]"
 
-VerifyVariable $regex "regex"
-VerifyCurrentCluster
+CheckVariable $regex "regex"
+CheckCurrentCluster
 $namespaceString = KubectlNamespaceString $namespace
-ValidateOptionalNumberRange ([ref]$index) "index" 1 100
 
 $commands=@{
     "ash" = "Ash (Alpine)."

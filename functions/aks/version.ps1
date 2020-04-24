@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks version"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Current AKS cluster version"
 

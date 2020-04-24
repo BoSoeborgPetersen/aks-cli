@@ -2,7 +2,7 @@ param($environmentName)
 
 WriteAndSetUsage "aks devops environment delete <environment name>"
 
-VerifyVariable $environmentName "environment name"
+CheckVariable $environmentName "environment name"
 
 $teamName = GetDevOpsTeamName
 $environmentId = ExecuteQuery ("az devops invoke --area environments --resource environments --route-parameters project=$teamName --http-method GET --api-version 6.0-preview --query `"value[?name=='$environmentName'].id`" -o tsv $debugString")

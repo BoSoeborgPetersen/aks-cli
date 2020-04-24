@@ -1,8 +1,9 @@
+# TODO: Integrate into "aks switch cluster", as "aks switch cluster -resourceGroup <resource group> -clean".
 param($resourceGroup)
 
 WriteAndSetUsage "aks credentials get-clean <resource group>"
 
-VerifyVariable $resourceGroup "resource group"
+CheckVariable $resourceGroup "resource group"
 
 $clusterName = ResourceGroupToClusterName $resourceGroup
 

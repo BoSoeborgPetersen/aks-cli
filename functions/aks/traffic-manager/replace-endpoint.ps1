@@ -1,10 +1,11 @@
 # TODO: Not working.
 # TODO: Refactor.
-param([string]$newEndpoint)
+param($new, $old)
 
-WriteAndSetUsage "aks traffic-manager replace-endpoint <new endpoint>"
+WriteAndSetUsage "aks traffic-manager replace-endpoint <new>"
 
-VerifyVariable $newEndpoint "new endpoint"
+CheckVariable $new "new endpoint name"
+SetDefaultIfEmpty ([ref]$old) "AKS"
 
-ExecuteCommand "az network traffic-manager endpoint create -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n 'AKS' --type azureEndpoints --target-resource-id $AzureReservedIpName --endpoint-status enabled $debugString"
-ExecuteCommand "az network traffic-manager endpoint update -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n $newEndpoint --endpoint-status Disabled $debugString"
+ExecuteCommand "az network traffic-manager endpoint create -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n $old --type azureEndpoints --target-resource-id $AzureReservedIpName --endpoint-status enabled $debugString"
+ExecuteCommand "az network traffic-manager endpoint update -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n $new --endpoint-status Disabled $debugString"

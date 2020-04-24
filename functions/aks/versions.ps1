@@ -2,7 +2,8 @@ param($location)
 
 WriteAndSetUsage "aks versions [location]"
 
-VerifyCurrentClusterOrVariable $location "[location]"
+Write-Error (get-variable $location)
+CheckCurrentClusterOrVariable $location "[location]"
 
 if ($location) 
 {

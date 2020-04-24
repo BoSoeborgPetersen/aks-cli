@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks cert-manager uninstall"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Uninstalling Cert-Manager"
 

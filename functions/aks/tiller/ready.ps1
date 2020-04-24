@@ -1,6 +1,6 @@
 WriteAndSetUsage "aks tiller ready"
 
-VerifyCurrentCluster
+CheckCurrentCluster
 
 Write-Info "Check if Tiller (Helm server-side) is ready"
 

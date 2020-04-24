@@ -1,19 +1,15 @@
-param($cpuLimit, $minPodCount, $maxPodCount, $deploymentName)
+param($deployment, $min, $max, $limit, $namespace)
 
-WriteAndSetUsage "aks pod-autoscaler replace [cpu limit] [min pod count] [max pod count] [deployment name]"
+WriteAndSetUsage "aks pod-autoscaler replace [deployment] [min] [max] [limit] [namespace]"
 
-VerifyCurrentCluster
-SetDefaultIfEmpty ([ref]$cpuLimit) 50
-SetDefaultIfEmpty ([ref]$minPodCount) 3 
-SetDefaultIfEmpty ([ref]$maxPodCount) 6
-DeploymentChoiceMenu ([ref]$deploymentName)
+CheckCurrentCluster
+CheckNumberRange ([ref]$min) "min" -min 1 -max 1000 -default 3
+CheckNumberRange ([ref]$max) "max" -min 1 -max 1000 -default 6
+CheckNumberRange ([ref]$limit) "limit" -min 40 -max 80 -default 50
+DeploymentChoiceMenu ([ref]$deployment) $namespace
+KubectlCheckDeployment $deployment $namespace
 
-ValidateNumberRange ([ref]$cpuLimit) "cpu limit" 40 80
-ValidateNumberRange ([ref]$minPodCount) "min pod count" 1 1000
-ValidateNumberRange ([ref]$maxPodCount) "max pod count" 1 1000
-KubectlVerifyDeployment $deploymentName $namespace
+Write-Info "Replace pod autoscaler for deployment '$deployment'"
 
-Write-Info "Replace pod autoscaler for deployment '$deploymentName'"
-
-ExecuteCommand "aks pod-autoscaler remove $deploymentName $debugString"
-ExecuteCommand "aks pod-autoscaler add $cpuLimit $minPodCount $maxPodCount $deploymentName $debugString"
+ExecuteCommand "aks pod-autoscaler remove $deployment $namespace"
+ExecuteCommand "aks pod-autoscaler add $deployment $min $max $limit $namespace"

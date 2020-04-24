@@ -5,10 +5,8 @@ param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $locatio
 
 WriteAndSetUsage "aks create windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
 
-SetDefaultIfEmpty ([ref]$nodeCount) 2
 $nodeSizeString = ""
 SetDefaultIfEmpty ([ref]$nodeSizeString) " --node-vm-size $nodeSize"
-SetDefaultIfEmpty ([ref]$windowsNodeCount) 2
 SetDefaultIfEmpty ([ref]$windowsNodeSize) "Standard_H8"
 SetDefaultIfEmpty ([ref]$windowsNodepoolName) 'winvms'
 
@@ -19,12 +17,12 @@ if (!$resourceGroupExist -and !$location) {
     exit
 }
 CheckLocationExists $location
-ValidateNumberRange ([ref]$nodeCount) "node count" 2 100
-ValidateNumberRange ([ref]$windowsNodeCount) "windows node count" 2 100
+CheckNumberRange ([ref]$nodeCount) "node count" -min 2 -max 100 -default 2
+CheckNumberRange ([ref]$windowsNodeCount) "windows node count" -min 2 -max 100 -default 2
 
-VerifyVariable $resourceGroupName "resource group name"
-VerifyVariable $windowsAdminUsername "windows admin username"
-VerifyVariable $windowsAdminPassword "windows admin password"
+CheckVariable $resourceGroupName "resource group name"
+CheckVariable $windowsAdminUsername "windows admin username"
+CheckVariable $windowsAdminPassword "windows admin password"
 
 
 if ($resourceGroupExist)

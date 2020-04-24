@@ -43,13 +43,14 @@ function ChooseAksCluster()
 # TODO: Handle no choosen Azure Subscription.
 # TODO: Handle no choosen AKS cluster.
 # TODO: Add namespace parameter.
-function ChooseKubernetesDeploymentName()
+function ChooseKubernetesDeployment($namespace)
 {
     if (!$GlobalSubscriptionUsedForDeployments -or !$GlobalClusterUsedForDeployments -or !$GlobalDeploymentNames -or ($GlobalCurrentSubscription -ne $GlobalSubscriptionUsedForDeployments) -or ($GlobalCurrentCluster -ne $GlobalClusterUsedForDeployments))
     {
         $global:GlobalSubscriptionUsedForDeployments = $GlobalCurrentSubscription
         $global:GlobalClusterUsedForDeployments = $GlobalCurrentCluster
-        $global:GlobalDeploymentNames = (ExecuteQuery "kubectl get deploy -o jsonpath='{.items[*].metadata.name}'") -split ' '
+        $namespaceString = KubectlNamespaceString $namespace
+        $global:GlobalDeploymentNames = (ExecuteQuery "kubectl get deploy -o jsonpath='{.items[*].metadata.name}' $namespaceString") -split ' '
     }
     if ($GlobalDeploymentNames.length -eq 1)
     {
@@ -63,19 +64,12 @@ function ChooseKubernetesDeploymentName()
     return menu $GlobalDeploymentNames
 }
 
-function DeploymentChoiceMenu([ref] $deploymentName)
+function DeploymentChoiceMenu([ref] $deployment, $namespace)
 {
-    if (!$deploymentName.Value)
+    if (!$deployment.Value)
     {
         Clear-Host
         Write-Info "Choose AKS Deployment: "
-        $deploymentName.Value = ChooseKubernetesDeploymentName
+        $deployment.Value = ChooseKubernetesDeployment $namespace
     }
-}
-
-function ChooseAksDeployment()
-{
-    Clear-Host
-    Write-Info "Choose AKS Deployment: "
-    $global:GlobalDeploymentName = ChooseKubernetesDeploymentName
 }
