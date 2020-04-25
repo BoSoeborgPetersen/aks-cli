@@ -1,9 +1,16 @@
+# LaterDo: Rename GitHub repo and Docker Hub registry to 'aks-cli', but write 'Azure Kubernetes Service CLI' in description.
+
 # LaterDo: Add nodepools to functions
 
 # TODO: Add menu and functions for state (aks state debugging enable/disable, aks state verbose enable/disable, aks state resource-group set/unset) (get feedback)
 #       - Maybe use 'PSDefaultParameterValue'.
 
 # TODO: Add better examples to 'using' descriptions.
+
+# TODO: Cleanup all JmesPath queries for azure-cli (az xxx --query jmespath).
+# TODO: Ensure that aks-cli global variables are not accessed directly by functions, call a helper function instead.
+# TODO: Add "aks registry create" function.
+# TODO: Add "aks keyvault create" function.
 
 # TODO: When namespace parameter is not empty, then check that the namespace exists.
 # TODO: Namespace: Allow '-A' for all namespaces.
@@ -60,6 +67,7 @@ MainMenu @{
     "pod" = "Kubernetes pod operations."
     "registry" = "Azure Container Registry operations."
     # "replace" = "Replace AKS cluster operations."
+    "resource-group" = "Azure Resource Group operations."
     "scale" = "Scale operations."
     "service-principal" = "Azure Service Principal operations"
     # "setup" = "Install add-ons and configure AKS cluster."

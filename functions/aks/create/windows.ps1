@@ -24,7 +24,6 @@ CheckVariable $resourceGroupName "resource group name"
 CheckVariable $windowsAdminUsername "windows admin username"
 CheckVariable $windowsAdminPassword "windows admin password"
 
-
 if ($resourceGroupExist)
 {
     $location = ExecuteQuery "az group show -n $resourceGroupName --query location $debugString"
@@ -52,6 +51,7 @@ $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePri
 ExecuteCommand "az provider register -n Microsoft.ContainerService $debugString"
 ExecuteCommand "az feature register -n WindowsPreview --namespace Microsoft.ContainerService $debugString"
 ExecuteCommand "az extension add -n aks-preview $debugString"
+ExecuteCommand "az extension update -n aks-preview $debugString"
 
 # TODO: Try to remove -l and see if it still works, because of the resource group being specified.
 ExecuteCommand "az aks create -g $resourceGroupName -n $clusterName -l $location -c $nodeCount -k $clusterVersion --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword $nodeSizeString --generate-ssh-keys --vm-set-type VirtualMachineScaleSets --windows-admin-password $windowsAdminPassword --windows-admin-username $windowsAdminUsername --network-plugin azure $debugString"

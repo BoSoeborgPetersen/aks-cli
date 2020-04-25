@@ -1,21 +1,23 @@
-# TODO: Refactor
-# TODO: If key vault does not exist, then create it.
-# TODO: If no service principal exists for the cluster name then create service principal and add it to the key vault.
-
 WriteAndSetUsage "aks service-principal replace"
 
 CheckCurrentCluster
 
-$resourceGroupName = $GlobalCurrentCluster.ResourceGroup
-$clusterName = $GlobalCurrentCluster.Name
-$keyVaultName = ResourceGroupToKeyVaultName $resourceGroupName
-$servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
-$servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
+$resourceGroup = $GlobalCurrentCluster.ResourceGroup
+$cluster = $GlobalCurrentCluster.Name
+$keyVault = ResourceGroupToKeyVaultName $resourceGroup
+$idName = ClusterToidNameName $cluster
+$passwordName = ClusterToServicePrincipalPasswordName $cluster
+
+# TODO: Check that Key Vault exists.
+
+# TODO: Refactor into getKeyVaultSecret
+$id = ExecuteQuery "az keyvault secret show -n $idName --vault-name $keyVault --query value $debugString"
+CheckVariable $id "id"
+# TODO: Refactor into getKeyVaultSecret
+$password = ExecuteQuery "az keyvault secret show -n $passwordName --vault-name $keyVault --query value $debugString"
+CheckVariable $password "password"
 
 if (AreYouSure)
 {
-    $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
-    $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
-
-    ExecuteCommand "az aks update-credentials -n $clusterName -g $resourceGroupName --reset-service-principal --service-principal $servicePrincipalId --client-secret $servicePrincipalPassword $debugString"
+    ExecuteCommand "az aks update-credentials -n $cluster -g $resourceGroup --reset-service-principal --service-principal $id --client-secret $password $debugString"
 }
