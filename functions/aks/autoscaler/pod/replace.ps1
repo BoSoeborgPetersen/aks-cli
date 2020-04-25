@@ -1,6 +1,6 @@
 param($deployment, $min, $max, $limit, $namespace)
 
-WriteAndSetUsage "aks pod-autoscaler replace [deployment] [min] [max] [limit] [namespace]"
+WriteAndSetUsage "aks autoscaler pod replace [deployment] [min] [max] [limit] [namespace]"
 
 CheckCurrentCluster
 CheckNumberRange ([ref]$min) "min" -min 1 -max 1000 -default 3
@@ -11,5 +11,5 @@ KubectlCheckDeployment $deployment $namespace
 
 Write-Info "Replace pod autoscaler for deployment '$deployment'"
 
-ExecuteCommand "aks pod-autoscaler remove $deployment $namespace"
-ExecuteCommand "aks pod-autoscaler add $deployment $min $max $limit $namespace"
+ExecuteCommand "aks autoscaler pod remove $deployment $namespace"
+ExecuteCommand "aks autoscaler pod add $deployment $min $max $limit $namespace"

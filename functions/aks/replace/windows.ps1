@@ -1,8 +1,7 @@
-# TODO: Implement & Test
-# TODO: Create 'Migrate' menu
+# TODO: REWRITE!!!
 param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $location, $nodeCount, $nodeSize, $windowsNodeCount, $windowsNodeSize, $windowsNodePoolName)
 
-WriteAndSetUsage "aks setup windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
+WriteAndSetUsage "aks replace windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
 
 SetDefaultIfEmpty ([ref]$windowsNodePoolName) 'winvms'
 $nodeSizeString = ""

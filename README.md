@@ -22,6 +22,7 @@ Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
 Here are the commands:
 
+    autoscaler           : Setup automatic pod or node scaling.
     cert-manager         : Certificate Manager operations.
     create               : Create AKS cluster.
     credentials          : Get AKS cluster credentials.
@@ -35,14 +36,9 @@ Here are the commands:
     logs                 : Get container logs.
     monitoring           : Prometheus and Grafana operations.
     nginx                : NGINX Ingress operations.
-    node-autoscaler      : Setup automatic AKS VM Scale Set scaling (Node scaling).
-    pod-autoscaler       : Setup automatic AKS deployment scaling (Pod scaling).
-    pod-clean            : Get rid of all failed pods in all namespaces.
-    pod-delete           : Delete deployment pods
-    pod-size             : Get container disk space usage.
+    pod                  : Kubernetes pod operations.
     registry             : Azure Container Registry operations.
-    scale-nodes          : Scale AKS VM Scale Set (Node scaling).
-    scale-pods           : Scale AKS deployment (Pod scaling).
+    scale                : Scale operations.
     service-principal    : Azure Service Principal operations
     shell                : Open shell inside container.
     switch               : Switch Azure subscription/cluster.
@@ -55,7 +51,7 @@ Here are the commands:
 
 General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
 
-e.g. try 'aks cert-manager'
+e.g. try 'aks autoscaler'
 
 # Getting Started
 To just run the container do:

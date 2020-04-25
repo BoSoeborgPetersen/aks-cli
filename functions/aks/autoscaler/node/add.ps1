@@ -1,6 +1,6 @@
 param($min, $max)
 
-WriteAndSetUsage "aks node-autoscaler add [min] [max]"
+WriteAndSetUsage "aks autoscaler node add [min] [max]"
 
 CheckCurrentCluster
 CheckNumberRange ([ref]$min) "min" -min 2 -max 100 -default 2

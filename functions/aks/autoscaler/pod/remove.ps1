@@ -1,6 +1,6 @@
 param($deployment, $namespace)
 
-WriteAndSetUsage "aks pod-autoscaler remove [deployment] [namespace]"
+WriteAndSetUsage "aks autoscaler pod remove [deployment] [namespace]"
 
 CheckCurrentCluster
 DeploymentChoiceMenu ([ref]$deployment) $namespace

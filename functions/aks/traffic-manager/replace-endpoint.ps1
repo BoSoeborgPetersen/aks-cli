@@ -1,5 +1,4 @@
-# TODO: Not working.
-# TODO: Refactor.
+# TODO: REWRITE!!!
 param($new, $old)
 
 WriteAndSetUsage "aks traffic-manager replace-endpoint <new>"

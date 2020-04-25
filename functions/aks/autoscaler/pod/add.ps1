@@ -1,6 +1,6 @@
 param($deployment, $min, $max, $limit, $namespace)
 
-WriteAndSetUsage "aks pod-autoscaler add [deployment] [min] [max] [limit] [namespace]"
+WriteAndSetUsage "aks autoscaler pod add [deployment] [min] [max] [limit] [namespace]"
 
 CheckCurrentCluster
 CheckNumberRange ([ref]$min) "min" -min 1 -max 1000 -default 3

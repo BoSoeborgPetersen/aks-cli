@@ -1,6 +1,6 @@
 param($count, $deployment, $namespace)
 
-WriteAndSetUsage "aks scale-pods <count> [deployment] [namespace]"
+WriteAndSetUsage "aks scale pods <count> [deployment] [namespace]"
 
 CheckCurrentCluster
 CheckNumberRange ([ref]$count) "count" -min 1 -max 100

@@ -1,6 +1,6 @@
 param($regex, $namespace)
 
-WriteAndSetUsage "aks pod-size <regex> [namespace]"
+WriteAndSetUsage "aks pod size <regex> [namespace]"
 
 CheckCurrentCluster
 CheckVariable $regex "regex"

@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks pod-clean"
+WriteAndSetUsage "aks pod clean"
 
 CheckCurrentCluster
 

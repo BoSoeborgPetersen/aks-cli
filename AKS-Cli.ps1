@@ -1,7 +1,6 @@
 $path = $PSScriptRoot
 Set-Location $path
 
-# TODO: Maybe add "git pull".
 git pull
 docker pull bo0petersen/aks-cli:latest
 

@@ -10,7 +10,7 @@
 
 # TODO: Use splatting to simplify long commands with many parameters (e.g. az aks create -c -n -g -?)..
 
-# TODO: Add Azure "Get PublishSettings file" function, using this apparently very secret link 'https://portal.azure.com/#blade/Microsoft_Azure_ClassicResources/PublishingProfileBlade'
+# TODO: Add Azure "Get PublishSettings file" function (requires classic azure cli), using this apparently very secret link 'https://portal.azure.com/#blade/Microsoft_Azure_ClassicResources/PublishingProfileBlade'
 
 # LaterDo: Incorporate DevOps functions into all related functions
 #          - e.g. update DevOps Service Connection when AKS cluster service principal is updated.
@@ -43,6 +43,7 @@ $global:GlobalRoot = $PSScriptRoot
 CheckCurrentSubscription
 
 MainMenu @{
+    "autoscaler" = "Setup automatic pod or node scaling."
     "cert-manager" = "Certificate Manager operations."
     "create" = "Create AKS cluster."
     "credentials" = "Get AKS cluster credentials."
@@ -56,14 +57,10 @@ MainMenu @{
     "logs" = "Get container logs."
     "monitoring" = "Prometheus and Grafana operations."
     "nginx" = "NGINX Ingress operations."
-    "node-autoscaler" = "Setup automatic AKS VM Scale Set scaling (Node scaling)."
-    "pod-autoscaler" = "Setup automatic AKS deployment scaling (Pod scaling)."
-    "pod-clean" = "Get rid of all failed pods in all namespaces."
-    "pod-delete" = "Delete deployment pods"
-    "pod-size" = "Get container disk space usage."
+    "pod" = "Kubernetes pod operations."
     "registry" = "Azure Container Registry operations."
-    "scale-nodes" = "Scale AKS VM Scale Set (Node scaling)."
-    "scale-pods" = "Scale AKS deployment (Pod scaling)."
+    # "replace" = "Replace AKS cluster operations."
+    "scale" = "Scale operations."
     "service-principal" = "Azure Service Principal operations"
     # "setup" = "Install add-ons and configure AKS cluster."
     "shell" = "Open shell inside container."

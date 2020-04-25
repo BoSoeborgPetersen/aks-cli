@@ -1,6 +1,6 @@
 param($count)
 
-WriteAndSetUsage "aks scale-nodes <count>"
+WriteAndSetUsage "aks scale nodes <count>"
 
 CheckCurrentCluster
 CheckNumberRange ([ref]$count) "count" -min 2 -max 100

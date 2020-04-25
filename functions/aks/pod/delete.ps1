@@ -1,6 +1,6 @@
 param($deployment, $namespace)
 
-WriteAndSetUsage "aks pod-delete [deployment] [namespace]"
+WriteAndSetUsage "aks pod delete [deployment] [namespace]"
 
 CheckCurrentCluster
 DeploymentChoiceMenu ([ref]$deployment) $namespace
