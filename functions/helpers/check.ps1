@@ -9,7 +9,8 @@ function Check($check, $errorMessage)
 
 function CheckCurrentSubscription()
 {
-    Check $GlobalCurrentSubscription "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription"
+    $check = $GlobalCurrentSubscription -or ($params[0] -eq "switch")
+    Check $check "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription"
 }
 
 function CheckCurrentCluster()

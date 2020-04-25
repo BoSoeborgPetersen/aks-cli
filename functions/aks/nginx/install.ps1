@@ -25,6 +25,7 @@ if (AreYouSure)
         $extraParams = "--set controller.electionID='$deployment-ingress-controller-leader' --set controller.ingressClass='$deployment' --set controller.extraArgs.default-ssl-certificate=default/$deployment-certificate"
     }
 
+    # TODO: Refactor into helper function in helm.ps1.
     ExecuteCommand "helm3 repo add stable https://kubernetes-charts.storage.googleapis.com $debugString"
     ExecuteCommand "helm3 repo update $debugString"
 

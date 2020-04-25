@@ -2,7 +2,6 @@ param($location)
 
 WriteAndSetUsage "aks versions [location]"
 
-Write-Error (get-variable $location)
 CheckCurrentClusterOrVariable $location "[location]"
 
 if ($location) 
@@ -16,5 +15,5 @@ else
     Write-Info "Available AKS versions for cluster location '$location'"
 }
 
-$input = ExecuteQuery "az aks get-versions -l $location --query orchestrators $debugString"
+$input = ExecuteCommand "az aks get-versions -l $location --query orchestrators $debugString"
 ($input | ConvertFrom-Json | Select-Object @{ name='Version';expression= { "$($_.orchestratorVersion) $($_.isPreview -replace 'True','(Preview)')" }} | Format-Table -HideTableHeaders | Out-String).Trim()

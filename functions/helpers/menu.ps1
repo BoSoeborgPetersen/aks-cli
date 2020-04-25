@@ -96,7 +96,7 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $fals
             }
 
             $commandPrefixPath = $commandPrefix.Replace(' ', '/')
-            $path = "$PSScriptRoot/$commandPrefixPath/$command.ps1"
+            $path = "$GlobalRoot/$commandPrefixPath/$command.ps1"
             $scriptExists = [System.IO.File]::Exists($path)
             if ($scriptExists) 
             {

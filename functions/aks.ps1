@@ -28,16 +28,17 @@ if (!$params)
     $params = @()
 }
 
-. "$PSScriptRoot/powershell.ps1"
-. "$PSScriptRoot/basic.ps1"
-. "$PSScriptRoot/menu.ps1"
-. "$PSScriptRoot/extensions.ps1"
-. "$PSScriptRoot/check.ps1"
-. "$PSScriptRoot/azure.ps1"
-. "$PSScriptRoot/kubectl.ps1"
-. "$PSScriptRoot/shared.ps1"
-. "$PSScriptRoot/choose.ps1"
-. "$PSScriptRoot/naming-convention.ps1"
+$global:GlobalRoot = $PSScriptRoot
+. "$PSScriptRoot/helpers/powershell.ps1"
+. "$PSScriptRoot/helpers/basic.ps1"
+. "$PSScriptRoot/helpers/menu.ps1"
+. "$PSScriptRoot/helpers/extensions.ps1"
+. "$PSScriptRoot/helpers/check.ps1"
+. "$PSScriptRoot/helpers/azure.ps1"
+. "$PSScriptRoot/helpers/kubectl.ps1"
+. "$PSScriptRoot/helpers/shared.ps1"
+. "$PSScriptRoot/helpers/choose.ps1"
+. "$PSScriptRoot/helpers/naming-convention.ps1"
 
 CheckCurrentSubscription
 
