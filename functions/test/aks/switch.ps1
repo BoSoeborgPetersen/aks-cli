@@ -1,0 +1,1 @@
+# TestCommand "aks switch" # TODO: How to test!!!.

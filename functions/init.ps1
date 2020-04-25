@@ -2,6 +2,7 @@ Clear-Host
 az login
 
 New-Alias aks "$PSScriptRoot\aks.ps1" -Scope Global
+New-Alias test "$PSScriptRoot\test.ps1" -Scope Global
 
 function global:.. { Set-Location .. }
 function global:... { Set-Location ../.. }

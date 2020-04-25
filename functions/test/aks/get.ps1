@@ -1,0 +1,1 @@
+TestCommand "aks get po"

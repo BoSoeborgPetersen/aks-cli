@@ -1,0 +1,1 @@
+# TestCommand "aks shell" # TODO: How to exit.

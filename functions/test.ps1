@@ -1,0 +1,1 @@
+. "$PSScriptRoot/test/smoke-test.ps1"

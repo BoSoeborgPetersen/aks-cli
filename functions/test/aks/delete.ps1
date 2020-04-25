@@ -1,0 +1,1 @@
+# TestCommand "aks delete -whatif" # TODO: How to skip prompt.
