@@ -1,3 +1,4 @@
+# TODO: Docker Image: Include funtions as built in functions
 # LaterDo: Rename GitHub repo and Docker Hub registry to 'aks-cli', but write 'Azure Kubernetes Service CLI' in description.
 
 # LaterDo: Add nodepools to functions
@@ -10,7 +11,7 @@
 # TODO: Cleanup all JmesPath queries for azure-cli (az xxx --query jmespath).
 # TODO: Ensure that aks-cli global variables are not accessed directly by functions, call a helper function instead.
 # TODO: Add "aks registry create" function.
-# TODO: Add "aks keyvault create" function.
+# MaybeDo: Add "aks keyvault create" function (trying to get rid of the need for it).
 
 # TODO: When namespace parameter is not empty, then check that the namespace exists.
 # TODO: Namespace: Allow '-A' for all namespaces.

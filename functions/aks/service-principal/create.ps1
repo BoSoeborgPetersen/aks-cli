@@ -5,7 +5,7 @@ WriteAndSetUsage "aks service-principal create <resource group> <global subscrip
 CheckResourceGroupExists $resourceGroup
 CheckSubscriptionExists $globalSubscription
 
-$globalSubscriptionId =  "az account list --query `"[?name=='$globalSubscription'].id`" -o tsv"
+$globalSubscriptionId = ExecuteQuery "az account list --query `"[?name=='$globalSubscription'].id`" -o tsv $debugString"
 $subscriptionId = $GlobalCurrentSubscription.Id
 
 $clusterName = ResourceGroupToClusterName $resourceGroup

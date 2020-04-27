@@ -6,8 +6,8 @@ WriteAndSetUsage "aks create standard <resource group> [min node count] [max nod
 CheckResourceGroupExists $resourceGroup
 CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 3
 CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 20
-CheckVirtualMachineSizeExists $nodeSize -default ""
-CheckLoadBalancerSkuExists $loadBalancerSku -default basic
+CheckVirtualMachineSizeExists ([ref]$nodeSize) -default ""
+CheckLoadBalancerSkuExists ([ref]$loadBalancerSku) -default basic
 
 $clusterName = ResourceGroupToClusterName $resourceGroup
 $location = ExecuteQuery "az group show -g $resourceGroup --query location -o tsv $debugString"
@@ -21,16 +21,23 @@ $servicePrincipalString = ""
 
 if(!$bugFixed)
 {
-    $keyVaultName = ResourceGroupToKeyVaultName $resourceGroup
-    $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
-    $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
+    # $keyVaultName = ResourceGroupToKeyVaultName $resourceGroup
+    # $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
+    # $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
     
-    CheckServicePrincipalExists($keyVaultName, $servicePrincipalIdName)
+    # CheckServicePrincipalExists($keyVaultName, $servicePrincipalIdName)
     
-    $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
-    $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
+    # $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
+    # $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
     
-    $servicePrincipalString = "--service-principal $servicePrincipalId --client-secret $servicePrincipalPassword"
+    # $servicePrincipalString = "--service-principal $servicePrincipalId --client-secret $servicePrincipalPassword"
+
+    $servicePrincipalName = ClusterToServicePrincipalName $clusterName
+
+    # TODO: Check if Service Principal already exists and if so, get the id of it, instead of creating it.
+    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --skip-assignment $debugString" | ConvertFrom-Json
+
+    $servicePrincipalString = "--service-principal $($servicePrincipal.AppId) --client-secret $($servicePrincipal.Password)"
 }
 
 ExecuteCommand "az aks create -g $resourceGroup -n $clusterName -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --generate-ssh-keys --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"

@@ -42,28 +42,34 @@ function CheckServicePrincipalExists($keyVault, $name)
     Check $check "Service Principal '$name' does not exist"
 }
 
-function CheckVirtualMachineSizeExists($size, $default)
+function CheckVirtualMachineSizeExists([ref] $size, $default)
 {
-    $size = ConditionalOperator $size $size $default
-    $check = (!$size) -or (ExecuteQuery "az vm list-sizes -l northeurope --query `"[?name=='$size'].name`" -o tsv")
-    Check $check "Virtual Machine Size '$size' does not exist"
+    if ($default)
+    {
+        SetDefaultIfEmpty $size $default
+    }
+    $check = (!$size.Value) -or (ExecuteQuery "az vm list-sizes -l northeurope --query `"[?name=='$($size.Value)'].name`" -o tsv")
+    Check $check "Virtual Machine Size '$($size.Value)' does not exist"
 }
 
-function CheckLoadBalancerSkuExists($sku, $default)
+function CheckLoadBalancerSkuExists([ref] $sku, $default)
 {
-    $sku = ConditionalOperator $sku $sku $default
-    $check = $sku -eq "basic" -or $sku -eq "standard"
-    Check (!$check) "Load Balancer SKU '$resourceGroup' does not exist"
+    if ($default)
+    {
+        SetDefaultIfEmpty $sku $default
+    }
+    $check = ($sku.Value -eq "basic") -or ($sku.Value -eq "standard")
+    Check $check "Load Balancer SKU '$sku.Value' does not exist"
 }
 
 function CheckContainerRegistryExists($registry, $subscription)
 {
     $check = ExecuteQuery "az acr show -n $registry, $subscription --subscription '$subscription' -o tsv"
-    Check (!$check) "Azure Container Registry '$registry' in subscription '$subscription' does not exist"
+    Check $check "Azure Container Registry '$registry' in subscription '$subscription' does not exist"
 }
 
 function CheckKeyVaultExists($keyVault, $subscription)
 {
     $check = ExecuteQuery "az keyvault show -n $keyVault --subscription '$subscription' -o tsv"
-    Check (!$check) "Azure Key Vault '$keyVault' in subscription '$subscription' does not exist"
+    Check $check "Azure Key Vault '$keyVault' in subscription '$subscription' does not exist"
 }
