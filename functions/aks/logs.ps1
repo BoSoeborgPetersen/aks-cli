@@ -1,22 +1,23 @@
-param($regex, $namespace, $index)
+param($regex, $index, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks logs <regex> [namespace] [index]"
+WriteAndSetUsage "aks logs <regex> [index] [namespace] [-a/-allNamespaces]"
 
 CheckCurrentCluster
 CheckVariable $regex "regex"
-$namespaceString = KubectlNamespaceString $namespace
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace $allNamespaces
 
 if ($index)
 {
-    $pod = KubectlRegexMatch "pod" $regex $namespace $index
+    $pod = KubectlGetRegex "pod" $regex $namespace $index
 
-    Write-Info "Show pod '$pod' logs in namespace '$namespace'"
-    
-    return ExecuteCommand "kubectl logs $pod $namespaceString $kubeDebugString"
+    Write-Info "Show pod '$pod' logs" -r $regex -i $index -n $namespace
+
+    KubectlCommand "logs $pod" -n $namespace
 }
 else
 {
-    Write-Info "Show '$regex' logs with Stern in namespace '$namespace'"
+    Write-Info "Show pod logs with Stern" -r $regex -n $namespace
 
-    ExecuteCommand "stern $regex $namespaceString"
+    SternExecuteCommand $regex -n $namespace
 }

@@ -1,3 +1,10 @@
-# TODO: REWRITE!!!
+param($resourceGroup, $globalSubscription)
 
-# ExecuteCommand "az keyvault create -n $keyvaultName -g $globalResourceGroupName --subscription '$globalSubscriptionName' $debugString"
+WriteAndSetUsage "aks keyvault create <resource group> <global subscription>"
+
+$globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
+AzCheckResourceGroup $globalResourceGroup $globalSubscription
+$keyVault = ResourceGroupToKeyVaultName $resourceGroup
+AzCheckNotKeyVault $keyVault $globalSubscription
+
+AzCommand "keyvault create -n $keyVault -g $globalResourceGroup --subscription '$globalSubscription'"

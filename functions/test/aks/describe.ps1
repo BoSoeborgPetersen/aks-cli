@@ -1,1 +1,1 @@
-# TestCommand "aks describe po status" # TODO: Get deployment before.
+# TestCommand "aks describe po status" # Problem: Get deployment before.

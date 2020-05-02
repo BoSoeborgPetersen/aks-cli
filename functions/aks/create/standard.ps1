@@ -3,21 +3,23 @@ param($resourceGroup, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku)
 
 WriteAndSetUsage "aks create standard <resource group> [min node count] [max node count] [node size] [load balancer sku]"
 
-CheckResourceGroupExists $resourceGroup
+AzCheckResourceGroup $resourceGroup
 CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 3
 CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 20
-CheckVirtualMachineSizeExists ([ref]$nodeSize) -default ""
-CheckLoadBalancerSkuExists ([ref]$loadBalancerSku) -default basic
+AzCheckVirtualMachineSize ([ref]$nodeSize) -default ""
+AzCheckLoadBalancerSku ([ref]$loadBalancerSku) -default basic
 
 $clusterName = ResourceGroupToClusterName $resourceGroup
-$location = ExecuteQuery "az group show -g $resourceGroup --query location -o tsv $debugString"
-$version = ExecuteQuery "az aks get-versions -l $location --query 'orchestrators[?!isPreview].orchestratorVersion | sort(@) | [-1]' -o tsv $debugString"
+$location = AzQuery "group show -g $resourceGroup" -q location -o tsv
+$version = AzAksQuery "get-versions" -l $location -q "'orchestrators[?!isPreview].orchestratorVersion | sort(@) | [-1]'" -o tsv
 
 $nodeSizeString = ConditionalOperator $nodeSize "-s '$nodeSize'"
 
-$bugFixed = $false # Service Principal should be created when the cluster is created, but this does not work currently.
+# TODO: Check if Service Principal already exists and if so, delete it.
 
-$servicePrincipalString = ""
+$bugFixed = $true # Service Principal should be created when the cluster is created, but this does not work currently.
+
+$servicePrincipalString = "--enable-managed-identity"
 
 if(!$bugFixed)
 {
@@ -25,24 +27,21 @@ if(!$bugFixed)
     # $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
     # $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
     
-    # CheckServicePrincipalExists($keyVaultName, $servicePrincipalIdName)
+    # AzCheckServicePrincipal($keyVaultName, $servicePrincipalIdName)
     
-    # $servicePrincipalId = ExecuteQuery "az keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value $debugString"
-    # $servicePrincipalPassword = ExecuteQuery "az keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value $debugString"
+    # $servicePrincipalId = AzQuery "keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value"
+    # $servicePrincipalPassword = AzQuery "keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value"
     
     # $servicePrincipalString = "--service-principal $servicePrincipalId --client-secret $servicePrincipalPassword"
 
     $servicePrincipalName = ClusterToServicePrincipalName $clusterName
 
-    # TODO: Check if Service Principal already exists and if so, get the id of it, instead of creating it.
-    $servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --skip-assignment $debugString" | ConvertFrom-Json
+    $servicePrincipal = AzCommand "ad sp create-for-rbac -n $servicePrincipalName --skip-assignment" | ConvertFrom-Json
 
     $servicePrincipalString = "--service-principal $($servicePrincipal.AppId) --client-secret $($servicePrincipal.Password)"
 }
 
-ExecuteCommand "az aks create -g $resourceGroup -n $clusterName -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --generate-ssh-keys --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount $debugString"
+AzAksCommand "create -g $resourceGroup -n $clusterName -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --no-ssh-key --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount"
 
-# On success:
-# TODO: Ask "do you want to switch to the new AKS cluster?" with prompt.
-# TODO: or just switch to new cluster after it is created successfully.
-# TODO: Clear the global list of clusters for the subscription.
+Write-Info "Cluster has been created, switching cluster."
+SwitchCurrentClusterTo $resourceGroup

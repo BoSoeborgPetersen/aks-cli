@@ -1,22 +1,11 @@
-# TODO: REWRITE!!!
+# LaterDo: Rewrite to script.
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
 
 WriteAndSetUsage "aks replace communicate <resource group name> <location> [min node count] [max node count] [node size]"
 
-SetDefaultIfEmpty ([ref]$minNodeCount) 2
-SetDefaultIfEmpty ([ref]$maxNodeCount) 4
 
-$resourceGroupExist = az group exists -n $resourceGroupName
-if (!$resourceGroupExist -and !$location) {
-    WriteUsage
-    Write-Info "When the resource group does not exist, the location must be specified: [location]"
-    exit
-}
-CheckLocationExists $location
-CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
-CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
 
-$ip = ExecuteQuery "az network public-ip show -g $resourceGroupName -n $ipName --query `"[ipAddress]`" -o tsv $debugString"
+$ip = AzQuery "network public-ip show -g $resourceGroupName -n $ipName" -q [ipAddress] -o tsv
 
 ExecuteCommand "aks create standard $resourceGroupName $location $minNodeCount $maxNodeCount $nodeSize"
 

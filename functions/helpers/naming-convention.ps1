@@ -10,8 +10,8 @@ function ResourceGroupToInsightsName($resourceGroupName)
     return $resourceGroupName+$insightsNamePostFix
 }
 
-$registryPreFix = "gl-"
-$registryPostFix = "-acr"
+$registryPreFix = "eu"
+$registryPostFix = "pacr"
 function ResourceGroupToRegistryName($resourceGroupName)
 {
     $middle = $resourceGroupName.Split('-')[1]
@@ -26,11 +26,13 @@ function ResourceGroupToKeyVaultName($resourceGroupName)
     return $keyvaultPreFix+$middle+$keyvaultPostFix
 }
 
-$globalResourceGroupPreFix = "gl-"
+# $globalResourceGroupPreFix = "gl-"
+# $globalResourceGroupPostFix = "-p"
 function ResourceGroupToGlobalResourceGroupName($resourceGroupName)
 {
     $middle = $resourceGroupName.Split('-')[1]
-    return $globalResourceGroupPreFix+$middle
+    # return $globalResourceGroupPreFix+$middle+$globalResourceGroupPostFix
+    return "gl-registry-p"
 }
 
 $ipAddressPostFix = "-ip"

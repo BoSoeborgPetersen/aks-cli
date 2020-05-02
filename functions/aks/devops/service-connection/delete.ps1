@@ -4,17 +4,16 @@ WriteAndSetUsage "aks devops service-connection delete <name> [namespace]"
 
 CheckVariable $name "name"
 SetDefaultIfEmpty ([ref]$namespace) "default"
-$namespaceString = KubectlNamespaceString $namespace
 
 $unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
 $serviceAccountName = "$unixName-devops-sa"
 $roleBindingName = "$unixName-devops-rb"
 
 # Delete Service Account
-ExecuteCommand ("kubectl delete serviceaccount $serviceAccountName $namespaceString $kubeDebugString")
+KubectlCommand "delete serviceaccount $serviceAccountName" -n $namespace
 # Delete Role Binding
-ExecuteCommand ("kubectl delete rolebinding $roleBindingName $namespaceString $kubeDebugString")
+KubectlCommand "delete rolebinding $roleBindingName" -n $namespace
 
-$id = ExecuteQuery ("az devops service-endpoint list --query `"[?name=='$name'].id`" -o tsv $debugString")
+$id = AzQuery "devops service-endpoint list" -q "`"[?name==$name].id`"" -o tsv
 
-ExecuteCommand ("az devops service-endpoint delete --id $id -y --project $teamName $debugString")
+AzCommand "devops service-endpoint delete --id $id -y --project $teamName"

@@ -1,13 +1,13 @@
 WriteAndSetUsage "aks insights install"
 
 CheckCurrentCluster
+$resourceGroup = GetCurrentClusterResourceGroup
 
-$insights = ResourceGroupToInsightsName $GlobalCurrentCluster.ResourceGroup
+$insights = ResourceGroupToInsightsName $resourceGroup
 
 Write-Info "Installing Operational Insights '$insights'"
 
-# TODO: Try to remove -l and see if it still works, because of the resource group being specified.
-# TODO: Clean up '-p'.
-ExecuteCommand "az resource create --resource-type Microsoft.OperationalInsights/workspaces -g $($GlobalCurrentCluster.ResourceGroup) -n $insights -l $($GlobalCurrentCluster.Location) -p '{\`"sku\`":\`"\`"}' $debugString"
-$id = ExecuteQuery "az resource show -g $($GlobalCurrentCluster.ResourceGroup) -n $insights --resource-type Microsoft.OperationalInsights/workspaces --query id -o tsv $debugString"
-ExecuteCommand "az aks enable-addons -a monitoring -g $($GlobalCurrentCluster.ResourceGroup) -n $($GlobalCurrentCluster.Name) --workspace-resource-id $id $debugString"
+AzCommand "monitor log-analytics workspace create -g $resourceGroup -n $insights"
+AzCommand "monitor log-analytics workspace update -g $resourceGroup -n $insights --set sku.name=free --set retentionInDays=7"
+$id = AzQuery "monitor log-analytics workspace show -g $resourceGroup -n $insights --query id -o tsv"
+AzAksCurrentCommand "enable-addons -a monitoring --workspace-resource-id $id"

@@ -1,14 +1,15 @@
-param($type, $regex, $namespace, $index)
+param($type, $regex, $index, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks describe <type> <regex> [namespace] [index]"
+WriteAndSetUsage "aks describe <type> <regex> [index] [namespace] [-a/-allNamespaces]"
 
 CheckCurrentCluster
-CheckKubectlCommand "Describe"
+CheckKubectlCommand $type "Describe"
 CheckVariable $regex "regex"
-$namespaceString = KubectlNamespaceString $namespace
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace $allNamespaces
 
-Write-Info "Describe '$type' matching '$regex' with index '$index' in namespace '$namespace'"
+Write-Info "Describe '$type'" -r $regex -i $index -n $namespace
 
-$resource = KubectlRegexMatch $type $regex $namespace $index
+$resource = KubectlGetRegex $type $regex $namespace $index
 
-ExecuteCommand "kubectl describe $type $resource $namespaceString $kubeDebugString"
+KubectlCommand "describe $type $resource" -n $namespace

@@ -1,13 +1,14 @@
 WriteAndSetUsage "aks insights uninstall"
 
 CheckCurrentCluster
+$resourceGroup = GetCurrentClusterResourceGroup
 
-$insights = ResourceGroupToInsightsName $GlobalCurrentCluster.ResourceGroup
+$insights = ResourceGroupToInsightsName $resourceGroup
 
 Write-Info "Uninstalling Operational Insights '$insights'"
 
 if (AreYouSure)
 {
-    ExecuteCommand "az aks disable-addons -a monitoring -g $($GlobalCurrentCluster.ResourceGroup) -n $($GlobalCurrentCluster.Name) $debugString"
-    ExecuteCommand "az resource delete --resource-type Microsoft.OperationalInsights/workspaces -g $($GlobalCurrentCluster.ResourceGroup) -n $insights $debugString"
+    AzAksCurrentCommand "disable-addons -a monitoring"
+    AzCommand "monitor log-analytics workspace delete -g $resourceGroup -n $insights"
 }

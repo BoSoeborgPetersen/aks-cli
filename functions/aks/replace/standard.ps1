@@ -1,15 +1,10 @@
-# TODO: REWRITE!!!
+# LaterDo: Rewrite to script.
 param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
  
 WriteAndSetUsage "aks replace standard <resource group name> <location> <min node count> <max node count> <node size>"
 
-$resourceGroupExist = ExecuteQuery "az group list --query `"[?name!=null]|[?contains(name, '$resourceGroupName')].[name]`" -o tsv $debugString"
-if (!$resourceGroupExist -and !$location) {
-    WriteUsage
-    Write-Info "When the resource group does not exist, the location must be specified: [location]"
-    exit
-}
-CheckLocationExists $location
+AzCheckResourceGroup $resourceGroup
+AzCheckLocation $location
 CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
 CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
 

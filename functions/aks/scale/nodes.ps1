@@ -7,4 +7,4 @@ CheckNumberRange ([ref]$count) "count" -min 2 -max 100
 
 Write-Info "Scaling cluster to '$count' nodes"
 
-ExecuteCommand "az aks scale -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) -c $count $debugString"
+AzAksCurrentCommand "scale -c $count"

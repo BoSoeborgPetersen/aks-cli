@@ -117,14 +117,13 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $fals
     exit
 }
 
-# TODO: Determine multikey in function.
-function CheckNoScriptSubCommand($commands, [switch] $multiKey = $false)
+function CheckNoScriptSubCommand($command, $commands)
 {
-    CheckCommand "aks $($params[0])" $params[1] $commands $true $multiKey
+    $multiKey = $commands.Keys.Where({ $_ -like '*|*' }, 'First').Count -gt 0
+    CheckCommand "aks $($params[0])" $command $commands $true $multiKey
 }
 
-# TODO: Take command as parameter for clarity.
-function CheckKubectlCommand($operationName, [switch] $includeAll)
+function CheckKubectlCommand($command, $operationName, [switch] $includeAll)
 {
     $allCommand = @{
         "all" = "$operationName standard Kubernetes resources."
@@ -155,7 +154,7 @@ function CheckKubectlCommand($operationName, [switch] $includeAll)
     {
         $commands = $nonAllCommands
     }
-    CheckNoScriptSubCommand $commands -multiKey
+    CheckNoScriptSubCommand $command $commands
 }
 
 function MainMenu($commands)

@@ -4,4 +4,4 @@ CheckCurrentCluster
 
 Write-Info "Current AKS cluster"
 
-ExecuteCommand "kubectl config current-context"
+KubectlCommand "config current-context"

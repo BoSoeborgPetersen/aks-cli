@@ -15,14 +15,18 @@ RUN apk add --no-cache ca-certificates less ncurses-terminfo-base krb5-libs libg
     rm /tmp/powershell.tar.gz
 
 # Install Powershell modules (0 MB)
-RUN pwsh -c "Install-Module PS-Menu -Force" && \
+RUN pwsh -c "Install-Module PSMenu -Force" && \
     pwsh -c "Install-Module -Name PSBashCompletions -Scope CurrentUser -Force"
 
 # Install Nano (6 MB)
 RUN apk add nano --no-cache
  
-# Install Kubernetes-Cli (kubectl) (45 MB)
-RUN az aks install-cli --only-show-errors
+# Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 40 MB)
+RUN az aks install-cli --only-show-errors && \
+    curl -L https://github.com/jetstack/cert-manager/releases/download/v0.15.0/kubectl-cert_manager-linux-amd64.tar.gz -o /tmp/kubectl-cert-manager.tar.gz && \
+    tar zxf /tmp/kubectl-cert-manager.tar.gz && \
+    mv kubectl-cert_manager /usr/local/bin && \
+    rm /tmp/kubectl-cert-manager.tar.gz
 
 # Install Wercker\Stern (21 MB)
 ENV STERN_VERSION=1.11.0
@@ -44,10 +48,11 @@ RUN curl -LO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --directory helm3 && \
     ln -s /helm3/linux-amd64/helm /usr/bin/helm3 && \
     rm helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
-    helm3 repo add stable https://kubernetes-charts.storage.googleapis.com/ && \
+    helm3 repo add stable https://kubernetes-charts.storage.googleapis.com && \
+    helm3 repo add jetstack https://charts.jetstack.io && \
     helm3 plugin install https://github.com/helm/helm-2to3
 
-# # Install Bash completion
+# Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions
 RUN apk add bash-completion && \
     printf "\nsource /etc/profile.d/bash_completion.sh" >> ~/.bashrc && \

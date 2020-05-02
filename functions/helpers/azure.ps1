@@ -1,75 +1,126 @@
-function CheckSubscriptionExists($subscription)
+function AzCommand($command, $query, $output)
 {
-    $check = ExecuteQuery "az account list --query `"[?name=='$subscription'].name`" -o tsv"
-    Check $check "Subscription '$subscription' does not exist"
+    $queryString = ConditionalOperator $query "--query $query"
+    $outputString = ConditionalOperator $output "-o $output"
+
+    ExecuteCommand "az $command $queryString $outputString $debugString"
 }
 
-function CheckLocationExists($location)
+function AzAksCommand($command, $location, $version, $query, $output)
 {
-    $check = ExecuteQuery "az account list-locations --query `"[?name=='$location'].name`" -o tsv"
-    Check $check "Location '$location' does not exist"
+    $locationString = ConditionalOperator $location "-l $location"
+    $versionString = ConditionalOperator $version "-k $version"
+
+    AzCommand "aks $command $locationString $versionString" -q $query -o $output
 }
 
-function CheckVersionExists($version, $preview)
+function AzAksCurrentCommand($command, $location, $version, $query, $output)
+{
+    $resourceGroup = GetCurrentClusterResourceGroup
+    $cluster = GetCurrentClusterName
+
+    AzAksCommand "$command -g $resourceGroup -n $cluster" -l $location -version $version -q $query -o $output
+}
+
+function AzQuery($command, $query, $subscription, $output)
+{
+    $queryString = ConditionalOperator $query "--query $query"
+    $subscriptionString = ConditionalOperator $subscription "--subcription $subscription"
+    $outputString = ConditionalOperator $output "-o $output"
+
+    return ExecuteQuery "az $command $queryString $subscriptionString $outputString $debugString"
+}
+
+function AzAksQuery($command, $location, $version, $query, $output)
+{
+    $locationString = ConditionalOperator $location "-l $location"
+    $versionString = ConditionalOperator $version "-k $version"
+
+    return AzQuery "aks $command $locationString $versionString" -q $query -o $output
+}
+
+function AzAksCurrentQuery($command, $location, $version, $query, $output)
+{
+    $resourceGroup = GetCurrentClusterResourceGroup
+    $cluster = GetCurrentClusterName
+
+    return AzAksQuery "$command -g $resourceGroup -n $cluster" -l $location -version $version -q $query -o $output
+}
+
+function AzCheckSubscription($name)
+{
+    $check = AzQuery "account list" -q "`"[?name=='$name'].name`"" -o tsv
+    Check $check "Subscription '$name' does not exist"
+}
+
+function AzCheckLocation($name)
+{
+    $check = AzQuery "account list-locations" -q "`"[?name=='$name'].name`"" -o tsv
+    Check $check "Location '$name' does not exist"
+}
+
+function AzCheckUpgradableVersion([ref][string] $version, $preview)
 {
     CheckVersion $version
 
-    $previewString = ConditionalOperator (!$preview) "!isPreview &&"
-    $versionCheck = ExecuteQuery "az aks get-upgrades -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --query `"controlPlaneProfile.upgrades[?$previewString kubernetesVersion=='$version'].kubernetesVersion`" -o tsv"
-    Check $versionCheck "Version '$version' does not exist"
+    $previewString = ConditionalOperator $preview "" "!isPreview &&"
+    $check = AzAksCurrentQuery "get-upgrades" -q "`"controlPlaneProfile.upgrades[?$previewString kubernetesVersion=='$($version.Value)'].kubernetesVersion`"" -o tsv
+    Check $check "Version '$($version.Value)' does not exist"
 }
 
-function CheckResourceGroupExists($resourceGroup, $subscription)
+function AzCheckResourceGroup($name, $subscription)
 {
     $subscription = ConditionalOperator $subscription "--subscription $subscription"
-    # TODO: Test and maybe replace.
-    # $check = ExecuteQuery "az group show -g $resourceGroup --query name -o tsv"
-    $check = ExecuteQuery "az group list --query `"[?name=='$resourceGroup'].name`" $subscription -o tsv"
-    Check $check "Resource Group '$resourceGroup' does not exist"
+    $check = AzQuery "group list" -q "`"[?name=='$name'].name`"" $subscription -o tsv
+    Check $check "Resource Group '$name' does not exist"
 }
 
-function CheckResourceGroupNotExists($resourceGroup)
+function AzCheckNotResourceGroup($name)
 {
-    # TODO: Test and maybe replace.
-    # $check = ExecuteQuery "az group show -g $resourceGroup --query name -o tsv"
-    $check = ExecuteQuery "az group list --query `"[?name=='$resourceGroup'].name`" -o tsv"
-    Check (!$check) "Resource Group '$resourceGroup' already exist"
+    $check = AzQuery "group list" -q "`"[?name=='$name'].name`"" -o tsv
+    Check (!$check) "Resource Group '$name' already exist"
 }
 
-function CheckServicePrincipalExists($keyVault, $name)
+function AzCheckServicePrincipal($keyVault, $name)
 {
-    $check = ExecuteQuery "az keyvault secret list --vault-name $keyVault --query `"[?id=='https://$keyVault.vault.azure.net/secrets/$name']`" -o tsv"
+    $check = AzQuery "keyvault secret list --vault-name $keyVault" -q "`"[?id=='https://$keyVault.vault.azure.net/secrets/$name']`"" -o tsv
     Check $check "Service Principal '$name' does not exist"
 }
 
-function CheckVirtualMachineSizeExists([ref] $size, $default)
+function AzCheckVirtualMachineSize([ref] $name, $default)
 {
-    if ($default)
-    {
-        SetDefaultIfEmpty $size $default
-    }
-    $check = (!$size.Value) -or (ExecuteQuery "az vm list-sizes -l northeurope --query `"[?name=='$($size.Value)'].name`" -o tsv")
-    Check $check "Virtual Machine Size '$($size.Value)' does not exist"
+    SetDefaultIfEmpty $name $default
+    $check = (!$name.Value) -or (AzQuery "vm list-sizes -l northeurope" -q "`"[?name=='$($name.Value)'].name`"" -o tsv)
+    Check $check "Virtual Machine Size '$($name.Value)' does not exist"
 }
 
-function CheckLoadBalancerSkuExists([ref] $sku, $default)
+function AzCheckLoadBalancerSku([ref] $sku, $default)
 {
-    if ($default)
-    {
-        SetDefaultIfEmpty $sku $default
-    }
+    SetDefaultIfEmpty $sku $default
     $check = ($sku.Value -eq "basic") -or ($sku.Value -eq "standard")
-    Check $check "Load Balancer SKU '$sku.Value' does not exist"
+    Check $check "Load Balancer SKU '$($sku.Value)' does not exist"
 }
 
-function CheckContainerRegistryExists($registry, $subscription)
+function AzCheckContainerRegistry($name, $subscription)
 {
-    $check = ExecuteQuery "az acr show -n $registry, $subscription --subscription '$subscription' -o tsv"
-    Check $check "Azure Container Registry '$registry' in subscription '$subscription' does not exist"
+    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    Check $check "Azure Container Registry '$name' in subscription '$subscription' does not exist"
 }
 
-function CheckKeyVaultExists($keyVault, $subscription)
+function AzCheckNotContainerRegistry($name, $subscription)
 {
-    $check = ExecuteQuery "az keyvault show -n $keyVault --subscription '$subscription' -o tsv"
-    Check $check "Azure Key Vault '$keyVault' in subscription '$subscription' does not exist"
+    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    Check (!$check) "Azure Container Registry '$name' in subscription '$subscription' does not exist"
+}
+
+function AzCheckKeyVault($name, $subscription)
+{
+    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    Check $check "Azure Key Vault '$name' in subscription '$subscription' does not exist"
+}
+
+function AzCheckNotKeyVault($name, $subscription)
+{
+    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    Check (!$check) "Azure Key Vault '$name' in subscription '$subscription' does not exist"
 }

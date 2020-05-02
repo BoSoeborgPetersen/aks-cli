@@ -1,11 +1,9 @@
-# TODO: Verify shell.
-param($regex, $shell, $namespace, $index, [switch] $help = $false)
+param($regex, $shell, $index, $namespace, [switch] $help = $false)
 
-WriteAndSetUsage "aks shell <regex> [shell] [namespace] [index] [-help]"
+WriteAndSetUsage "aks shell <regex> [shell] [index] [namespace] [-help]"
 
 CheckVariable $regex "regex"
 CheckCurrentCluster
-$namespaceString = KubectlNamespaceString $namespace
 
 $commands=@{
     "ash" = "Ash (Alpine)."
@@ -25,7 +23,7 @@ function testShell([ref] $shell, $pod, $tryShell)
 {
     if (!$shell.Value)
     {
-        $output = ExecuteQuery "kubectl exec $pod $namespaceString -- $tryShell 2>&1"
+        $output = KubectlCommand "exec $pod" -n $namespace -postFix "-- $tryShell 2>&1"
         if (!$output -or ($output -like "*Microsoft Corporation*"))
         {
             $shell.Value = $tryShell
@@ -33,7 +31,7 @@ function testShell([ref] $shell, $pod, $tryShell)
     }
 }
 
-$pod = KubectlRegexMatch "pod" $regex $namespace $index
+$pod = KubectlGetRegex "pod" $regex $namespace $index
 
 if (!$shell)
 {
@@ -48,8 +46,16 @@ if (!$shell)
     ShowSubMenu $commands
     exit
 }
-    
-Write-Info "Open shell '$shell' inside pod '$pod' in namespace '$namespace'"
 
-# TODO: Test shell before actually opening it, and if it fails, then print an error message.
-ExecuteCommand "kubectl exec -it $pod $namespaceString -- $shell $kubeDebugString"
+Write-Info "Open shell '$shell' inside pod '$pod'" -r $regex -i $index -n $namespace
+
+testShell ([ref]$shell) $pod $shell
+
+if ($shell)
+{
+    KubectlCommand "exec -it $pod" -n $namespace -postFix "-- $shell"
+}
+else 
+{
+    Write-Error "Could not open shell inside pod"
+}

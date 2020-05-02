@@ -4,20 +4,18 @@ param($globalSubscription)
 WriteAndSetUsage "aks service-principal authorize <global subscription>"
 
 CheckCurrentCluster
-CheckSubscriptionExists $globalSubscription
-# TODO: Refactor to functions.
-$subscriptionId = $GlobalCurrentSubscription.Id
-$resourceGroup = $GlobalCurrentCluster.ResourceGroup
-$cluster = $GlobalCurrentCluster.Name
+$resourceGroup = GetCurrentClusterResourceGroup
+AzCheckSubscription $globalSubscription
+$subscriptionId = GetCurrentSubscription
 
-$globalSubscriptionId = ExecuteQuery "az account list --query `"[?name=='$globalSubscription'].id`" -o tsv $debugString"
+$globalSubscriptionId = AzQuery "account list" -q `"[?name==$globalSubscription].id`" -o tsv
 $globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
-CheckResourceGroupExists $globalResourceGroup $globalSubscription
+AzCheckResourceGroup $globalResourceGroup $globalSubscription
 $registry = ResourceGroupToRegistryName $resourceGroup
-CheckContainerRegistryExists $registry $globalSubscription
+AzCheckContainerRegistry $registry $globalSubscription
 
 Write-Info "Authorize AKS cluster Service Principal to access global resources (cluster Resource Group & Azure Container Registry)"
 
-$id = ExecuteQuery "az aks show -g $resourceGroup -n $cluster --query servicePrincipalProfile -o tsv $debugString"
+$id = AzAksCurrentQuery "show" -q servicePrincipalProfile -o tsv
 
-ExecuteCommand "az role assignment create --assignee $id --role contributor --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroup /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroup $debugString"
+AzCommand "role assignment create --assignee $id --role contributor --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroup /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroup"

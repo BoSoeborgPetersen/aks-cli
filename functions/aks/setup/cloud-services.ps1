@@ -1,4 +1,4 @@
-# TODO: Change to script.
+# LaterDo: Rewrite to script.
 WriteAndSetUsage "aks setup windows"
 
 CheckCurrentCluster

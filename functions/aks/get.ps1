@@ -1,22 +1,12 @@
-param($type, $regex, $namespace)
+param($type, $regex, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks get <type> [regex] [namespace]"
+WriteAndSetUsage "aks get <type> [regex] [namespace] [-a/-allNamespaces]"
 
 CheckCurrentCluster
-CheckKubectlCommand "Get"
-$namespaceString = KubectlNamespaceString $namespace
+CheckKubectlCommand $type "Get"
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace $allNamespaces
 
-if ($regex) 
-{
-    Write-Info "Get '$type' matching '$regex' in namespace '$namespace'"
+Write-Info "Get '$type'" -r $regex -n $namespace
 
-    $input = ExecuteCommand "kubectl get $type $namespaceString $debugString"
-    $output = ($input | Select-Object -Skip 1) | Where-Object { $_ -match "^$regex" }
-    ($input[0..0] + $output)
-}
-else 
-{
-    Write-Info "Get all '$type' in namespace '$namespace'"
-
-    ExecuteCommand "kubectl get $type $namespaceString $kubeDebugString"
-}
+KubectlCommand "get $type" -r $regex -n $namespace

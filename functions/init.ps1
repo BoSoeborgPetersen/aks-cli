@@ -1,5 +1,5 @@
 Clear-Host
-az login
+az login -o none
 
 New-Alias aks "$PSScriptRoot\aks.ps1" -Scope Global
 New-Alias test "$PSScriptRoot\test.ps1" -Scope Global
@@ -8,12 +8,14 @@ function global:.. { Set-Location .. }
 function global:... { Set-Location ../.. }
 function global:.... { Set-Location ../../.. }
 
-Register-BashArgumentCompleter az /etc/bash_completion.d/azure-cli -Verbose
-Register-BashArgumentCompleter kubectl /usr/share/bash-completion/completions/kubectl_completions.sh -Verbose
-Register-BashArgumentCompleter stern /usr/share/bash-completion/completions/stern.bash -Verbose
-Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm_completions.sh -Verbose
+Register-BashArgumentCompleter az ~/.bashrc
+Register-BashArgumentCompleter kubectl /usr/share/bash-completion/completions/kubectl.bash
+Register-BashArgumentCompleter stern /usr/share/bash-completion/completions/stern.bash
+Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm.bash
+Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm3.bash
 
 aks switch
 
+KubectlSetEditorToNano
 Clear-Host
 aks

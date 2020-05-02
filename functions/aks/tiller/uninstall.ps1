@@ -6,7 +6,7 @@ Write-Info "Uninstalling Tiller (Helm server-side)"
 
 if (AreYouSure)
 {
-    ExecuteCommand "kubectl delete deployment tiller-deploy -n kube-system $kubeDebugString"
-    ExecuteCommand "kubectl delete clusterrolebinding tiller $kubeDebugString"
-    ExecuteCommand "kubectl delete serviceaccount tiller -n kube-system $kubeDebugString"
+    KubectlCommand "delete deployment tiller-deploy -n kube-system"
+    KubectlCommand "delete clusterrolebinding tiller"
+    KubectlCommand "delete serviceaccount tiller -n kube-system"
 }

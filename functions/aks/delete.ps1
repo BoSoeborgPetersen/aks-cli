@@ -6,10 +6,11 @@ Write-Info "Deleting current AKS cluster"
     
 if (AreYouSure)
 {
-    $id = ExecuteQuery "az aks show -g $($GlobalCurrentCluster.ResourceGroup) -n $($GlobalCurrentCluster.Name) --query servicePrincipalProfile -o tsv $debugString"
+    $id = AzAksCurrentQuery "show" -q servicePrincipalProfile -o tsv
     
-    ExecuteCommand "az aks delete -g $($GlobalCurrentCluster.ResourceGroup) -n $($GlobalCurrentCluster.Name) $debugString"
-    ExecuteCommand "az ad sp delete --id $id $debugString"
+    AzAksCurrentCommand "delete"
+    AzCommand "ad sp delete --id $id"
 
-    # TODO: Call "aks switch" to switch to an existing cluster, or something similar.
+    Write-Info "Cluster has been deleted."
+    SwitchCurrentCluster -refresh
 }

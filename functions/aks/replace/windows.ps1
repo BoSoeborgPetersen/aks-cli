@@ -1,4 +1,4 @@
-# TODO: REWRITE!!!
+# LaterDo: Rewrite to script.
 param($resourceGroupName, $windowsAdminUsername, $windowsAdminPassword, $location, $nodeCount, $nodeSize, $windowsNodeCount, $windowsNodeSize, $windowsNodePoolName)
 
 WriteAndSetUsage "aks replace windows <resource group name> <windows admin username> <windows admin password> [location] [node count] [node size] [windows node count] [windows node size] [windows nodepool name]"
@@ -8,13 +8,8 @@ $nodeSizeString = ""
 SetDefaultIfEmpty ([ref]$nodeSizeString) " --node-vm-size $nodeSize"
 SetDefaultIfEmpty ([ref]$windowsNodeSize) "Standard_H8"
 
-$resourceGroupExist = ExecuteQuery "az group exists -n $resourceGroupName $debugString"
-if (!$resourceGroupExist -and !$location) {
-    WriteUsage
-    Write-Info "When the resource group does not exist, the location must be specified: [location]"
-    exit
-}
-CheckLocationExists $location
+AzCheckResourceGroup $resourceGroup
+AzCheckLocation $location
 CheckNumberRange ([ref]$nodeCount) "node count" -min 2 -max 100 -default 2
 CheckNumberRange ([ref]$windowsNodeCount) "windows node count" -min 2 -max 100 -default 2
 CheckVariable $resourceGroupName "resource group name"

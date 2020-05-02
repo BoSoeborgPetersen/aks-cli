@@ -1,19 +1,15 @@
-param($type, $regex, $namespace)
+param($type, $regex, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks top <type> [regex] [namespace]"
+WriteAndSetUsage "aks top <type> [regex] [namespace] [-a/-allNamespaces]"
 
 CheckCurrentCluster
-
-CheckNoScriptSubCommand @{
+CheckNoScriptSubCommand $type @{
     "no|node|nodes" = "Show Resource Utilization for Nodes."
     "po|pod|pods" = "Show Resource Utilization for Pods."
-} -multiKey
+}
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace $allNamespaces
 
-$namespaceString = KubectlNamespaceString $namespace
+Write-Info "Show resource utilization of '$type'" -r $regex -n $namespace
 
-Write-Info "Show resource utilization of '$type' matching '$regex' in namespace '$namespace'"
-
-$input = ExecuteCommand "kubectl top $type $namespaceString $kubeDebugString"
-
-$output = ($input | Select-Object -Skip 1) | Where-Object { $_ -match "^$regex" }
-($input[0..0] + $output)
+KubectlCommand "top $type" -r $regex -n $namespace

@@ -1,13 +1,24 @@
-param($command)
+param($command, [switch] $cluster, $resourceGroup, [switch] $clean)
 
-if (!$command)
+WriteAndSetUsage "aks switch [-cluster] [resource group] [-clean]"
+
+if (!$cluster)
 {
-    ExecuteCommand "aks switch subscription"
+    SwitchCurrentSubscription -clear
+}
+
+if (!$resourceGroup)
+{
+    SwitchCurrentCluster -clear
 }
 else
 {
-    SubMenu @{
-        "subscription" = "Change current Azure subscription."
-        "cluster" = "Change current AKS cluster."
+    if ($clean)
+    {
+        Write-Info "Clearing AKS cluster credentials"
+        KubectlClearConfig $resourceGroup
     }
+    
+    Write-Info "Switching AKS cluster"
+    SwitchCurrentClusterTo $resourceGroup
 }

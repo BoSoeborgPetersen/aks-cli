@@ -7,32 +7,27 @@ function Check($check, [string] $errorMessage)
     }
 }
 
-function CheckCurrentSubscription()
-{
-    $check = $GlobalCurrentSubscription -or ($params[0] -eq "switch")
-    Check $check "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription"
-}
-
-function CheckCurrentCluster()
-{
-    Check $GlobalCurrentCluster "No current AKS cluster, run 'aks switch cluster' to select a current AKS cluster"
-}
-
-function CheckCurrentClusterOrVariable($variable, [string] $variableName)
-{
-    $check = $GlobalCurrentCluster -or $variable
-    Check $check ("The following argument is required: $variableName" + "\n" + "Alternatively run 'aks switch' to select a current AKS cluster, then the current cluster '$variableName' will be used")
-}
-
 function CheckVariable($variable, [string] $variableName)
 {
     Check $variable "The following argument is required: <$variableName>"
 }
 
-function CheckVersion([string] $version)
+function CheckSemanticVersion([string] $version)
 {
-    $check = $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
-    Check $check "The specified version '$version' is not a valid Semantic Version (i.e. 'x.y.z')"
+    return $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
+}
+
+# function ConvertSemanticVersionToShort([string] $version)
+# {
+#     $noPatchVersion = $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
+#     $shortVersionString = ConditionalOperator ((CheckSemanticVersion $version -and $noPatchVersion)) "" $version.Replace('.0', '') 
+# }
+
+function CheckVersion([ref][string] $version, [string] $default)
+{
+    SetDefaultIfEmpty $version $default
+    $check = CheckSemanticVersion $version.Value
+    Check $check "The specified version '$($version.Value)' is not a valid Semantic Version (i.e. 'x.y.z')"
 }
 
 function CheckNumberType([string] $variable, [string] $variableName)

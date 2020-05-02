@@ -6,14 +6,14 @@ CheckCurrentCluster
 
 if ($version) 
 {
-    CheckVersionExists $version $preview
+    AzCheckUpgradableVersion ([ref]$version) $preview
     Write-Info "Upgrading current cluster to version '$version'"
 }
 else
 {
     $previewString = ConditionalOperator (!$preview) "?!isPreview"
-    # TODO: Fix version sorting (1.5.10 will come before 1.5.7).
-    $version = ExecuteQuery "az aks get-upgrades -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) --query 'controlPlaneProfile.upgrades[$previewString].kubernetesVersion | sort(@) | [-1]' -o tsv $debugString"
+    # TODO: Fix version sorting (1.5.10 will come before 1.5.7) (use: SemanticVersionSort function).
+    $version = AzAksCurrentQuery "get-upgrades" -q "'controlPlaneProfile.upgrades[$previewString].kubernetesVersion | sort(@) | [-1]'" -o tsv
 
     if ($version)
     {
@@ -29,5 +29,5 @@ else
     
 if (AreYouSure)
 {
-    ExecuteCommand "az aks upgrade -n $($GlobalCurrentCluster.Name) -g $($GlobalCurrentCluster.ResourceGroup) -k $version $debugString"
+    AzAksCurrentCommand "upgrade" -version $version
 }

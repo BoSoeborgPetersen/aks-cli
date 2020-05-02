@@ -11,7 +11,7 @@ if($index)
     Write-Info "Show Cert-Manager logs from pod (index: $index) in deployment '$deployment'"
     
     $pod = KubectlGetPod $deployment "cert-manager" $index
-    ExecuteCommand "kubectl logs $pod -n cert-manager $kubeDebugString"
+    KubectlCommand "logs $pod -n cert-manager"
 }
 else
 {

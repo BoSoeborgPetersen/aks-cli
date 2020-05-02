@@ -4,24 +4,30 @@ WriteAndSetUsage "aks devops service-connection create <name> [namespace]"
 
 CheckVariable $name "name"
 SetDefaultIfEmpty ([ref]$namespace) "default"
-$namespaceString = KubectlNamespaceString $namespace
 
+$subscriptionId = GetCurrentSubscription
+$subscriptionName = GetCurrentSubscriptionName
+$subscriptionTenantId = GetCurrentSubscriptionTenantId
+$subscriptionFqdn = GetCurrentSubscriptionFqdn
+CheckCurrentCluster
+$cluster = GetCurrentClusterName
+$resourceGroup = GetCurrentClusterResourceGroup
 $unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
 $serviceAccountName = "$unixName-devops-sa"
 $roleBindingName = "$unixName-devops-rb"
 
 # Create Service Account
-ExecuteCommand ("kubectl create serviceaccount $serviceAccountName $namespaceString $kubeDebugString")
+KubectlCommand "create serviceaccount $serviceAccountName" -n $namespace
 # Create Role Binding
-ExecuteCommand ("kubectl create rolebinding $roleBindingName --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccountName`" $namespaceString $kubeDebugString")
+KubectlCommand "create rolebinding $roleBindingName --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccountName`"" -n $namespace
 
-$secretName = ExecuteQuery ("kubectl get serviceaccount $serviceAccountName $namespaceString -o jsonpath='{.secrets[0].name}' $kubeDebugString")
+$secretName = KubectlQuery "get serviceaccount $serviceAccountName" -n $namespace -o "jsonpath='{.secrets[0].name}'"
 
 $arguments=@{
     "authorization" = @{
         "parameters" = @{
             "azureEnvironment" = "AzureCloud"
-            "azureTenantId" = $GlobalCurrentSubscription.TenantId
+            "azureTenantId" = $subscriptionTenantId
             "roleBindingName" = $roleBindingName
             "secretName" = $secretName
             "serviceAccountName" = $serviceAccountName
@@ -30,12 +36,12 @@ $arguments=@{
     }
     "name" = $name
     "type" = "kubernetes"
-    "url" = ("https://$($GlobalCurrentCluster.Fqdn)")
+    "url" = ("https://$subscriptionFqdn")
     "data" = @{
         "authorizationType" = "AzureSubscription"
-        "azureSubscriptionId" = $GlobalCurrentSubscription.Id
-        "azureSubscriptionName" = $GlobalCurrentSubscription.Name
-        "clusterId" = "/subscriptions/$($GlobalCurrentSubscription.Id)/resourcegroups/$($GlobalCurrentCluster.ResourceGroup)/providers/Microsoft.ContainerService/managedClusters/$($GlobalCurrentCluster.Name)"
+        "azureSubscriptionId" = $subscriptionId
+        "azureSubscriptionName" = $subscriptionName
+        "clusterId" = "/subscriptions/$subscriptionId/resourcegroups/$resourceGroup/providers/Microsoft.ContainerService/managedClusters/$cluster"
         "namespace" = "$namespace"
     }
     "isShared" = "true"
@@ -45,7 +51,7 @@ $arguments=@{
 $json = $arguments | ConvertTo-Json
 Write-Verbose $json
 $json | Out-File -FilePath ~/azure-devops-service-connection-create.json
-ExecuteCommand ("az devops service-endpoint create --service-endpoint-configuration ~/azure-devops-service-connection-create.json $debugString")
+AzCommand "devops service-endpoint create --service-endpoint-configuration ~/azure-devops-service-connection-create.json"
 Remove-Item ~/azure-devops-service-connection-create.json
 
 

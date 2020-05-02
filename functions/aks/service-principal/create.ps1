@@ -2,11 +2,11 @@ param($resourceGroup, $globalSubscription)
 
 WriteAndSetUsage "aks service-principal create <resource group> <global subscription>"
 
-CheckResourceGroupExists $resourceGroup
-CheckSubscriptionExists $globalSubscription
+AzCheckResourceGroup $resourceGroup
+AzCheckSubscription $globalSubscription
 
-$globalSubscriptionId = ExecuteQuery "az account list --query `"[?name=='$globalSubscription'].id`" -o tsv $debugString"
-$subscriptionId = $GlobalCurrentSubscription.Id
+$globalSubscriptionId = AzQuery "account list" -q `"[?name==$globalSubscription].id`" -o tsv
+$subscriptionId = GetCurrentSubscription
 
 $clusterName = ResourceGroupToClusterName $resourceGroup
 $servicePrincipalName = ClusterToServicePrincipalName $clusterName
@@ -14,16 +14,16 @@ $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
 $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
 
 $globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
-CheckResourceGroupExists $globalResourceGroup $globalSubscription
+AzCheckResourceGroup $globalResourceGroup $globalSubscription
 $registry = ResourceGroupToRegistryName $resourceGroup
-CheckContainerRegistryExists $registry $globalSubscription
+AzCheckContainerRegistry $registry $globalSubscription
 $keyVault = ResourceGroupToKeyVaultName $resourceGroup
-CheckKeyVaultExists $keyVault $globalSubscription
+AzCheckKeyVault $keyVault $globalSubscription
 
-$servicePrincipal = ExecuteCommand "az ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroup /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroup $debugString" | ConvertFrom-Json
+$servicePrincipal = AzCommand "ad sp create-for-rbac -n $servicePrincipalName --role contributor --years 300 --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroup /subscriptions/$globalSubscriptionId/resourceGroups/$globalResourceGroup" | ConvertFrom-Json
 
-$loggedInUsername = ExecuteQuery "az account show --query user.name -o tsv $debugString"
-ExecuteCommand "az keyvault set-policy -n $keyvault --secret-permissions get list set --upn $loggedInUsername --subscription '$globalSubscription' $debugString"
+$loggedInUsername = AzQuery "account show" -q user.name -o tsv
+AzCommand "keyvault set-policy -n $keyvault --secret-permissions get list set --upn $loggedInUsername --subscription '$globalSubscription'"
 
-ExecuteCommand "az keyvault secret set -n $servicePrincipalIdName --vault-name $keyVault --value $($servicePrincipal.AppId) --subscription '$globalSubscription' $debugString"
-ExecuteCommand "az keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVault --value $($servicePrincipal.Password) --subscription '$globalSubscription' $debugString"
+AzCommand "keyvault secret set -n $servicePrincipalIdName --vault-name $keyVault --value $($servicePrincipal.AppId) --subscription '$globalSubscription'"
+AzCommand "keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVault --value $($servicePrincipal.Password) --subscription '$globalSubscription'"

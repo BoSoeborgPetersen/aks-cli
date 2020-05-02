@@ -6,10 +6,8 @@ CheckCurrentCluster
 CheckNumberRange ([ref]$min) "min" -min 1 -max 1000 -default 3
 CheckNumberRange ([ref]$max) "max" -min 1 -max 1000 -default 30
 CheckNumberRange ([ref]$limit) "limit" -min 40 -max 80 -default 60
-DeploymentChoiceMenu ([ref]$deployment) $namespace
-KubectlCheckDeployment $deployment $namespace
-$namespaceString = KubectlNamespaceString $namespace
+KubectlCheckDeployment ([ref]$deployment) $namespace -showMenu
 
 Write-Info "Add pod autoscaler (min: $min, max: $max, cpu limit: $limit) to deployment '$deployment' in namespace '$namespace'"
 
-ExecuteCommand "kubectl autoscale deploy $deployment --cpu-percent=$limit --min=$min --max=$max $namespaceString $kubeDebugString"
+KubectlCommand "autoscale deploy $deployment --cpu-percent=$limit --min=$min --max=$max" -n $namespace

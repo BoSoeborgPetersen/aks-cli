@@ -1,3 +1,4 @@
+# TODO: Move into uninstall.ps1 as -purge flag.
 WriteAndSetUsage "aks nginx purge [deployment name]"
 
 $namespace = "ingress"
@@ -7,5 +8,5 @@ Write-Info "Remove Nginx namespace"
 
 if (AreYouSure)
 {
-    ExecuteCommand "kubectl delete ns $namespace $kubeDebugString"
+    KubectlCommand "delete ns $namespace"
 }

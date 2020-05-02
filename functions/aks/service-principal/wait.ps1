@@ -1,5 +1,6 @@
+# TODO: Rewrite.
 Start-Sleep -Seconds 30
 # while($ready -ne "True")
 # {
-#     $ready = ExecuteQuery "az ad sp show --id $servicePrincipalName --query accountEnabled -o tsv $debugString"
+#     $ready = AzQuery "ad sp show --id $servicePrincipalName" -q accountEnabled -o tsv
 # }

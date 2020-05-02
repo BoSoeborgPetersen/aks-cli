@@ -3,7 +3,7 @@ $envId = az devops invoke --area environments --resource environments --route-pa
 "EnvID: $envId"
 #$resourceId =  Invoke-RestMethod -Uri 'https://dev.azure.com/3Shape/Communicate/_environments/58?view=resources'
 # $resourceId = az devops invoke --area environments --resource kubernetes --route-parameters project=Communicate environmentId=59 resourceId=130 --http-method GET --api-version 6.0-preview -o json
-$resourceId = az devops invoke --area environments --resource kubernetes --route-parameters project=Communicate environmentId=59 --http-method GET --api-version 6.0-preview -o json --debug
+$resourceId = az devops invoke --area environments --resource kubernetes --route-parameters project=Communicate environmentId=59 --http-method GET --api-version 6.0-preview -o json
 # $resourceId = 130
 "ResourceID: $resourceId"
 #az devops invoke --area environments --resource kubernetes --route-parameters project=Communicate environmentId=$envId resourceId=$resourceId --http-method DELETE --api-version 6.0-preview -o json

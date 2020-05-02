@@ -27,5 +27,9 @@ function ExecuteQuery($commandString)
 {
     Write-Verbose "QUERY: $CommandString"
     
-    return Invoke-Expression $CommandString
+    $result = Invoke-Expression $CommandString
+
+    Write-Verbose "QUERY - RESULT: $result"
+
+    return $result
 }

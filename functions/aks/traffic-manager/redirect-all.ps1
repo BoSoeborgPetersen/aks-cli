@@ -4,25 +4,22 @@
 WriteAndSetUsage "aks traffic-manager redirect-all"
 
 # Step 1: Choose source cluster
-Clear-Host
 Write-Info "Choose source AKS cluster"
-$sourceCluster = ChooseAksCluster
+$sourceCluster = ChooseClusterMenu
 
 # Step 2: Choose target cluster
-Clear-Host
 Write-Info "Choose target AKS cluster"
-$targetCluster = ChooseAksCluster
+$targetCluster = ChooseClusterMenu
 
-Clear-Host
 Write-Info "Redirect all Traffic Managers from '$($sourceCluster.name)' to '$($targetCluster.name)'"
 
 # Step 5: Find all traffic managers pointing to the Public IP resource of the source cluster.
-$subscriptionId = $GlobalCurrentSubscription.id
+$subscriptionId = GetCurrentSubscription
 $sourceResourceGroup = $sourceCluster.resourceGroup
 $sourcePublicIpName = ClusterToIpAddressName $sourceCluster.name
 # $sourcePublicIpName = "$($sourceCluster.resourceGroup)-ip"
 $sourcePublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$sourceResourceGroup/providers/Microsoft.Network/publicIPAddresses/$sourcePublicIpName"
-$trafficManagers = ExecuteQuery "az network traffic-manager profile list --query `"[?contains(endpoints[].targetResourceId, '$sourcePublicIpId')]`" $debugString" | ConvertFrom-Json
+$trafficManagers = AzQuery "network traffic-manager profile list --query `"[?endpoints[].targetResourceId==$sourcePublicIpId]`"" | ConvertFrom-Json
 
 # Step 6: Update Traffic Managers to point to the Public IP resource of the target cluster.
 if (AreYouSure)
@@ -32,7 +29,7 @@ if (AreYouSure)
     $targetPublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$targetResourceGroup/providers/Microsoft.Network/publicIPAddresses/$targetPublicIpName"
     foreach($trafficManager in $trafficManagers)
     {
-        ExecuteCommand "az network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($trafficManager.endpoints[0].name)' --type azureEndpoints $debugString"
-        ExecuteCommand "az network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n 'AKS' --type azureEndpoints --target-resource-id $targetPublicIpId $debugString"
+        AzCommand "network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($trafficManager.endpoints[0].name)' --type azureEndpoints"
+        AzCommand "network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n 'AKS' --type azureEndpoints --target-resource-id $targetPublicIpId"
     }
 }

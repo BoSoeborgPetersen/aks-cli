@@ -4,9 +4,8 @@ WriteAndSetUsage "aks nginx uninstall [deployment name]"
 
 $namespace = "ingress"
 CheckCurrentCluster
-$nginxDeployment = GetNginxDeployment $deployment
-KubectlCheckDeployment $deployment -namespace $namespace
+$nginxDeployment = GetNginxDeploymentName $deployment
 
 Write-Info "Uninstall Nginx"
 
-ExecuteCommand "helm3 uninstall $nginxDeployment -n $namespace $debugString"
+Helm3Command "uninstall $nginxDeployment -n $namespace"

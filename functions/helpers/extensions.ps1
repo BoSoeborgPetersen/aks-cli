@@ -1,8 +1,8 @@
-function SetDefaultIfEmpty([ref] $variable, $defaultValue)
+function SetDefaultIfEmpty([ref] $variable, $default)
 {
     if (!$variable.Value)
     {
-        $variable.Value = $defaultValue
+        $variable.Value = $default
     }
 }
 

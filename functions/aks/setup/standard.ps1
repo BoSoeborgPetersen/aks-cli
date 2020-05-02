@@ -1,5 +1,4 @@
-# TODO: Change to script.
-# TODO: Refactor.
+# LaterDo: Rewrite to script.
 WriteAndSetUsage "aks setup standard"
 
 CheckCurrentCluster

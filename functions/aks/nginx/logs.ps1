@@ -6,14 +6,14 @@ $namespace = "ingress"
 CheckCurrentCluster
 SetDefaultIfEmpty ([ref]$index) "1"
 $nginxDeployment = GetNginxDeploymentName $deployment
-KubectlCheckDeployment $deployment -namespace $namespace
+KubectlCheckDeployment ([ref]$deployment) -namespace $namespace -allowEmpty
 
 if($index)
 {
     Write-Info "Show Nginx logs from pod (index: $index) in deployment '$nginxDeployment'"
 
     $pod = KubectlGetPod $nginxDeployment $namespace $index
-    ExecuteCommand "kubectl logs -n $namespace $pod $kubeDebugString"
+    KubectlCommand "logs -n $namespace $pod"
 }
 else
 {

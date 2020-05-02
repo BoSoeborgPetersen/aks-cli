@@ -1,16 +1,13 @@
-param($type, $regex, $namespace, $index)
+param($type, $regex, $index, $namespace)
 
-WriteAndSetUsage "aks edit <type> <regex> [namespace] [index]"
+WriteAndSetUsage "aks edit <type> <regex> [index] [namespace]"
 
 CheckCurrentCluster
-CheckKubectlCommand "Edit" -includeAll
+CheckKubectlCommand $type "Edit" -includeAll
 CheckVariable $regex "regex"
-$namespaceString = KubectlNamespaceString $namespace
 
-Write-Info "Edit '$type/$regex'[$index] in namespace '$namespace'"
+Write-Info "Edit '$type'" -r $regex -i $index -n $namespace
 
-ExecuteCommand "Set-Item -Path Env:KUBE_EDITOR -Value nano"
+$resource = KubectlGetRegex $type $regex $namespace $index
 
-$resource = KubectlRegexMatch $type $regex $namespace $index
-
-ExecuteCommand "kubectl edit $type $resource $namespaceString $kubeDebugString"
+KubectlCommand "edit $type $resource" -n $namespace

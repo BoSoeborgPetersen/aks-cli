@@ -1,8 +1,8 @@
 param ($name, $location)
 
-CheckResourceGroupNotExists $name
-CheckLocationExists $location
+AzCheckNotResourceGroup $name
+AzCheckLocation $location
 
 Write-Info "Creating resource group '$name' in location '$location'"
 
-ExecuteCommand "az group create -g $name -l $location $debugString"
+AzCommand "group create -g $name -l $location"

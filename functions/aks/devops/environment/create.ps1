@@ -11,5 +11,5 @@ $arguments=@{
     "name" = "$environmentName"
 }
 $arguments | ConvertTo-Json | Out-File -FilePath ~/azure-devops-environment-create.json
-ExecuteCommand ("az devops invoke --area environments --resource environments --route-parameters project=$teamName --http-method POST --api-version 6.0-preview --in-file ~/azure-devops-environment-create.json $debugString")
+AzCommand "devops invoke --area environments --resource environments --route-parameters project=$teamName --http-method POST --api-version 6.0-preview --in-file ~/azure-devops-environment-create.json"
 Remove-Item ~/azure-devops-environment-create.json
