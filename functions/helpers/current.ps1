@@ -99,7 +99,7 @@ function SwitchCurrentClusterTo($resourceGroup)
     $cluster = ResourceGroupToClusterName $resourceGroup
     $global:GlobalSubscriptionUsedForClusters = $GlobalCurrentSubscription
     $global:GlobalClusters = az aks list | ConvertFrom-Json
-    $global:GlobalCurrentCluster = $GlobalClusters | Where-Object { $_.name -match $name }
+    $global:GlobalCurrentCluster = $GlobalClusters | Where-Object { $_.name -match $cluster }
 
     AzAksCurrentCommand "get-credentials"
 

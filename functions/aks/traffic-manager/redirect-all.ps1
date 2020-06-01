@@ -19,7 +19,7 @@ $sourceResourceGroup = $sourceCluster.resourceGroup
 $sourcePublicIpName = ClusterToIpAddressName $sourceCluster.name
 # $sourcePublicIpName = "$($sourceCluster.resourceGroup)-ip"
 $sourcePublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$sourceResourceGroup/providers/Microsoft.Network/publicIPAddresses/$sourcePublicIpName"
-$trafficManagers = AzQuery "network traffic-manager profile list --query `"[?endpoints[].targetResourceId==$sourcePublicIpId]`"" | ConvertFrom-Json
+$trafficManagers = AzQuery "network traffic-manager profile list" -q "[?endpoints[].targetResourceId==$sourcePublicIpId]" | ConvertFrom-Json
 
 # Step 6: Update Traffic Managers to point to the Public IP resource of the target cluster.
 if (AreYouSure)

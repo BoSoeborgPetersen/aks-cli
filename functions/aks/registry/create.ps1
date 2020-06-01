@@ -2,6 +2,8 @@ param($resourceGroup, $globalSubscription)
 
 WriteAndSetUsage "aks registry create <resource group> <global subscription>"
 
+CheckVariable $resourceGroup "resource group"
+CheckVariable $globalSubscription "global subscription"
 $globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
 AzCheckResourceGroup $globalResourceGroup $globalSubscription
 $registry = ResourceGroupToRegistryName $resourceGroup

@@ -1,8 +1,8 @@
 Clear-Host
 az login -o none
 
-New-Alias aks "$PSScriptRoot\aks.ps1" -Scope Global
-New-Alias test "$PSScriptRoot\test.ps1" -Scope Global
+New-Alias aks "$PSScriptRoot/aks.ps1" -Scope Global
+New-Alias test "$PSScriptRoot/test.ps1" -Scope Global
 
 function global:.. { Set-Location .. }
 function global:... { Set-Location ../.. }
@@ -16,6 +16,6 @@ Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm3
 
 aks switch
 
-KubectlSetEditorToNano
+Set-Item -Path Env:KUBE_EDITOR -Value nano
 Clear-Host
 aks

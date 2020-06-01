@@ -19,6 +19,7 @@ $nodeSizeString = ConditionalOperator $nodeSize "-s '$nodeSize'"
 
 $bugFixed = $true # Service Principal should be created when the cluster is created, but this does not work currently.
 
+# $servicePrincipalString = ""
 $servicePrincipalString = "--enable-managed-identity"
 
 if(!$bugFixed)
@@ -29,16 +30,16 @@ if(!$bugFixed)
     
     # AzCheckServicePrincipal($keyVaultName, $servicePrincipalIdName)
     
-    # $servicePrincipalId = AzQuery "keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName --query value"
-    # $servicePrincipalPassword = AzQuery "keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName --query value"
+    # $servicePrincipalId = AzQuery "keyvault secret show -n $servicePrincipalIdName --vault-name $keyVaultName" -q value
+    # $servicePrincipalPassword = AzQuery "keyvault secret show -n $servicePrincipalPasswordName --vault-name $keyVaultName" -q value
     
     # $servicePrincipalString = "--service-principal $servicePrincipalId --client-secret $servicePrincipalPassword"
 
     $servicePrincipalName = ClusterToServicePrincipalName $clusterName
 
-    $servicePrincipal = AzCommand "ad sp create-for-rbac -n $servicePrincipalName --skip-assignment" | ConvertFrom-Json
+    $servicePrincipal = (AzCommand "ad sp create-for-rbac -n $servicePrincipalName --skip-assignment") | ConvertFrom-Json
 
-    $servicePrincipalString = "--service-principal $($servicePrincipal.AppId) --client-secret $($servicePrincipal.Password)"
+    $servicePrincipalString = "--service-principal $($servicePrincipal.AppId) --client-secret '$($servicePrincipal.Password)'"
 }
 
 AzAksCommand "create -g $resourceGroup -n $clusterName -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --no-ssh-key --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount"

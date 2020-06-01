@@ -15,4 +15,4 @@ Write-Info "Installing Cert-Manager"
 
 KubectlCommand "create ns cert-manager"
 KubectlCommand "apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v$version/cert-manager.crds.yaml"
-Helm3Command "install $certManagerName jetstack/cert-manager --namespace cert-manager --version v$version"
+Helm3Command "install $certManagerName jetstack/cert-manager -n cert-manager --version v$version"

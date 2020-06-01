@@ -14,10 +14,10 @@ if ($purge)
 
 if (AreYouSure)
 {
-    Helm3Command "uninstall cert-manager --namespace cert-manager"
+    Helm3Command "uninstall cert-manager -n cert-manager"
     if ($purge)
     {
         KubectlCommand "delete ns cert-manager"
-        KubectlCommand "delete -f https://raw.githubusercontent.com/jetstack/cert-manager/release-$version/deploy/manifests/00-crds.yaml"
+        KubectlCommand "delete -f https://github.com/jetstack/cert-manager/releases/download/v$version/cert-manager.crds.yaml"
     }
 }

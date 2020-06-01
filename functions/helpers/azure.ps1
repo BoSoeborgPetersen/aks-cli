@@ -25,7 +25,7 @@ function AzAksCurrentCommand($command, $location, $version, $query, $output)
 function AzQuery($command, $query, $subscription, $output)
 {
     $queryString = ConditionalOperator $query "--query $query"
-    $subscriptionString = ConditionalOperator $subscription "--subcription $subscription"
+    $subscriptionString = ConditionalOperator $subscription "--subscription $subscription"
     $outputString = ConditionalOperator $output "-o $output"
 
     return ExecuteQuery "az $command $queryString $subscriptionString $outputString $debugString"
@@ -70,8 +70,7 @@ function AzCheckUpgradableVersion([ref][string] $version, $preview)
 
 function AzCheckResourceGroup($name, $subscription)
 {
-    $subscription = ConditionalOperator $subscription "--subscription $subscription"
-    $check = AzQuery "group list" -q "`"[?name=='$name'].name`"" $subscription -o tsv
+    $check = AzQuery "group list" -q "`"[?name=='$name'].name`"" -s $subscription -o tsv
     Check $check "Resource Group '$name' does not exist"
 }
 

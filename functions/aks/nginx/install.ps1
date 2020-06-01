@@ -1,8 +1,7 @@
 # TODO: Change the naming-convention.ps1 to allow Communicate to use their own names somehow.
-# TODO: add parameter to use different config file.
-param($sku, $deployment, [switch] $addIp)
+param($sku, $deployment, $configPrefix, [switch] $addIp)
 
-WriteAndSetUsage "aks nginx install [sku] [deployment name] [-add ip]"
+WriteAndSetUsage "aks nginx install [sku] [deployment name] [config prefix] [-add ip]"
 
 $namespace = "ingress"
 CheckCurrentCluster
@@ -13,6 +12,7 @@ SetDefaultIfEmpty ([ref]$sku) "Basic"
 $dnsName = PrependWithDash $resourceGroup $deployment
 $ipName = ClusterToIpAddressName $cluster $deployment
 $nginxDeploymentName = GetNginxDeploymentName $deployment
+$configFile = PrependWithDash "nginx-config.yaml" $configPrefix
 
 if (AreYouSure)
 {
@@ -31,5 +31,5 @@ if (AreYouSure)
     }
 
     # TODO: Replace ' with ", and " with '
-    Helm3Command "install '$nginxDeploymentName' stable/nginx-ingress --namespace $namespace --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/nginx-config.yaml"
+    Helm3Command "install '$nginxDeploymentName' stable/nginx-ingress -n $namespace --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/$configFile"
 }

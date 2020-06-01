@@ -1,4 +1,5 @@
 # LaterDo: Add a lot more checks.
+# TODO: Allow to run from other subscriptions (add subscription parameter, calculate other variables from that).
 param($oldRegistry, $oldRegistryRepo, $newRegistryRepo, $newRegistry)
 
 WriteAndSetUsage "aks registry migrate <old registry> <old registry repo> <new registry repo> [new registry]"
@@ -23,4 +24,4 @@ foreach($imageTag in $imageTags.Split(" "))
     AzCommand "acr repository delete -n $oldRegistry --image ${oldRegistryRepo}:$imageTag -y"
 }
 
-AzCommand "acr repository delete -n $oldRegistry --repository $oldRegistryRepo -y"
+AzCommand "acr repository delete -n $oldRegistry --repository $oldRegistryRepo"

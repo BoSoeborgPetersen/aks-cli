@@ -1,7 +1,7 @@
 # TODO: Add menu and functions for state (aks state debugging enable/disable, aks state verbose enable/disable, aks state resource-group set/unset) (get feedback)
 #       - Maybe use 'PSDefaultParameterValue'.
 
-# TODO: Add "aks registry create" function.
+# TODO: Try to get rid of naming conventions, by querying for resouces, instead of assuming names.
 
 # TODO: When namespace parameter is not empty, then check that the namespace exists.
 
@@ -20,8 +20,6 @@
 # LaterDo: Incorporate DevOps functions into all related functions
 #          - e.g. update DevOps Service Connection when AKS cluster service principal is updated.
 #          - e.g. update DevOps Variable Group (for Key Vault access) when Azure Key Vault service principal is updated.
-
-# MaybeDo: Add "aks keyvault create" function (trying to get rid of the need for it).
 
 # MaybeDo: Use splatting to simplify long commands with many parameters (e.g. az aks create -c -n -g -?)..
 
@@ -68,8 +66,9 @@ MainMenu @{
     "identity" = "Azure Managed Identity operations"
     "insights" = "AKS insights operations."
     "keyvault" = "Azure Key Vault operations."
+    "kured" = "Kured (KUbernetes REboot Daemon) operations."
     "logs" = "Get container logs."
-    "monitoring" = "Prometheus and Grafana operations."
+    # "monitoring" = "Prometheus and Grafana operations."
     "nginx" = "Nginx operations."
     "pod" = "Kubernetes pod operations."
     "registry" = "Azure Container Registry operations."

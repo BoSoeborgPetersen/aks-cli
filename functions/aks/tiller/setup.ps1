@@ -7,7 +7,7 @@ $installed = KubectlQuery "get deploy tiller-deploy" -n kube-system
 if($installed)
 {
     Write-Info "Tiller (Helm server-side) is installed"
-    ExecuteCommand "aks tiller update"
+    ExecuteCommand "aks tiller upgrade"
 }
 else
 {

@@ -8,50 +8,50 @@ But if you map the funtions inside the container and run the init script, it wil
 
 # AKS-CLI: Main Menu
 
-      __       __   ___   _______
-     /  \     |  | /  /  |  _____|
-    /    \    |  |/  /   |  |____
-   /  /\  \   |     |    |____   |
-  /  ____  \  |  |\  \    ____|  |
- /__/    \__\ |__| \__\  |_______|
+         __       __   ___   _______
+        /  \     |  | /  /  |  _____|
+       /    \    |  |/  /   |  |____
+      /  /\  \   |     |    |____   |
+     /  ____  \  |  |\  \    ____|  |
+    /__/    \__\ |__| \__\  |_______|
 
-Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!
+   Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!
 
-Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)
-Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
+   Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)
+   Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
-Here are the commands:
+   Here are the commands:
 
-    autoscaler           : Setup automatic pod or node scaling.
-    cert-manager         : Certificate Manager operations.
-    create               : Create AKS cluster.
-    credentials          : Get AKS cluster credentials.
-    current              : Get current AKS cluster.
-    delete               : Delete AKS cluster.
-    describe             : Describe Kubernetes resources.
-    devops               : Azure DevOps operations.
-    edit                 : Edit Kubernetes resource.
-    get                  : Get Kubernetes resources.
-    insights             : AKS insights operations.
-    logs                 : Get container logs.
-    monitoring           : Prometheus and Grafana operations.
-    nginx                : NGINX Ingress operations.
-    pod                  : Kubernetes pod operations.
-    registry             : Azure Container Registry operations.
-    scale                : Scale operations.
-    service-principal    : Azure Service Principal operations
-    shell                : Open shell inside container.
-    switch               : Switch Azure subscription/cluster.
-    tiller               : Helm server side component.
-    top                  : Show Kubernetes resource utilization.
-    upgrade              : Upgrade AKS cluster.
-    upgrades             : Get AKS cluster upgradable versions.
-    version              : Get AKS cluster version.
-    versions             : Get AKS versions.
+       autoscaler           : Setup automatic pod or node scaling.
+       cert-manager         : Certificate Manager operations.
+       create               : Create AKS cluster.
+       credentials          : Get AKS cluster credentials.
+       current              : Get current AKS cluster.
+       delete               : Delete AKS cluster.
+       describe             : Describe Kubernetes resources.
+       devops               : Azure DevOps operations.
+       edit                 : Edit Kubernetes resource.
+       get                  : Get Kubernetes resources.
+       insights             : AKS insights operations.
+       logs                 : Get container logs.
+       monitoring           : Prometheus and Grafana operations.
+       nginx                : NGINX Ingress operations.
+       pod                  : Kubernetes pod operations.
+       registry             : Azure Container Registry operations.
+       scale                : Scale operations.
+       service-principal    : Azure Service Principal operations
+       shell                : Open shell inside container.
+       switch               : Switch Azure subscription/cluster.
+       tiller               : Helm server side component.
+       top                  : Show Kubernetes resource utilization.
+       upgrade              : Upgrade AKS cluster.
+       upgrades             : Get AKS cluster upgradable versions.
+       version              : Get AKS cluster version.
+       versions             : Get AKS versions.
 
-General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
+   General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
 
-e.g. try 'aks autoscaler'
+   e.g. try 'aks autoscaler'
 
 # Getting Started
 To just run the container do:

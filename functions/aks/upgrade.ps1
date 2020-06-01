@@ -17,7 +17,7 @@ else
 
     if ($version)
     {
-        $previewString = ConditionalOperator $preview " (allow previews)"
+        $previewString = ConditionalOperator $preview "(allow previews)"
         Write-Info "Upgrading current cluster to version '$version', which is the newest upgradable version $previewString"
     }
     else

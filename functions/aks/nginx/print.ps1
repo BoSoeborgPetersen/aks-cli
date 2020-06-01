@@ -1,12 +1,12 @@
 param($index, $deployment)
 
-WriteAndSetUsage "aks nginx config [index] [deployment]"
+WriteAndSetUsage "aks nginx print [index] [deployment]"
 
 $namespace = "ingress"
 CheckCurrentCluster
 SetDefaultIfEmpty ([ref]$index) "1"
 $nginxDeployment = GetNginxDeploymentName $deployment
-KubectlCheckDeployment ([ref]$deployment) -namespace $namespace
+KubectlCheckDaemonSet ([ref]$nginxDeployment) -namespace $namespace
 
 Write-Info "Print Nginx config file from inside the container"
 

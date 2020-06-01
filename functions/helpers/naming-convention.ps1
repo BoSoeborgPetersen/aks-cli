@@ -10,8 +10,8 @@ function ResourceGroupToInsightsName($resourceGroupName)
     return $resourceGroupName+$insightsNamePostFix
 }
 
-$registryPreFix = "eu"
-$registryPostFix = "pacr"
+$registryPreFix = "gl-"
+$registryPostFix = "-acr"
 function ResourceGroupToRegistryName($resourceGroupName)
 {
     $middle = $resourceGroupName.Split('-')[1]
@@ -26,17 +26,16 @@ function ResourceGroupToKeyVaultName($resourceGroupName)
     return $keyvaultPreFix+$middle+$keyvaultPostFix
 }
 
-# $globalResourceGroupPreFix = "gl-"
-# $globalResourceGroupPostFix = "-p"
+$globalResourceGroupPreFix = "gl-"
+$globalResourceGroupPostFix = ""
 function ResourceGroupToGlobalResourceGroupName($resourceGroupName)
 {
     $middle = $resourceGroupName.Split('-')[1]
-    # return $globalResourceGroupPreFix+$middle+$globalResourceGroupPostFix
-    return "gl-registry-p"
+    return $globalResourceGroupPreFix+$middle+$globalResourceGroupPostFix
 }
 
 $ipAddressPostFix = "-ip"
-function ClusterToIpAddressName($clusterName)
+function ClusterToIpAddressName($clusterName, $deploymentName)
 {
     return PrependWithDash ($clusterName+$ipAddressPostFix) $deploymentName
 }

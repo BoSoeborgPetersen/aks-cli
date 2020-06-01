@@ -1,9 +1,7 @@
+# LaterDo: Add "-allNamespaces" parameter.
 param($regex, $shell, $index, $namespace, [switch] $help = $false)
 
 WriteAndSetUsage "aks shell <regex> [shell] [index] [namespace] [-help]"
-
-CheckVariable $regex "regex"
-CheckCurrentCluster
 
 $commands=@{
     "ash" = "Ash (Alpine)."
@@ -18,6 +16,9 @@ if ($help)
     ShowSubMenu $commands
     exit
 }
+
+CheckVariable $regex "regex"
+CheckCurrentCluster
 
 function testShell([ref] $shell, $pod, $tryShell)
 {
@@ -41,21 +42,15 @@ if (!$shell)
     testShell ([ref]$shell) $pod "cmd"
 }
 
-if (!$shell)
-{
-    ShowSubMenu $commands
-    exit
-}
-
 Write-Info "Open shell '$shell' inside pod '$pod'" -r $regex -i $index -n $namespace
 
 testShell ([ref]$shell) $pod $shell
 
-if ($shell)
-{
-    KubectlCommand "exec -it $pod" -n $namespace -postFix "-- $shell"
-}
-else 
+if (!$shell)
 {
     Write-Error "Could not open shell inside pod"
+    ShowSubMenu $commands
+    exit
 }
+
+KubectlCommand "exec -it $pod" -n $namespace -postFix "-- $shell"

@@ -1,3 +1,4 @@
+# LaterDo: Check that "-allNamespaces" is not allowed with index.
 param($regex, $index, $namespace, [switch] $allNamespaces)
 
 WriteAndSetUsage "aks logs <regex> [index] [namespace] [-a/-allNamespaces]"
@@ -5,7 +6,7 @@ WriteAndSetUsage "aks logs <regex> [index] [namespace] [-a/-allNamespaces]"
 CheckCurrentCluster
 CheckVariable $regex "regex"
 $namespace = ConditionalOperator $allNamespaces "all" $namespace
-KubectlCheckNamespace $namespace $allNamespaces
+KubectlCheckNamespace $namespace
 
 if ($index)
 {

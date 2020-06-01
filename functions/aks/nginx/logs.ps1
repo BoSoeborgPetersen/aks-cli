@@ -4,9 +4,8 @@ WriteAndSetUsage "aks nginx logs [index] [deployment]"
 
 $namespace = "ingress"
 CheckCurrentCluster
-SetDefaultIfEmpty ([ref]$index) "1"
 $nginxDeployment = GetNginxDeploymentName $deployment
-KubectlCheckDeployment ([ref]$deployment) -namespace $namespace -allowEmpty
+KubectlCheckDaemonSet ([ref]$nginxDeployment) -namespace $namespace
 
 if($index)
 {
@@ -19,5 +18,5 @@ else
 {
     Write-Info "Show Nginx logs with Stern"
 
-    ExecuteCommand "stern $nginxDeployment-controller -n $namespace"
+    ExecuteCommand "stern -l app=$nginxDeployment -n $namespace"
 }

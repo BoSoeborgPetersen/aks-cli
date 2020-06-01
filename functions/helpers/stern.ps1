@@ -7,5 +7,5 @@ function SternExecuteCommand([string] $regex, [string] $namespace)
 
 function SternNamespaceString($namespace)
 {
-    return ConditionalOperator ($namespace -eq "all") "-A" (ConditionalOperator $namespace "-n $namespace" "")
+    return ConditionalOperator ($namespace -eq "all") "--all-namespaces" (ConditionalOperator $namespace "-n $namespace" "")
 }

@@ -8,5 +8,3 @@ KubectlCheckDeployment ([ref]$deployment) $namespace -showMenu
 Write-Info "Remove pod autoscaler for deployment '$deployment' in namespace '$namespace'"
 
 KubectlCommand "delete hpa $deployment" -n $namespace
-
-  

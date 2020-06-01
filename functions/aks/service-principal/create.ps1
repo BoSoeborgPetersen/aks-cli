@@ -5,18 +5,17 @@ WriteAndSetUsage "aks service-principal create <resource group> <global subscrip
 AzCheckResourceGroup $resourceGroup
 AzCheckSubscription $globalSubscription
 
-$globalSubscriptionId = AzQuery "account list" -q `"[?name==$globalSubscription].id`" -o tsv
 $subscriptionId = GetCurrentSubscription
-
 $clusterName = ResourceGroupToClusterName $resourceGroup
 $servicePrincipalName = ClusterToServicePrincipalName $clusterName
 $servicePrincipalIdName = ClusterToServicePrincipalIdName $clusterName
 $servicePrincipalPasswordName = ClusterToServicePrincipalPasswordName $clusterName
 
-$globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
-AzCheckResourceGroup $globalResourceGroup $globalSubscription
-$registry = ResourceGroupToRegistryName $resourceGroup
+$registry = AzQuery "acr list" -q [].name -o tsv -s $globalSubscription
 AzCheckContainerRegistry $registry $globalSubscription
+$globalSubscriptionId = AzQuery "account list" -q "`"[?name=='$globalSubscription'].id`"" -o tsv
+$globalResourceGroup = AzQuery "acr list" -q "`"[?name=='$registry'].resourceGroup`"" -o tsv -s $globalSubscription
+AzCheckResourceGroup $globalResourceGroup $globalSubscription
 $keyVault = ResourceGroupToKeyVaultName $resourceGroup
 AzCheckKeyVault $keyVault $globalSubscription
 
@@ -26,4 +25,4 @@ $loggedInUsername = AzQuery "account show" -q user.name -o tsv
 AzCommand "keyvault set-policy -n $keyvault --secret-permissions get list set --upn $loggedInUsername --subscription '$globalSubscription'"
 
 AzCommand "keyvault secret set -n $servicePrincipalIdName --vault-name $keyVault --value $($servicePrincipal.AppId) --subscription '$globalSubscription'"
-AzCommand "keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVault --value $($servicePrincipal.Password) --subscription '$globalSubscription'"
+AzCommand "keyvault secret set -n $servicePrincipalPasswordName --vault-name $keyVault --value '$($servicePrincipal.Password)' --subscription '$globalSubscription'"

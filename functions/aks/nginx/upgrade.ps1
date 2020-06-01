@@ -4,9 +4,12 @@ WriteAndSetUsage "aks nginx upgrade [deployment name]"
 
 $namespace = "ingress"
 CheckCurrentCluster
-$nginxDeployment = GetNginxDeployment $deployment
-KubectlCheckDeployment ([ref]$deployment) -namespace $namespace
+$nginxDeployment = GetNginxDeploymentName $deployment
+KubectlCheckDaemonSet ([ref]$nginxDeployment) -namespace $namespace
 
 Write-Info "Upgrade Nginx"
 
-Helm3Command "upgrade $nginxDeployment stable/nginx-ingress -n $namespace --reuse-values"
+if (AreYouSure)
+{
+    Helm3Command "upgrade $nginxDeployment stable/nginx-ingress -n $namespace --atomic --reuse-values"
+}

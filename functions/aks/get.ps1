@@ -3,9 +3,9 @@ param($type, $regex, $namespace, [switch] $allNamespaces)
 WriteAndSetUsage "aks get <type> [regex] [namespace] [-a/-allNamespaces]"
 
 CheckCurrentCluster
-CheckKubectlCommand $type "Get"
+CheckKubectlCommand $type "Get" -includeAll
 $namespace = ConditionalOperator $allNamespaces "all" $namespace
-KubectlCheckNamespace $namespace $allNamespaces
+KubectlCheckNamespace $namespace
 
 Write-Info "Get '$type'" -r $regex -n $namespace
 
