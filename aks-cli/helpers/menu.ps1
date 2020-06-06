@@ -12,6 +12,7 @@ function Logo()
 
 function Welcome()
 {
+    Write-Host (ConditionalOperator $GlobalIsDevelopment " --- DEVELOPMENT EDITION --- `n`n") -NoNewline
     Write-Host 'Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!'
     Write-Host ''
     Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)'

@@ -1,3 +1,20 @@
+if(!$GlobalRunOnce)
+{
+    $global:GlobalIsDevelopment = Test-Path /app/dev-aks-cli
+    $global:GlobalRunOnce = $true
+}
+
+if ($PSCmdlet.MyInvocation.BoundParameters["Debug"].IsPresent)
+{
+    $debugString = "--debug"
+    $kubeDebugString = "--v=4"
+}
+
+if ($PSCmdlet.MyInvocation.BoundParameters["WhatIf"].IsPresent)
+{
+    $whatIf = $true
+}
+
 function Write-Error($message) 
 {
     [Console]::ForegroundColor = 'red'
@@ -20,21 +37,10 @@ function Write-Info($message, [string] $regex, [string] $index, [string] $namesp
     Write-InfoMessage "$message $regexString $indexString $namespaceString"
 }
 
-if ($PSCmdlet.MyInvocation.BoundParameters["Debug"].IsPresent)
-{
-    $debugString = "--debug"
-    $kubeDebugString = "--v=4"
-}
-
-if ($PSCmdlet.MyInvocation.BoundParameters["WhatIf"].IsPresent)
-{
-    $whatIf = $true
-}
-
 function UpdateShellWindowTitle()
 {
     $cluster = GetCurrentClusterName
-    $host.ui.RawUI.WindowTitle = $cluster
+    $host.ui.RawUI.WindowTitle = ("$cluster" + (ConditionalOperator $GlobalIsDevelopment ' (dev)'))
 }
 
 function UpdateShellPrompt()

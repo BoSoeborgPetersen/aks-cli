@@ -62,4 +62,6 @@ RUN apk add bash-completion && \
     helm3 completion bash > $COMPLETIONS/helm3.bash
 
 WORKDIR /app
+COPY aks-cli aks-cli
+
 ENTRYPOINT ["pwsh"]

@@ -7,8 +7,6 @@
 
 # TODO: Add "check" commands for everyting and then add Communicate script for checking that a cluster is as expected.
 
-# LaterDo: Docker Image: Include funtions as built in functions
-
 # LaterDo: Rename GitHub repo and Docker Hub registry to 'aks-cli', but write 'Azure Kubernetes Service CLI' in description.
 
 # LaterDo: Add nodepools to functions
@@ -38,18 +36,7 @@ if (!$params)
 }
 
 $global:GlobalRoot = $PSScriptRoot
-. "$PSScriptRoot/helpers/extensions.ps1"
-. "$PSScriptRoot/helpers/powershell.ps1"
-. "$PSScriptRoot/helpers/basic.ps1"
-. "$PSScriptRoot/helpers/menu.ps1"
-. "$PSScriptRoot/helpers/check.ps1"
-. "$PSScriptRoot/helpers/shared.ps1"
-. "$PSScriptRoot/helpers/current.ps1"
-. "$PSScriptRoot/helpers/azure.ps1"
-. "$PSScriptRoot/helpers/kubectl.ps1"
-. "$PSScriptRoot/helpers/helm.ps1"
-. "$PSScriptRoot/helpers/stern.ps1"
-. "$PSScriptRoot/helpers/naming-convention.ps1"
+Get-ChildItem "$PSScriptRoot/helpers/" -Filter *.ps1 -Recurse | ForEach-Object{ . $_.FullName }
 
 CheckCurrentSubscription
 
