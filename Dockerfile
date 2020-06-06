@@ -5,9 +5,10 @@ FROM mcr.microsoft.com/azure-cli:latest
 RUN az extension add --name azure-devops
 
 # Install PowerShell Core (134 MB)
+ENV POWERSHELL_VERSION=7.0.1
 RUN apk add --no-cache ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl libssl1.1 libstdc++ tzdata userspace-rcu zlib icu-libs curl && \
     apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache lttng-ust && \
-    curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.0.0/powershell-7.0.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
+    curl -L https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell-${POWERSHELL_VERSION}-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
     mkdir -p /opt/microsoft/powershell/7 && \
     tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7 && \
     chmod +x /opt/microsoft/powershell/7/pwsh && \
@@ -22,8 +23,9 @@ RUN pwsh -c "Install-Module PSMenu -Force" && \
 RUN apk add nano --no-cache
  
 # Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 40 MB)
+ENV KUBECTL_VERSION=0.15.1
 RUN az aks install-cli --only-show-errors && \
-    curl -L https://github.com/jetstack/cert-manager/releases/download/v0.15.0/kubectl-cert_manager-linux-amd64.tar.gz -o /tmp/kubectl-cert-manager.tar.gz && \
+    curl -L https://github.com/jetstack/cert-manager/releases/download/v${KUBECTL_VERSION}/kubectl-cert_manager-linux-amd64.tar.gz -o /tmp/kubectl-cert-manager.tar.gz && \
     tar zxf /tmp/kubectl-cert-manager.tar.gz && \
     mv kubectl-cert_manager /usr/local/bin && \
     rm /tmp/kubectl-cert-manager.tar.gz
@@ -42,7 +44,7 @@ RUN curl -LO https://git.io/get_helm.sh && \
 
 # Install Helm-Cli version 3 (helm3) (~90 MB)
 # Install 2to3 plugin for Helm-Cli version 3 (helm3 2to3)
-ENV HELM_VERSION=3.2.0
+ENV HELM_VERSION=3.2.2
 RUN curl -LO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     mkdir helm3 && \
     tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --directory helm3 && \
