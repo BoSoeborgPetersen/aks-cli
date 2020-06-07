@@ -25,7 +25,7 @@ function AzAksCurrentCommand($command, $location, $version, $query, $output)
 function AzQuery($command, $query, $subscription, $output)
 {
     $queryString = ConditionalOperator $query "--query $query"
-    $subscriptionString = ConditionalOperator $subscription "--subscription $subscription"
+    $subscriptionString = ConditionalOperator $subscription "--subscription '$subscription'"
     $outputString = ConditionalOperator $output "-o $output"
 
     return ExecuteQuery "az $command $queryString $subscriptionString $outputString $debugString"
@@ -102,24 +102,24 @@ function AzCheckLoadBalancerSku([ref] $sku, $default)
 
 function AzCheckContainerRegistry($name, $subscription)
 {
-    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s $subscription -o tsv
     Check $check "Azure Container Registry '$name' in subscription '$subscription' does not exist"
 }
 
 function AzCheckNotContainerRegistry($name, $subscription)
 {
-    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    $check = AzQuery "acr list" -q "`"[?name=='$name'].name`"" -s $subscription -o tsv
     Check (!$check) "Azure Container Registry '$name' in subscription '$subscription' does not exist"
 }
 
 function AzCheckKeyVault($name, $subscription)
 {
-    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s $subscription -o tsv
     Check $check "Azure Key Vault '$name' in subscription '$subscription' does not exist"
 }
 
 function AzCheckNotKeyVault($name, $subscription)
 {
-    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s "'$subscription'" -o tsv
+    $check = AzQuery "keyvault list" -q "`"[?name=='$name'].name`"" -s $subscription -o tsv
     Check (!$check) "Azure Key Vault '$name' in subscription '$subscription' does not exist"
 }

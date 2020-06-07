@@ -63,7 +63,7 @@ MainMenu @{
     "resource-group" = "Azure Resource Group operations."
     "scale" = "Scale operations."
     "service-principal" = "Azure Service Principal operations"
-    # "setup" = "Install add-ons and configure AKS cluster."
+    "setup" = "Install add-ons and configure AKS cluster."
     "shell" = "Open shell inside container."
     "switch" = "Switch Azure subscription / AKS cluster."
     "tiller" = "Tiller (Helm v2 server side component) operations."

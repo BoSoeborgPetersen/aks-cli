@@ -1,7 +1,12 @@
 # TODO: Check if Service Principal is already authorized.
 param($globalSubscription)
 
-WriteAndSetUsage "aks service-principal authorize <global subscription>"
+WriteAndSetUsage "aks service-principal authorize [global subscription]"
+
+if(!$globalSubscription)
+{
+    $globalSubscription = (ChooseSubscriptionMenu).Name
+}
 
 CheckCurrentCluster
 $resourceGroup = GetCurrentClusterResourceGroup
