@@ -14,8 +14,9 @@ Register-BashArgumentCompleter stern /usr/share/bash-completion/completions/ster
 Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm.bash
 Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm3.bash
 
+Set-Item -Path Env:KUBE_EDITOR -Value nano
+
 aks switch
 
-Set-Item -Path Env:KUBE_EDITOR -Value nano
 Clear-Host
 aks
