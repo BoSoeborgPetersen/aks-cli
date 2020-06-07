@@ -66,4 +66,4 @@ RUN apk add bash-completion && \
 WORKDIR /app
 COPY aks-cli aks-cli
 
-ENTRYPOINT ["pwsh"]
+ENTRYPOINT [ "pwsh", "-NoExit", "-NoLogo", "-f", "aks-cli/init.ps1" ]

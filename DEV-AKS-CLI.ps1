@@ -1,16 +1,13 @@
-$path = $PSScriptRoot
-Set-Location $path
+Set-Location $PSScriptRoot
 
-docker build . -t dev-aks-cli
-
-if(!(Test-Path $path/scripts))
+if(!(Test-Path scripts))
 {
-    mkdir $path/scripts
+    mkdir scripts
 }
 
-if(!(Test-Path $path/temp))
+if(!(Test-Path temp))
 {
-    mkdir $path/temp
+    mkdir temp
 }
 
-docker run -v $path/scripts:/app/scripts -v $path/temp:/app/temp -v $path/aks-cli:/app/dev-aks-cli -it --rm dev-aks-cli:latest -NoExit -NoLogo -f dev-aks-cli/init.ps1
+docker build . -t dev-aks-cli && docker run -v scripts:/app/scripts -v temp:/app/temp -v aks-cli:/app/dev-aks-cli -it --rm dev-aks-cli:latest
