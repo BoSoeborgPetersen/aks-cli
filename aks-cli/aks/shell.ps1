@@ -1,20 +1,13 @@
 # LaterDo: Add "-allNamespaces" parameter.
-param($regex, $shell, $index, $namespace, [switch] $help = $false)
+param($regex, $shell, $index, $namespace)
 
-WriteAndSetUsage "aks shell <regex> [shell] [index] [namespace] [-help]"
+WriteAndSetUsage "aks shell <regex> [shell] [index] [namespace]"
 
 $commands=@{
     "ash" = "Ash (Alpine)."
     "bash" = "Bash (Debian)."
     "cmd" = "Command Prompt (Windows)."
     "powershell" = "Powershell (Windows)."
-}
-
-# LaterDo: Generalize.
-if ($help)
-{
-    ShowSubMenu $commands
-    exit
 }
 
 CheckVariable $regex "regex"

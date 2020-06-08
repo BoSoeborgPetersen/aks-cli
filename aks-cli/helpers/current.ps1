@@ -169,3 +169,13 @@ function ChooseDeployment([ref] $deployment, $namespace)
         $deployment.Value = ChooseDeploymentMenu $namespace
     }
 }
+
+function SetCurrentCommandText($text)
+{
+    $global:GlobalCurrentCommandText = $text
+}
+
+function GetCurrentCommandText()
+{
+    return $global:GlobalCurrentCommandText
+}

@@ -1,3 +1,4 @@
+# LaterDo: Use
 #powershell script port of https://github.com/maxhauser/semver/
 function private:toSemVer($version){
     $version -match "^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<patch>\d+))?(\-(?<pre>[0-9A-Za-z\-\.]+))?(\+(?<build>[0-9A-Za-z\-\.]+))?$" | Out-Null

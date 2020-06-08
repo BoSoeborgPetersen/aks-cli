@@ -17,6 +17,7 @@ function CheckSemanticVersion([string] $version)
     return $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
 }
 
+# LaterDo: Finish
 # function ConvertSemanticVersionToShort([string] $version)
 # {
 #     $noPatchVersion = $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"

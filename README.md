@@ -1,6 +1,6 @@
 # Azure Kubernetes Service CLI
 
-Azure-CLI (az) docker image extended with AKS-CLI, PowerShell Core, Kubernetes-CLI, Helm-CLI & Wercher/Stern.
+Azure-CLI extended with AKS-CLI, PowerShell Core, Kubernetes-CLI, Helm-CLI & Wercher/Stern.
 
 Goal: To make it a lot easier to work with Azure Kubernetes Service clusters.
 
@@ -83,7 +83,7 @@ e.g. try 'aks autoscaler'
 
 Run AKS-CLI:
 
-> docker run --rm -it bo0petersen/aks-cli
+```docker run --rm -it bo0petersen/aks-cli```
 
 Run AKS-CLI, with volume mount:
 
@@ -108,7 +108,7 @@ Add to settings.json under profiles:
   "guid": "{636d6d48-1d06-40e6-9958-77569099d16c}",
   "name": "AKS-CLI",
   "startingDirectory": "<start_dir_path>",
-  "commandline": "pwsh -Command \"& { docker pull bo0petersen/aks-cli && docker run --rm -it -v mapped:/app/mapped bo0petersen/aks-cli }\"",
+  "commandline": "pwsh -Command \"& { docker pull bo0petersen/aks-cli && docker run --rm -it -v <mapped_dir_path>/mapped:/app/mapped bo0petersen/aks-cli }\"",
   "icon": "<icon_path>/Aks-cli.png",
   "backgroundImage": "<icon_path>/Aks-cli.png"
 }
@@ -133,16 +133,16 @@ NB: Remember to replace paths and download "Aks-cli.png".
 
 Clone git repository:
 
-> git clone <https://github.com/BoSoeborgPetersen/azure-kubernetes-service-cli.git>
+```git clone <https://github.com/BoSoeborgPetersen/azure-kubernetes-service-cli.git>```
 
 Create directories for volume mounting:
 
-> mkdir mapped
+```mkdir mapped```
 
 Run AKS-CLI in development mode:
 
-> docker build . -t dev-aks-cli
-> docker run --rm -it -v scripts:/app/scripts -v temp:/app/temp -v aks-cli:/app/dev-aks-cli dev-aks-cli --entrypoint pwsh -NoExit -NoLogo -f dev-aks-cli/init.ps1
+```docker build . -t dev-aks-cli```
+```docker run --rm -it -v scripts:/app/scripts -v temp:/app/temp -v aks-cli:/app/dev-aks-cli dev-aks-cli --entrypoint pwsh -NoExit -NoLogo -f dev-aks-cli/init.ps1```
 
 Run AKS-CLI in development mode, with Windows Terminal:
 
@@ -150,10 +150,10 @@ Run AKS-CLI in development mode, with Windows Terminal:
 {
   "guid": "{3cf0be50-3aa0-4f1d-b4f1-c6ccbe6b7ef3}",
   "name": "AKS-CLI (Development)",
-  "startingDirectory": "<start_dir_path>",
-  "commandline": "pwsh -Command \"& { docker build . -t dev-aks-cli && docker run --rm -it -v scripts:/app/scripts -v temp:/app/temp -v aks-cli:/app/dev-aks-cli dev-aks-cli --entrypoint pwsh -NoExit -NoLogo -f dev-aks-cli/init.ps1 }\"",
-  "icon": "<icon_path>/Aks-cli.png",
-  "backgroundImage": "<icon_path>/Aks-cli.png"
+  "startingDirectory": "<source_path>",
+  "commandline": "pwsh -Command \" & { docker build . -t dev-aks-cli && docker run --rm -it -v <source_path>/scripts:/app/scripts -v <source_path>/temp:/app/temp -v <source_path>/aks-cli:/app/dev-aks-cli --entrypoint pwsh dev-aks-cli -NoExit -NoLogo -f dev-aks-cli/init.ps1 }\"",
+  "icon": "<source_path>/Aks-cli.png",
+  "backgroundImage": "<source_path>/Aks-cli.png"
 }
 ```
 

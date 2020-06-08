@@ -1,3 +1,4 @@
+# LaterDo: Rewrite
 az devops configure --defaults organization=https://dev.azure.com/3Shape/
 $envId = az devops invoke --area environments --resource environments --route-parameters project=Communicate --http-method GET --api-version 6.0-preview --query "value[?name=='TEST2'].id" -o tsv
 "EnvID: $envId"

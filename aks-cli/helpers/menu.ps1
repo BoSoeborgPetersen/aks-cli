@@ -32,7 +32,11 @@ function ShowCommands($commands)
         Write-Host ("    $($key.PadRight($maxSubCommandLength + 4)): $($commands["$key"])")
     }
     Write-Host ''
-    Write-Host 'General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).'
+}
+
+function ShowGeneralFlags()
+{
+    Write-Host 'General flags: -h (help), -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).'
     Write-Host ''
 }
 
@@ -60,6 +64,7 @@ function ShowMenu($commandPrefix, $commands)
     Write-Host ''
     Write-Host 'Here are the commands:'
     ShowCommands $commands
+    ShowGeneralFlags
     ShowExample $commands
     Write-Host ''
 }
@@ -101,6 +106,7 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $fals
             $scriptExists = [System.IO.File]::Exists($path)
             if ($scriptExists) 
             {
+                SetCurrentCommandText $commands["$command"]
                 return $path
             }
             else

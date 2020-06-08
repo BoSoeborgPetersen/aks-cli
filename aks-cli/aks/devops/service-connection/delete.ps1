@@ -1,3 +1,4 @@
+# LaterDo: Rewrite
 param($name, $namespace)
 
 WriteAndSetUsage "aks devops service-connection delete <name> [namespace]"

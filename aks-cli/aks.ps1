@@ -27,7 +27,8 @@
 param
 (
     [Parameter(ValueFromRemainingArguments=$True)]
-    [string[]] $params
+    [string[]] $params,
+    [switch] $help = $false
 )
 
 if (!$params)
