@@ -1,13 +1,20 @@
-param($deployment, $min, $max, $limit, $namespace)
+param($deployment, $min = 3, $max = 6, $limit = 60, $namespace)
 
-WriteAndSetUsage "aks autoscaler pod add [deployment] [min] [max] [limit] [namespace]"
+WriteAndSetUsage "aks autoscaler pod add" ([ordered]@{
+    "[deployment]" = KubernetesDeploymentDescription
+    "[min]" = KubernetesMinPodCountDescription
+    "[max]" = KubernetesMaxPodCountDescription
+    "[limit]" = KubernetesCpuScalingLimitDescription
+    "[namespace]" = KubernetesNamespaceDescription
+})
 
 CheckCurrentCluster
-CheckNumberRange ([ref]$min) "min" -min 1 -max 1000 -default 3
-CheckNumberRange ([ref]$max) "max" -min 1 -max 1000 -default 30
-CheckNumberRange ([ref]$limit) "limit" -min 40 -max 80 -default 60
-KubectlCheckDeployment ([ref]$deployment) $namespace -showMenu
+CheckNumberRange $min "min" -min 1 -max 1000
+CheckNumberRange $max "max" -min 1 -max 1000
+CheckNumberRange $limit "limit" -min 40 -max 80
+$deployment = KubectlCheckDeployment $deployment $namespace
+KubectlCheckNamespace $namespace
 
-Write-Info "Add pod autoscaler (min: $min, max: $max, cpu limit: $limit) to deployment '$deployment' in namespace '$namespace'"
+Write-Info "Add pod autoscaler (min: $min, max: $max, cpu limit: $limit) to deployment '$deployment'" -n $namespace
 
-KubectlCommand "autoscale deploy $deployment --cpu-percent=$limit --min=$min --max=$max" -n $namespace
+KubectlCommand "autoscale deploy $deployment --min=$min --max=$max --cpu-percent=$limit" -n $namespace

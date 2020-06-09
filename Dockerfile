@@ -23,7 +23,7 @@ RUN pwsh -c "Install-Module PSMenu -Force" && \
 RUN apk add nano --no-cache 
   
 # Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 40 MB) 
-ENV KUBECTL_CERT_MANAGER_VERSION=0.16.0 
+ENV KUBECTL_CERT_MANAGER_VERSION=0.16.1
 RUN az aks install-cli --only-show-errors && \ 
     curl -L https://github.com/jetstack/cert-manager/releases/download/v${KUBECTL_CERT_MANAGER_VERSION}/kubectl-cert_manager-linux-amd64.tar.gz -o /tmp/kubectl-cert-manager.tar.gz && \ 
     tar zxf /tmp/kubectl-cert-manager.tar.gz && \ 
@@ -35,24 +35,23 @@ ENV STERN_VERSION=1.11.0
 RUN curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/${STERN_VERSION}/stern_linux_amd64 && \ 
     chmod +x /usr/local/bin/stern 
  
-# Install Helm-Cli (helm) (90 MB) 
-RUN curl -LO https://git.io/get_helm.sh && \ 
-    chmod 700 get_helm.sh && \ 
-    ./get_helm.sh && \ 
-    helm init --client-only && \ 
-    rm ./get_helm.sh 
- 
-# Install Helm-Cli version 3 (helm3) (~90 MB) 
-# Install 2to3 plugin for Helm-Cli version 3 (helm3 2to3) 
-ENV HELM_VERSION=3.2.4 
+# Install Helm-Cli version 2 (helm2) (90 MB) 
+ENV HELM_VERSION=2.16.10
 RUN curl -LO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \ 
-    mkdir helm3 && \ 
-    tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --directory helm3 && \ 
-    ln -s /helm3/linux-amd64/helm /usr/bin/helm3 && \ 
-    rm helm-v${HELM_VERSION}-linux-amd64.tar.gz && \ 
-    helm3 repo add stable https://kubernetes-charts.storage.googleapis.com && \ 
-    helm3 repo add jetstack https://charts.jetstack.io && \ 
-    helm3 plugin install https://github.com/helm/helm-2to3 
+    mkdir helm2 && \ 
+    tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --directory helm2 && \ 
+    ln -s /helm2/linux-amd64/helm /usr/bin/helm2 && \ 
+    rm helm-v${HELM_VERSION}-linux-amd64.tar.gz
+
+# Install Helm-Cli version 3 (helm) (~90 MB) 
+# Install 2to3 plugin for Helm-Cli version 3 (helm 2to3)
+RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash && \  
+    helm repo add stable https://kubernetes-charts.storage.googleapis.com && \  
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \  
+    helm repo add jetstack https://charts.jetstack.io && \  
+    helm repo add kured https://weaveworks.github.io/kured && \  
+    helm repo update && \ 
+    helm plugin install https://github.com/helm/helm-2to3  
  
 # Install Bash completion 
 ENV COMPLETIONS=/usr/share/bash-completion/completions 
@@ -60,8 +59,8 @@ RUN apk add bash-completion && \
     printf "\nsource /etc/profile.d/bash_completion.sh" >> ~/.bashrc && \ 
     kubectl completion bash > $COMPLETIONS/kubectl.bash && \ 
     stern --completion bash > $COMPLETIONS/stern.bash && \ 
-    helm completion bash > $COMPLETIONS/helm.bash && \ 
-    helm3 completion bash > $COMPLETIONS/helm3.bash 
+    helm2 completion bash > $COMPLETIONS/helm2.bash && \ 
+    helm completion bash > $COMPLETIONS/helm.bash 
  
 WORKDIR /app 
 COPY aks-cli aks-cli 

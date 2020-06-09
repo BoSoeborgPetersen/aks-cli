@@ -1,9 +1,11 @@
 param($configPrefix)
 
-WriteAndSetUsage "aks nginx manifest"
+WriteAndSetUsage "aks nginx manifest" ([ordered]@{
+    "[config prefix]" = "AKS-CLI config file name prefix"
+})
 
 CheckCurrentCluster
-$configFile = PrependWithDash "nginx-config.yaml" $configPrefix
+$configFile = PrependWithDash $configPrefix "nginx-config.yaml"
 
 Write-Info "Edit manifest config file (yaml) used for installing Nginx"
 

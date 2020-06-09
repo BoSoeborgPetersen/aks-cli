@@ -1,43 +1,51 @@
-# LaterDo: Add "-allNamespaces" parameter.
-param($regex, $shell, $index, $namespace)
+param($regex, $shell, $index = 0, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks shell <regex> [shell] [index] [namespace]"
+WriteAndSetUsage "aks shell" ([ordered]@{
+    "[regex]" = "Expression to match against name"
+    "[shell]" = "Shell type (ash, bash, cmd, powershell)"
+    "[index]" = "Index of the pod to open shell in"
+    "[namespace]" = KubernetesNamespaceDescription
+    "[-allNamespaces]" = KubernetesAllNamespacesDescription
+})
 
 $commands=@{
-    "ash" = "Ash (Alpine)."
-    "bash" = "Bash (Debian)."
-    "cmd" = "Command Prompt (Windows)."
-    "powershell" = "Powershell (Windows)."
+    "ash" = "Ash (Alpine)"
+    "bash" = "Bash (Debian)"
+    "cmd" = "Command Prompt (Windows)"
+    "powershell" = "Powershell (Windows)"
 }
 
 CheckVariable $regex "regex"
 CheckCurrentCluster
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace
 
-function testShell([ref] $shell, $pod, $tryShell)
+function testShell($shell, $name, $tryShell)
 {
-    if (!$shell.Value)
+    if (!$shell)
     {
-        $output = KubectlCommand "exec $pod" -n $namespace -postFix "-- $tryShell 2>&1"
+        $output = KubectlCommand "exec $name" -n $namespace -postFix " -- $tryShell 2>&1"
         if (!$output -or ($output -like "*Microsoft Corporation*"))
         {
-            $shell.Value = $tryShell
+            $shell = $tryShell
         }
     }
+    return $shell
 }
 
-$pod = KubectlGetRegex "pod" $regex $namespace $index
+$namespace, $name = KubectlGetRegex -t pod -r $regex -i $index -n $namespace
 
 if (!$shell)
 {
-    testShell ([ref]$shell) $pod "bash"
-    testShell ([ref]$shell) $pod "ash"
-    testShell ([ref]$shell) $pod "powershell"
-    testShell ([ref]$shell) $pod "cmd"
+    $shell = testShell $shell $name "bash"
+    $shell = testShell $shell $name "ash"
+    $shell = testShell $shell $name "powershell"
+    $shell = testShell $shell $name "cmd"
 }
 
-Write-Info "Open shell '$shell' inside pod '$pod'" -r $regex -i $index -n $namespace
+Write-Info "Open shell '$shell' inside pod '$name'" -r $regex -i $index -n $namespace
 
-testShell ([ref]$shell) $pod $shell
+$shell = testShell $shell $name $shell
 
 if (!$shell)
 {
@@ -46,4 +54,4 @@ if (!$shell)
     exit
 }
 
-KubectlCommand "exec -it $pod" -n $namespace -postFix "-- $shell"
+KubectlCommand "exec -it $name" -n $namespace -postFix " -- $shell"

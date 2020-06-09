@@ -1,9 +1,11 @@
 param($count)
 
-WriteAndSetUsage "aks scale nodes <count>"
+WriteAndSetUsage "aks scale nodes" ([ordered]@{
+    "<count>" = "Number of nodes (VMs)"
+})
 
 CheckCurrentCluster
-CheckNumberRange ([ref]$count) "count" -min 2 -max 100
+CheckNumberRange $count "count" -min 2 -max 100
 
 Write-Info "Scaling cluster to '$count' nodes"
 

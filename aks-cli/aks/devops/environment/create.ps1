@@ -1,15 +1,32 @@
-# TODO: Add Approval/Check (e.g. '[Identity]\Contributors')
-param($environmentName)
+# LaterDo: Add Approval/Check (e.g. '[Identity]\Contributors')
+param($name, [switch] $addDefaultKubernetesResources)
 
-WriteAndSetUsage "aks devops environment create <environment name>"
+WriteAndSetUsage "aks devops environment create" ([ordered]@{
+    "<name>" = "Environment Name"
+    "[-addDefaultKubernetesResources]" = "Add Kubernetes resources for default namespaces (default, ingress, cert-manager)"
+})
 
-CheckVariable $environmentName "environment name"
+CheckVariable $name "environment name"
 
-$teamName = GetDevOpsTeamName
+Write-Info "Creating Environment"
 
-$arguments=@{
-    "name" = "$environmentName"
+$arguments = @{
+    name = $name
 }
-$arguments | ConvertTo-Json | Out-File -FilePath ~/azure-devops-environment-create.json
-AzCommand "devops invoke --area environments --resource environments --route-parameters project=$teamName --http-method POST --api-version 6.0-preview --in-file ~/azure-devops-environment-create.json"
-Remove-Item ~/azure-devops-environment-create.json
+
+$filepath = SaveTempFile($arguments)
+AzDevOpsInvokeCommand -a environments -r environments -m POST -f $filepath
+DeleteTempFile($filepath)
+
+if ($addDefaultKubernetesResources)
+{
+    Write-Host ("Adding Kubernetes resource to DevOps Environment '$environment, Namespace: default'")
+    AksCommand devops environment-kubernetes add $environment default 
+    Write-Host ("Adding Kubernetes resource to DevOps Environment '$environment, Namespace: ingress'")
+    AksCommand devops environment-kubernetes add $environment ingress 
+    Write-Host ("Adding Kubernetes resource to DevOps Environment '$environment, Namespace: cert-manager'")
+    AksCommand devops environment-kubernetes add $environment cert-manager 
+}
+
+# CREATE:
+# POST https://dev.azure.com/3Shape/Identity/_apis/pipelines/environments/234

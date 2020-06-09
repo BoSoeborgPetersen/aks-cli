@@ -1,11 +1,7 @@
-function SternExecuteCommand([string] $regex, [string] $namespace)
+function SternCommand($regex, $label, $namespace)
 {
-    $namespaceString = SternNamespaceString $namespace
+    $labelString = ConditionalOperator $label " -l app=$label"
+    $namespaceString = ConditionalOperator ($namespace -eq "all") " --all-namespaces" (ConditionalOperator $namespace " -n $namespace")
 
-    ExecuteCommand "stern $regex $namespaceString"
-}
-
-function SternNamespaceString($namespace)
-{
-    return ConditionalOperator ($namespace -eq "all") "--all-namespaces" (ConditionalOperator $namespace "-n $namespace" "")
+    ExecuteCommand ("stern $regex" + $labelString + $namespaceString)
 }

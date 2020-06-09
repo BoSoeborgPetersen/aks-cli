@@ -6,6 +6,6 @@ Write-Info "Uninstalling Monitoring (Prometheus & Grafana)"
 
 if (AreYouSure)
 {
-    Helm3Command "uninstall grafana -n monitoring"
-    Helm3Command "uninstall prometheus -n monitoring"
+    HelmCommand "uninstall grafana" -n monitoring
+    HelmCommand "uninstall prometheus" -n monitoring
 }

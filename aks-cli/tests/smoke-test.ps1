@@ -1,4 +1,3 @@
-# LaterDo: Finish
 Write-Host "-- Running Tests --"
 
 function TestCommand($command, $exitCommand)
@@ -6,7 +5,7 @@ function TestCommand($command, $exitCommand)
     Write-Host "---|--- $command ---|---"
     Invoke-Expression $command
 
-    if($exitCommand)
+    if ($exitCommand)
     {
         Invoke-Expression $exitCommand
     }

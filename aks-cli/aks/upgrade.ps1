@@ -1,19 +1,21 @@
-param($version, [switch] $preview = $false)
+param($version, [switch] $preview)
 
-WriteAndSetUsage "aks upgrade [version] [-preview]"
+WriteAndSetUsage "aks upgrade" ([ordered]@{
+    "[version]" = "Version to upgrade to (default: newest stable upgradable version)"
+    "[-preview]" = "Allow upgrade to preview version"
+})
 
 CheckCurrentCluster
 
 if ($version) 
 {
-    AzCheckUpgradableVersion ([ref]$version) $preview
+    AzCheckUpgradableVersion $version $preview
     Write-Info "Upgrading current cluster to version '$version'"
 }
 else
 {
     $previewString = ConditionalOperator (!$preview) "?!isPreview"
-    # TODO: Fix version sorting (1.5.10 will come before 1.5.7) (use: SemanticVersionSort function).
-    $version = AzAksCurrentQuery "get-upgrades" -q "'controlPlaneProfile.upgrades[$previewString].kubernetesVersion | sort(@) | [-1]'" -o tsv
+    $version = AzAksCurrentQuery "get-upgrades" -q "controlPlaneProfile.upgrades[$previewString].kubernetesVersion | sort(@) | [-1]" -o tsv
 
     if ($version)
     {
@@ -22,8 +24,7 @@ else
     }
     else
     {
-        Write-Info "Cluster has the newest available version"
-        exit
+        Write-Info "Cluster has the newest available version" -exit
     }
 }
     

@@ -1,20 +1,16 @@
-# LaterDo: Rewrite to script.
-param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
+param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks replace communicate <resource group name> <location> [min node count] [max node count] [node size]"
+WriteAndSetUsage "aks replace communicate" ([ordered]@{
+    "<resourceGroup>" = "Azure Resource Group"
+    "<location>" = AzureLocationDescription
+    "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
+    "[minNodeCount]" = "Autoscaler Minimum Node Count (default: 3)"
+    "[maxNodeCount]" = "Autoscaler Maximum Node Count (default: 20)"
+    "[nodeSize]" = "Azure VM Node Size (default: 'Standard_D2s_v3')"
+    "[loadBalancerSku]" = "Azure Load Balancer SKU (basic, standard)"
+    "[-useServicePrincipal]" = "Use Service Principal instead of Managed Identity"
+})
 
+AksCommand setup communicate $resourceGroup $location $globalSubscription $minNodeCount $maxNodeCount $nodeSize $loadBalancerSku
 
-
-$ip = AzQuery "network public-ip show -g $resourceGroupName -n $ipName" -q [ipAddress] -o tsv
-
-ExecuteCommand "aks create standard $resourceGroupName $location $minNodeCount $maxNodeCount $nodeSize"
-
-ExecuteCommand "aks credentials get $resourceGroupName"
-
-ExecuteCommand "aks tiller install"
-ExecuteCommand "aks tiller wait"
-ExecuteCommand "aks nginx install"
-ExecuteCommand "aks nginx install `"masterdata`""
-ExecuteCommand "aks nginx install `"dme`""
-ExecuteCommand "aks cert-manager install"
-ExecuteCommand "aks insights install"
+# TODO: Add DevOps and Traffic-Manager operations

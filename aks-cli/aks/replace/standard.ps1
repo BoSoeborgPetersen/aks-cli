@@ -1,27 +1,24 @@
-# LaterDo: Rewrite to script.
-param($resourceGroupName, $location, $minNodeCount, $maxNodeCount, $nodeSize)
- 
-WriteAndSetUsage "aks replace standard <resource group name> <location> <min node count> <max node count> <node size>"
+param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, [switch] $useServicePrincipal)
 
-AzCheckResourceGroup $resourceGroup
-AzCheckLocation $location
-CheckNumberRange ([ref]$minNodeCount) "min node count" -min 2 -max 100 -default 2
-CheckNumberRange ([ref]$maxNodeCount) "max node count" -min 2 -max 100 -default 4
+WriteAndSetUsage "aks replace standard" ([ordered]@{
+    "<resourceGroup>" = "Azure Resource Group"
+    "<location>" = AzureLocationDescription
+    "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
+    "[minNodeCount]" = "Autoscaler Minimum Node Count (default: 3)"
+    "[maxNodeCount]" = "Autoscaler Maximum Node Count (default: 20)"
+    "[nodeSize]" = "Azure VM Node Size (default: 'Standard_D2s_v3')"
+    "[loadBalancerSku]" = "Azure Load Balancer SKU (basic, standard)"
+    "[-useServicePrincipal]" = "Use Service Principal instead of Managed Identity"
+})
 
-ExecuteCommand "aks create standard $resourceGroupName $location $minNodeCount $maxNodeCount $nodeSize"
+AksCommand setup standard $resourceGroup $location $globalSubscription $minNodeCount $maxNodeCount $nodeSize $loadBalancerSku 
 
-ExecuteCommand "aks credentials get $resourceGroupName"
+# TODO: Add DevOps and Traffic-Manager operations
 
-ExecuteCommand "aks tiller install"
-ExecuteCommand "aks tiller wait"
-ExecuteCommand "aks nginx install"
-ExecuteCommand "aks cert-manager install"
-ExecuteCommand "aks insights install"
+# # DevOps
+# $cluster = ClusterName -resourceGroup $resourceGroup
+# # aks service-principal replace
+# AksCommand devops environment create $cluster
 
-# DevOps
-$clusterName = ResourceGroupToClusterName $resourceGroupName
-# aks service-principal replace
-ExecuteCommand "aks devops environment create $clusterName"
-
-# Traffic Managers (redirect traffic)
-# ExecuteCommand "aks traffic-manager replace-endpoint"
+# # Traffic Managers (redirect traffic)
+# # AksCommand traffic-manager replace-endpoint

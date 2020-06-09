@@ -1,3 +1,4 @@
 SubMenu @{
-    "create" = "Create Azure Resource Group."
+    "check" = "Check Azure Resource Group"
+    "create" = "Create Azure Resource Group"
 }

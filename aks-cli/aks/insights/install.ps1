@@ -1,9 +1,9 @@
 WriteAndSetUsage "aks insights install"
 
 CheckCurrentCluster
-$resourceGroup = GetCurrentClusterResourceGroup
+$resourceGroup = CurrentClusterResourceGroup
 
-$insights = ResourceGroupToInsightsName $resourceGroup
+$insights = InsightsName -resourceGroup $resourceGroup
 
 Write-Info "Installing Operational Insights '$insights'"
 

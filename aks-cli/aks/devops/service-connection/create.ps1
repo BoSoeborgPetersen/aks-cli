@@ -1,61 +1,56 @@
-# LaterDo: Rewrite
-param($name, $namespace)
+param($name, $namespace = "default")
 
-WriteAndSetUsage "aks devops service-connection create <name> [namespace]"
+WriteAndSetUsage "aks devops service-connection create" ([ordered]@{
+    "<name>" = "Service Connection Name"
+    "[namespace]" = "Kubernetes namespace"
+})
 
-CheckVariable $name "name"
-SetDefaultIfEmpty ([ref]$namespace) "default"
-
-$subscriptionId = GetCurrentSubscription
-$subscriptionName = GetCurrentSubscriptionName
-$subscriptionTenantId = GetCurrentSubscriptionTenantId
-$subscriptionFqdn = GetCurrentSubscriptionFqdn
 CheckCurrentCluster
-$cluster = GetCurrentClusterName
-$resourceGroup = GetCurrentClusterResourceGroup
-$unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
-$serviceAccountName = "$unixName-devops-sa"
-$roleBindingName = "$unixName-devops-rb"
+CheckVariable $name "name"
+KubectlCheckNamespace $namespace
 
-# Create Service Account
-KubectlCommand "create serviceaccount $serviceAccountName" -n $namespace
-# Create Role Binding
-KubectlCommand "create rolebinding $roleBindingName --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccountName`"" -n $namespace
+Write-Info "Creating Service Connection"
 
-$secretName = KubectlQuery "get serviceaccount $serviceAccountName" -n $namespace -o "jsonpath='{.secrets[0].name}'"
+$subscription = CurrentSubscriptionName
+$subscriptionId = CurrentSubscription
+$subscriptionTenantId = CurrentSubscriptionTenantId
+$cluster = CurrentClusterName
+$clusterFqdn = CurrentClusterFqdn
+$resourceGroup = CurrentClusterResourceGroup
+
+$serviceAccount = DevOpsServiceAccountName $name
+$roleBinding = DevOpsRoleBindingName $name
+
+KubectlCommand "create serviceaccount $serviceAccount" -n $namespace
+KubectlCommand "create rolebinding $roleBinding --clusterrole cluster-admin --serviceaccount=`"$namespace`":`"$serviceAccount`"" -n $namespace
+
+$secret = KubectlQuery "get serviceaccount $serviceAccount" -n $namespace -j '{.secrets[0].name}'
 
 $arguments=@{
-    "authorization" = @{
-        "parameters" = @{
-            "azureEnvironment" = "AzureCloud"
-            "azureTenantId" = $subscriptionTenantId
-            "roleBindingName" = $roleBindingName
-            "secretName" = $secretName
-            "serviceAccountName" = $serviceAccountName
+    authorization = @{
+        parameters = @{
+            azureEnvironment = "AzureCloud"
+            azureTenantId = $subscriptionTenantId
+            roleBindingName = $roleBinding
+            secretName = $secret
+            serviceAccountName = $serviceAccount
         }
-        "scheme" = "Kubernetes"
+        scheme = "Kubernetes"
     }
-    "name" = $name
-    "type" = "kubernetes"
-    "url" = ("https://$subscriptionFqdn")
-    "data" = @{
-        "authorizationType" = "AzureSubscription"
-        "azureSubscriptionId" = $subscriptionId
-        "azureSubscriptionName" = $subscriptionName
-        "clusterId" = "/subscriptions/$subscriptionId/resourcegroups/$resourceGroup/providers/Microsoft.ContainerService/managedClusters/$cluster"
-        "namespace" = "$namespace"
+    name = "$name-$namespace"
+    type = "kubernetes"
+    url = "https://$clusterFqdn"
+    data = @{
+        authorizationType = "AzureSubscription"
+        azureSubscriptionId = $subscriptionId
+        azureSubscriptionName = $subscription
+        clusterId = "/subscriptions/$subscriptionId/resourcegroups/$resourceGroup/providers/Microsoft.ContainerService/managedClusters/$cluster"
+        namespace = $namespace
     }
-    "isShared" = "true"
-    "owner" = "Library"
+    isShared = "true"
+    owner = "Library"
 }
 
-$json = $arguments | ConvertTo-Json
-Write-Verbose $json
-$json | Out-File -FilePath ~/azure-devops-service-connection-create.json
-AzCommand "devops service-endpoint create --service-endpoint-configuration ~/azure-devops-service-connection-create.json"
-Remove-Item ~/azure-devops-service-connection-create.json
-
-
-
-
-
+$filepath = SaveTempFile($arguments)
+AzDevOpsCommand "service-endpoint create --service-endpoint-configuration $filepath"
+DeleteTempFile($filepath)

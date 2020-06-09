@@ -19,10 +19,11 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
 - Kubernetes-CLI (kubectl)
   - Cert-Manager extension (kubectl cert-manager)
 - Helm-CLI
-  - Version 2 (helm)
-  - Version 3 (helm3)
+  - Version 2 (helm2)
+  - Version 3 (helm)
     - Stable repo (<https://kubernetes-charts.storage.googleapis.com>)
     - Cert-Manager repo (<https://charts.jetstack.io>)
+    - Kured repo (<https://weaveworks.github.io/kured>)
     - 2to3 plugin (<https://github.com/helm/helm-2to3>)
 - Wercher/Stern (stern)
 - Nano
@@ -40,7 +41,7 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
 
 Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!
 
-Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)
+Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm), Wercher/Stern (stern)
 Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
 Here are the commands:
@@ -107,10 +108,10 @@ Add to settings.json under profiles:
 {
   "guid": "{636d6d48-1d06-40e6-9958-77569099d16c}",
   "name": "AKS-CLI",
-  "startingDirectory": "<start_dir_path>",
-  "commandline": "pwsh -Command \"& { docker pull bo0petersen/aks-cli && docker run --rm -it -v <mapped_dir_path>/mapped:/app/mapped bo0petersen/aks-cli }\"",
-  "icon": "<icon_path>/Aks-cli.png",
-  "backgroundImage": "<icon_path>/Aks-cli.png"
+  "startingDirectory": "<path>",
+  "commandline": "pwsh -Command \"& { docker pull bo0petersen/aks-cli && docker run --rm -it -v -v c:/s/OpenSource/aks-cli/mapped:/app/mapped bo0petersen/aks-cli }\"",
+  "icon": "<path>/Aks-cli.png",
+  "backgroundImage": "<path>/Aks-cli.png"
 }
 ```
 
@@ -150,10 +151,10 @@ Run AKS-CLI in development mode, with Windows Terminal:
 {
   "guid": "{3cf0be50-3aa0-4f1d-b4f1-c6ccbe6b7ef3}",
   "name": "AKS-CLI (Development)",
-  "startingDirectory": "<source_path>",
-  "commandline": "pwsh -Command \" & { docker build . -t dev-aks-cli && docker run --rm -it -v <source_path>/scripts:/app/scripts -v <source_path>/temp:/app/temp -v <source_path>/aks-cli:/app/dev-aks-cli --entrypoint pwsh dev-aks-cli -NoExit -NoLogo -f dev-aks-cli/init.ps1 }\"",
-  "icon": "<source_path>/Aks-cli.png",
-  "backgroundImage": "<source_path>/Aks-cli.png"
+  "startingDirectory": "<path>",
+  "commandline": "pwsh -Command \"& { docker build . -t dev-aks-cli && docker run --rm -it -v <path>/scripts:/app/scripts -v <path>/temp:/app/temp -v <path>/aks-cli:/app/dev-aks-cli --entrypoint pwsh dev-aks-cli -NoExit -NoLogo -f dev-aks-cli/init.ps1 }\"",
+  "icon": "<path>/Aks-cli.png",
+  "backgroundImage": "<path>/Aks-cli.png"
 }
 ```
 

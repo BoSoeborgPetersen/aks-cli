@@ -1,46 +1,24 @@
-function SetDefaultIfEmpty([ref] $variable, $default)
+function SetDefaultIfEmpty($variable, $default)
 {
-    if (!$variable.Value)
+    if ($variable)
     {
-        $variable.Value = $default
+        return $variable
     }
+    
+    return $default
 }
 
-function PrependWithDash($name, $prefix)
+function PrependWithDash($prefix, $string)
 {
-    if ($prefix)
-    {
-        return "$prefix-$name"
-    }
-    else 
-    {
-        return $name
-    }
+    return ConditionalOperator $prefix "$prefix-$string" $string
 }
 
 function ConditionalOperator($test, $value1, $value2 = "")
 {
-    $variable = $value2
     if ($test)
     {
-        $variable = $value1
+        return $value1
     }
-    return $variable
-}
-
-function ArrayTakeIndexOrFirst($array, $index)
-{
-    if ($index)
-    {
-        return $array | Select-Object -Index ($index - 1)
-    }
-    else 
-    {
-        return $array | Select-Object -First 1
-    }
-}
-
-function CamelCaseToSpaceDelimited($variable)
-{
-    return "Not Implemented!"
+    
+    return $value2
 }

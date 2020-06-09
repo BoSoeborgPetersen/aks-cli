@@ -1,5 +1,5 @@
 SubMenu @{
-    "clean" = "Get rid of all failed pods in all namespaces."
+    "clean" = "Get rid of all failed pods in all namespaces"
     "delete" = "Delete deployment pods"
-    "size" = "Get pod disk space usage."
+    "size" = "Get pod disk space usage"
 }

@@ -1,11 +1,21 @@
-WriteAndSetUsage "aks kured uninstall"
+param([switch] $yes, [switch] $skipNamespace)
+
+WriteAndSetUsage "aks kured uninstall" ([ordered]@{
+    "[-yes]" = "Skip verification"
+    "[-skipNamespace]" = "Skip Namespace deletion"
+})
 
 CheckCurrentCluster
+$deployment = KuredDeploymentName
 
 Write-Info "Uninstalling Kured (KUbernetes REboot Daemon)"
 
-if (AreYouSure)
+if ($yes -or (AreYouSure))
 {
-    Helm3Command "uninstall kured --namespace kured"
-    KubectlCommand "delete ns kured"
+    HelmCommand "uninstall $deployment" -n $deployment
+
+    if (!$skipNamespace)
+    {
+        KubectlCommand "delete namespace $deployment"
+    }
 }

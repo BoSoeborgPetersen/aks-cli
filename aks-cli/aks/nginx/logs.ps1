@@ -1,22 +1,25 @@
-param($index, $deployment)
+param($index = -1, $prefix)
 
-WriteAndSetUsage "aks nginx logs [index] [deployment]"
+WriteAndSetUsage "aks nginx logs" ([ordered]@{
+    "[index]" = "Index of the pod to show logs from"
+    "[prefix]" = "Kubernetes deployment name prefix"
+})
 
 $namespace = "ingress"
 CheckCurrentCluster
-$nginxDeployment = GetNginxDeploymentName $deployment
-KubectlCheckDaemonSet ([ref]$nginxDeployment) -namespace $namespace
+$deployment =NginxDeploymentName $prefix
+KubectlCheckDaemonSet $deployment -namespace $namespace
 
-if($index)
+if ($index -ne -1)
 {
-    Write-Info "Show Nginx logs from pod (index: $index) in deployment '$nginxDeployment'"
+    Write-Info "Show Nginx logs from pod (index: $index) in deployment '$deployment'"
 
-    $pod = KubectlGetPod $nginxDeployment $namespace $index
+    $pod = KubectlGetPod $deployment $namespace $index
     KubectlCommand "logs -n $namespace $pod"
 }
 else
 {
     Write-Info "Show Nginx logs with Stern"
-
-    ExecuteCommand "stern -l app=$nginxDeployment -n $namespace"
+    
+    SternCommand -l $deployment -n $namespace
 }

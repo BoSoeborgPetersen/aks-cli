@@ -1,45 +1,39 @@
-function Check($check, [string] $errorMessage)
+function Check($check, $errorMessage)
 {
-    if (!$check) {
+    if (!$check) 
+    {
         WriteUsage
-        Write-Error $errorMessage
-        exit
+        Write-Error $errorMessage -exitOnError
     }
 }
 
-function CheckVariable($variable, [string] $variableName)
+function CheckVariable($variable, $variableName)
 {
     Check $variable "The following argument is required: <$variableName>"
 }
 
-function CheckSemanticVersion([string] $version)
+function CheckSemanticVersion($version)
 {
     return $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
 }
 
-# LaterDo: Finish
-# function ConvertSemanticVersionToShort([string] $version)
-# {
-#     $noPatchVersion = $version -match "^[\d]+(\.[\d]+)?(\.[\d]+)?$"
-#     $shortVersionString = ConditionalOperator ((CheckSemanticVersion $version -and $noPatchVersion)) "" $version.Replace('.0', '') 
-# }
-
-function CheckVersion([ref][string] $version, [string] $default)
+function CheckVersion($version, $default)
 {
-    SetDefaultIfEmpty $version $default
-    $check = CheckSemanticVersion $version.Value
-    Check $check "The specified version '$($version.Value)' is not a valid Semantic Version (i.e. 'x.y.z')"
+    $version = SetDefaultIfEmpty $version $default
+    $check = CheckSemanticVersion $version
+    Check $check "The specified version '$version' is not a valid Semantic Version (i.e. 'x.y.z')"
+    return $version
 }
 
-function CheckNumberType([string] $variable, [string] $variableName)
+function CheckNumberType($variable, $variableName)
 {
     $check = $variable -match "^\d+$"
     Check $check "Invalid variable <$variableName>, not a valid number '$variable'"
 }
 
-function CheckOptionalNumberRange([string] $variable, [string] $variableName, [int] $min, [int] $max)
+function CheckOptionalNumberRange($variable, $variableName, [int] $min, [int] $max)
 {
-    if($variable)
+    if ($variable)
     {
         CheckNumberType $variable $variableName
         $number = $variable -as [int]
@@ -48,17 +42,18 @@ function CheckOptionalNumberRange([string] $variable, [string] $variableName, [i
     }
 }
 
-function CheckNumberRange([ref][string] $variable, [string] $variableName, [int] $min, [int] $max, [int] $default)
+function CheckNumberRange($variable, $variableName, [int] $min, [int] $max, [int] $default)
 {
     if ($default)
     {
-        SetDefaultIfEmpty $variable $default
+        $variable = SetDefaultIfEmpty $variable $default
     }
-    CheckVariable $variable.Value $variableName
+
+    CheckVariable $variable $variableName
     CheckOptionalNumberRange $variable $variableName $min $max
 }
 
-function CheckBooleanType([string] $variable, [string] $variableName)
+function CheckBooleanType($variable, $variableName)
 {
     $rangeCheck = $variable -match "^(FALSE|TRUE|False|True|false|true|0|1)$"
     Check $rangeCheck "$($variableName): Not a boolean '$variable'"

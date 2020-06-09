@@ -4,4 +4,4 @@ CheckCurrentCluster
 
 Write-Info "Upgrading Tiller (Helm server-side)"
 
-HelmCommand "init --upgrade"
+Helm2Command "init --upgrade"

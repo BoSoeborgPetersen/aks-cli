@@ -1,20 +1,20 @@
-# LaterDo: Rewrite
-param($name, $namespace)
+param($name, $namespace = "default")
 
-WriteAndSetUsage "aks devops service-connection delete <name> [namespace]"
+WriteAndSetUsage "aks devops service-connection delete" ([ordered]@{
+    "<name>" = "Service Connection Name"
+    "[namespace]" = "Kubernetes namespace"
+})
 
 CheckVariable $name "name"
-SetDefaultIfEmpty ([ref]$namespace) "default"
+KubectlCheckNamespace $namespace
 
-$unixName = ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
-$serviceAccountName = "$unixName-devops-sa"
-$roleBindingName = "$unixName-devops-rb"
+Write-Info "Deleting Service Connection"
 
-# Delete Service Account
-KubectlCommand "delete serviceaccount $serviceAccountName" -n $namespace
-# Delete Role Binding
-KubectlCommand "delete rolebinding $roleBindingName" -n $namespace
+$serviceAccount = DevOpsServiceAccountName $name
+$roleBinding = DevOpsRoleBindingName $name
 
-$id = AzQuery "devops service-endpoint list" -q "`"[?name==$name].id`"" -o tsv
+KubectlCommand "delete serviceaccount $serviceAccount" -n $namespace
+KubectlCommand "delete rolebinding $roleBinding" -n $namespace
 
-AzCommand "devops service-endpoint delete --id $id -y --project $teamName"
+$id = AzDevOpsQuery "service-endpoint list" -q "[?name=='$name-$namespace'].id" -o tsv
+AzDevOpsCommand "service-endpoint delete --id $id -y"

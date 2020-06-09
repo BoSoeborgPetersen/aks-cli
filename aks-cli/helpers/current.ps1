@@ -1,9 +1,10 @@
-function ChooseSubscriptionMenu()
+function SubscriptionMenu
 {
     if (!$GlobalSubscriptions)
     {
         $global:GlobalSubscriptions = az account list --all | ConvertFrom-Json | Sort-Object -Property Name
     }
+
     if ($GlobalSubscriptions.length -eq 1)
     {
         return $GlobalSubscriptions[0]
@@ -21,40 +22,36 @@ function SwitchCurrentSubscription([switch] $clear)
     {
         Clear-Host
     }
+
     Write-Info "Choose Azure Subscription: "
 
-    $global:GlobalCurrentSubscription = ChooseSubscriptionMenu
+    $global:GlobalCurrentSubscription = SubscriptionMenu
     
     az account set -s $GlobalCurrentSubscription.name
 }
 
-function CheckCurrentSubscription()
+function CheckCurrentSubscription
 {
     $check = $GlobalCurrentSubscription -or ($params[0] -eq "switch")
     Check $check "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription"
 }
 
-function GetCurrentSubscription()
+function CurrentSubscription
 {
     return $GlobalCurrentSubscription.id
 }
 
-function GetCurrentSubscriptionName()
+function CurrentSubscriptionName
 {
     return $GlobalCurrentSubscription.name
 }
 
-function GetCurrentSubscriptionTenantId()
+function CurrentSubscriptionTenantId
 {
     return $GlobalCurrentSubscription.TenantId
 }
 
-function GetCurrentSubscriptionFqdn()
-{
-    return $GlobalCurrentSubscription.Fqdn
-}
-
-function ChooseClusterMenu([switch] $refresh = $false)
+function ClusterMenu([switch] $refresh)
 {
     Check $GlobalCurrentSubscription "No Azure subscriptions"
 
@@ -63,6 +60,7 @@ function ChooseClusterMenu([switch] $refresh = $false)
         $global:GlobalSubscriptionUsedForClusters = $GlobalCurrentSubscription
         $global:GlobalClusters = az aks list | ConvertFrom-Json | Sort-Object -Property Name
     }
+
     if ($GlobalClusters.length -eq 1)
     {
         return $GlobalClusters[0]
@@ -74,15 +72,16 @@ function ChooseClusterMenu([switch] $refresh = $false)
     return $GlobalClusters[$currentClusterIndex]
 }
 
-function SwitchCurrentCluster([switch] $clear = $false, [switch] $refresh = $false)
+function SwitchCurrentCluster([switch] $clear, [switch] $refresh)
 {
     if ($clear)
     {
         Clear-Host
     }
+
     Write-Info "Choose Kubernetes Cluster: "
 
-    $global:GlobalCurrentCluster = ChooseClusterMenu -refresh $refresh
+    $global:GlobalCurrentCluster = ClusterMenu -refresh $refresh
 
     AzAksCurrentCommand 'get-credentials > $1'
 
@@ -97,7 +96,7 @@ function SwitchCurrentCluster([switch] $clear = $false, [switch] $refresh = $fal
 
 function SwitchCurrentClusterTo($resourceGroup)
 {
-    $cluster = ResourceGroupToClusterName $resourceGroup
+    $cluster = ClusterName -resourceGroup $resourceGroup
     $global:GlobalSubscriptionUsedForClusters = $GlobalCurrentSubscription
     $global:GlobalClusters = az aks list | ConvertFrom-Json
     $global:GlobalCurrentCluster = $GlobalClusters | Where-Object { $_.name -match $cluster }
@@ -108,30 +107,35 @@ function SwitchCurrentClusterTo($resourceGroup)
     UpdateShellPrompt
 }
 
-function CheckCurrentCluster()
+function CheckCurrentCluster
 {
     Check $GlobalCurrentCluster "No current AKS cluster, run 'aks switch -cluster' to select a current AKS cluster"
 }
 
-function CheckCurrentClusterOrVariable($variable, [string] $variableName)
+function CheckCurrentClusterOrVariable($variable, $variableName)
 {
     $check = $GlobalCurrentCluster -or $variable
-    Check $check ("The following argument is required: $variableName" + "\n" + "Alternatively run 'aks switch' to select a current AKS cluster, then the current cluster '$variableName' will be used")
+    Check $check ("The following argument is required: $variableName" + "`n" + "Alternatively run 'aks switch' to select a current AKS cluster, then the current cluster '$variableName' will be used")
 }
 
-function GetCurrentClusterResourceGroup()
+function CurrentClusterResourceGroup
 {
     return $global:GlobalCurrentCluster.ResourceGroup
 }
 
-function global:GetCurrentClusterName()
+function global:CurrentClusterName
 {
     return $global:GlobalCurrentCluster.Name
 }
 
-function GetCurrentClusterLocation()
+function CurrentClusterLocation
 {
     return $global:GlobalCurrentCluster.Location
+}
+
+function CurrentClusterFqdn
+{
+    return $GlobalCurrentCluster.Fqdn
 }
 
 function SetCurrentCluster($cluster)
@@ -139,34 +143,34 @@ function SetCurrentCluster($cluster)
     $global:GlobalCurrentCluster = $cluster
 }
 
-function ChooseDeploymentMenu($namespace)
+function DeploymentMenu($namespace)
 {
     Check $GlobalCurrentSubscription "No Azure subscriptions"
     Check $GlobalCurrentCluster "No AKS clusters in Azure subscription"
 
-    if (!$GlobalSubscriptionUsedForDeployments -or !$GlobalClusterUsedForDeployments -or !$GlobalDeploymentNames -or ($GlobalCurrentSubscription -ne $GlobalSubscriptionUsedForDeployments) -or ($GlobalCurrentCluster -ne $GlobalClusterUsedForDeployments))
+    if (!$GlobalSubscriptionUsedForDeployments -or !$GlobalClusterUsedForDeployments -or !$GlobalDeployments -or ($GlobalCurrentSubscription -ne $GlobalSubscriptionUsedForDeployments) -or ($GlobalCurrentCluster -ne $GlobalClusterUsedForDeployments))
     {
         $global:GlobalSubscriptionUsedForDeployments = $GlobalCurrentSubscription
         $global:GlobalClusterUsedForDeployments = $GlobalCurrentCluster
-        $namespaceString = KubectlNamespaceString $namespace
-        $global:GlobalDeploymentNames = (ExecuteQuery "kubectl get deploy -o jsonpath='{.items[*].metadata.name}' $namespaceString") -split ' '
+        $global:GlobalDeployments = (KubectlQuery "get deploy" -n $namespace -j '{.items[*].metadata.name}') -split ' '
     }
-    if ($GlobalDeploymentNames.length -eq 1)
+
+    if ($GlobalDeployments.length -eq 1)
     {
-        return $GlobalDeploymentNames[0]
+        return $GlobalDeployments[0]
     }
 
-    Check ($GlobalDeploymentNames.length -gt 0) "No Kubernetes deployments in AKS cluster"
+    Check ($GlobalDeployments.length -gt 0) "No Kubernetes deployments in AKS cluster"
 
-    return Show-Menu $GlobalDeploymentNames
+    return Show-Menu $GlobalDeployments
 }
 
-function ChooseDeployment([ref] $deployment, $namespace)
+function ChooseDeployment($deployment, $namespace)
 {
-    if (!$deployment.Value)
+    if (!$deployment)
     {
         Write-Info "Choose AKS Deployment: "
-        $deployment.Value = ChooseDeploymentMenu $namespace
+        return (DeploymentMenu $namespace)
     }
 }
 
@@ -175,7 +179,7 @@ function SetCurrentCommandText($text)
     $global:GlobalCurrentCommandText = $text
 }
 
-function GetCurrentCommandText()
+function CurrentCommandText
 {
     return $global:GlobalCurrentCommandText
 }

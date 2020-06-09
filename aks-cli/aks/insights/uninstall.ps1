@@ -1,9 +1,9 @@
 WriteAndSetUsage "aks insights uninstall"
 
 CheckCurrentCluster
-$resourceGroup = GetCurrentClusterResourceGroup
+$resourceGroup = CurrentClusterResourceGroup
 
-$insights = ResourceGroupToInsightsName $resourceGroup
+$insights = InsightsName -resourceGroup $resourceGroup
 
 Write-Info "Uninstalling Operational Insights '$insights'"
 

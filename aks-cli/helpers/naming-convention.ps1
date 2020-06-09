@@ -1,85 +1,91 @@
-$clusterNamePostFix = "-aks"
-function ResourceGroupToClusterName($resourceGroupName)
+function ClusterName($resourceGroup)
 {
-    return $resourceGroupName+$clusterNamePostFix
+    return "$resourceGroup-aks"
 }
 
-$insightsNamePostFix = "-aks-insights"
-function ResourceGroupToInsightsName($resourceGroupName)
+function InsightsName($resourceGroup)
 {
-    return $resourceGroupName+$insightsNamePostFix
+    return "$resourceGroup-aks-insights"
 }
 
-$registryPreFix = "gl-"
-$registryPostFix = "-acr"
-function ResourceGroupToRegistryName($resourceGroupName)
+function RegistryName($resourceGroup)
 {
-    $middle = $resourceGroupName.Split('-')[1]
-    return $registryPreFix+$middle+$registryPostFix
+    $middle = $resourceGroup.Split('-')[1]
+    return "gl-$middle-acr"
 }
 
-$keyvaultPreFix = "gl-"
-$keyvaultPostFix = "-aks-vault"
-function ResourceGroupToKeyVaultName($resourceGroupName)
+function KeyVaultName($resourceGroup)
 {
-    $middle = $resourceGroupName.Split('-')[1]
-    return $keyvaultPreFix+$middle+$keyvaultPostFix
+    $middle = $resourceGroup.Split('-')[1]
+    return "gl-$middle-aks-vault"
 }
 
-$globalResourceGroupPreFix = "gl-"
-$globalResourceGroupPostFix = ""
-function ResourceGroupToGlobalResourceGroupName($resourceGroupName)
+function GlobalResourceGroupName($resourceGroup)
 {
-    $middle = $resourceGroupName.Split('-')[1]
-    return $globalResourceGroupPreFix+$middle+$globalResourceGroupPostFix
+    $middle = $resourceGroup.Split('-')[1]
+    return "gl-$middle"
 }
 
-$ipAddressPostFix = "-ip"
-function ClusterToIpAddressName($clusterName, $deploymentName)
+function PublicIpName($prefix, $cluster)
 {
-    return PrependWithDash ($clusterName+$ipAddressPostFix) $deploymentName
+    return PrependWithDash -prefix $prefix -string "$cluster-ip"
 }
 
-$servicePrincipalPreFix = "http://"
-$servicePrincipalPostFix = "-principal"
-function ClusterToServicePrincipalName($clusterName)
+function ServicePrincipalName($cluster)
 {
-    return $servicePrincipalPreFix+$clusterName+$servicePrincipalPostFix
+    return "http://$cluster-principal"
 }
 
-$servicePrincipalIdPostFix = "-principal-id"
-function ClusterToServicePrincipalIdName($clusterName)
+function ServicePrincipalIdName($cluster)
 {
-    return $clusterName+$servicePrincipalIdPostFix
+    return "$cluster-principal-id"
 }
 
-$servicePrincipalPasswordPostFix = "-principal-password"
-function ClusterToServicePrincipalPasswordName($clusterName)
+function ServicePrincipalPasswordName($cluster)
 {
-    return $clusterName+$servicePrincipalPasswordPostFix
+    return "$cluster-principal-password"
 }
 
-function GetCertManagerDeploymentName()
+function CertManagerDeploymentName
 {
     return "cert-manager"
 }
 
-function GetNginxDeploymentName($deploymentName)
+function NginxDeploymentName($prefix)
 {
-    return PrependWithDash "nginx-ingress" $deploymentName
+    return PrependWithDash $prefix "nginx-ingress"
 }
 
-function GetNginxCertificateName()
+function KuredDeploymentName
 {
-    return "certificate"
+    return "kured"
 }
 
-function GetDevOpsOrganizationName()
+# LaterDo: Is there any way to determine this.
+function DevOpsOrganizationName
 {
     return "3Shape"
 }
 
-function GetDevOpsTeamName()
+# LaterDo: Is there any way to determine this.
+function DevOpsProjectName
 {
     return "Identity"
+}
+
+function DevOpsUnixName($name)
+{
+    return ($name.ToLower() -replace ' - ',' ') -replace '\W','-'
+}
+
+function DevOpsServiceAccountName($name)
+{
+    $unixName = DevOpsUnixName $name
+    return "$unixName-devops-sa"
+}
+
+function DevOpsRoleBindingName($name)
+{
+    $unixName = DevOpsUnixName $name
+    return "$unixName-devops-rb"
 }

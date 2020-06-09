@@ -1,82 +1,101 @@
-function WriteHelp($usageText)
+function WriteAdvancedHelp($usage, $parameters)
 {
     Logo
-    Write-Host $usageText
-    Write-Host ''
-    $command = $usageText -replace '\[.*\]' -replace '\<.*\>' -replace '[\s]*$'
-    $commandText = GetCurrentCommandText
-    $arguments = $usageText -replace '^[^\[<]*' -split '<' -split '\['
+    $command = $usage
+    $commandText = CurrentCommandText
     Write-Host 'Command'
     Write-Host "    $command : $commandText"
     Write-Host ''
-    Write-Host 'Required Arguments'
-    $requiredArguments = $arguments | Where-Object {$_ -Match ".*>"}
-    if ($requiredArguments.Length -ge 1)
+    Write-Host 'Arguments'
+
+    $hasRequiredParameters = ($parameters.Keys | Where-Object {$_ -Match "^<.*>$"}).Length -ge 1
+    $maxParameterKeyLength = (($parameters.Keys | Measure-Object -Maximum -Property Length).Maximum -2)
+    $maxParameterKeyLength = ConditionalOperator $hasRequiredParameters ($maxParameterKeyLength +11) $maxParameterKeyLength
+    if ($parameters.Length -ge 1)
     {
-        foreach ($argument in $requiredArguments)
+        foreach ($key in $parameters.Keys)
         {
-            Write-Host "    $($argument -replace '>')"
+            if ($key -match "^<.*>$")
+            {
+                $cleanKey = $key -replace '^<' -replace '>$'
+                Write-Host "    $($cleanKey.PadRight($maxParameterKeyLength -8)) [Required] : $($parameters.$key)"
+            }
+            else
+            {
+                $cleanKey = $key -replace '^\[' -replace '\]$'
+                Write-Host "    $($cleanKey.PadRight($maxParameterKeyLength +3)) : $($parameters.$key)"
+            }
         }
     }
     else 
     {
         Write-Host "    <none>"
     }
-    Write-Host ''
-    Write-Host 'Optional Arguments'
-    $optionalArguments = $arguments | Where-Object {$_ -Match ".*\]"}
-    if ($optionalArguments.Length -ge 1)
-    {
-        foreach ($argument in $optionalArguments)
-        {
-            Write-Host "    $($argument -replace '\]')"
-        }
-    }
-    else 
-    {
-        Write-Host "    <none>"
-    }
+
     Write-Host ''
     ShowGeneralFlags
 }
 
-function WriteAndSetUsage($usageText)
+function WriteAdvancedUsage($usage, $parameters)
 {
-    $global:GlobalUsage = "Usage: $usageText"
-    if ($help)
-    {
-        WriteHelp $usageText
-        exit
-    }
-    Write-Verbose $GlobalUsage
+    $parametersString = $parameters.Keys -Join ' '
+    $usageText = "Usage: $usage $parametersString"
+    $global:GlobalUsage = $usageText
+    Write-Verbose $usageText
 }
 
-function WriteUsage()
+function WriteAndSetUsage($usage, $parameters)
+{
+    if ($help)
+    {
+        WriteAdvancedHelp $usage $parameters
+        exit
+    }
+
+    WriteAdvancedUsage $usage $parameters
+}
+
+function WriteUsage
 {
     Write-Info $GlobalUsage
 }
 
-function ExecuteCommand($commandString)
+function ExecuteCommand($command)
 {
-    if(!$whatIf)
+    if (!$whatIf)
     {
-        Write-Verbose "COMMAND: $CommandString"
+        Write-Verbose "COMMAND: $Command"
         
-        return Invoke-Expression $CommandString
+        return Invoke-Expression $Command
     }
     else 
     {
-        Write-Info "WhatIf: $CommandString"
+        Write-Info "WhatIf: $Command"
     }
 }
 
-function ExecuteQuery($commandString)
+function ExecuteQuery($query)
 {
-    Write-Verbose "QUERY: $CommandString"
+    Write-Verbose "QUERY: $query"
     
-    $result = Invoke-Expression $CommandString
+    $result = Invoke-Expression $query
 
     Write-Verbose "QUERY - RESULT: $result"
 
     return $result
+}
+
+function AksCommand
+{
+    param(
+        [string]$command,
+        [Parameter(ValueFromRemainingArguments=$True)]
+        [string[]] $params
+    )
+
+    $command = "aks $command $params"
+
+    Write-Verbose "COMMAND: $Command"
+    
+    return Invoke-Expression $Command
 }

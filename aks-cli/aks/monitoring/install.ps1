@@ -1,11 +1,11 @@
-# LaterDo: Rewrite config files to new format.
+# TODO: Rewrite config files to new format.
 WriteAndSetUsage "aks monitoring install"
 
 CheckCurrentCluster
 
 Write-Info "Installing Prometheus"
 
-Helm3Command "install prometheus stable/prometheus -n monitoring -f $PSScriptRoot/config/helm-prometheus.yaml"
+HelmCommand "install prometheus stable/prometheus -f $PSScriptRoot/config/helm-prometheus.yaml" -n monitoring
 
 Write-Info "Installing Grafana"
 
@@ -15,4 +15,4 @@ KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node 2.yaml'"
 KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node w_ process info.yaml'"
 KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node.yaml'"
 
-Helm3Command "install grafana stable/grafana -n monitoring -f config/helm-grafana.yaml"
+HelmCommand "install grafana stable/grafana -f config/helm-grafana.yaml" -n monitoring

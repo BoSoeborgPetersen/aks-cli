@@ -1,6 +1,11 @@
 param($type, $regex, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks get <type> [regex] [namespace] [-a/-allNamespaces]"
+WriteAndSetUsage "aks get" ([ordered]@{
+    "<type>" = "Kubernetess resource type"
+    "[regex]" = "Expression to match against name"
+    "[namespace]" = KubernetesNamespaceDescription
+    "[-allNamespaces]" = KubernetesAllNamespacesDescription
+})
 
 CheckCurrentCluster
 CheckKubectlCommand $type "Get" -includeAll

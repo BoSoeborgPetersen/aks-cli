@@ -1,10 +1,12 @@
 # TODO: Refactor
 
-Write-Info "Azure DevOps: Replacing service-connection, environment and running pipelines."
+WriteAndSetUsage "aks devops replace-cluster"
+
+Write-Info "Azure DevOps: Replacing service-connection, environment and running pipelines"
 
 if (AreYouSure)
 {
-    az devops service-connection replace
-    az devops envionment replace-all
-    az devops pipeline deploy
+    aks devops service-connection replace
+    aks devops envionment replace-all
+    aks devops pipeline deploy
 }

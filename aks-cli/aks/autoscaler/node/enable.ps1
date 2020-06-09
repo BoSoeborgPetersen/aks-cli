@@ -1,10 +1,13 @@
-param($min, $max)
+param($min = 2, $max = 4)
 
-WriteAndSetUsage "aks autoscaler node enable [min] [max]"
+WriteAndSetUsage "aks autoscaler node enable" ([ordered]@{
+    "[min]" = AzureVmMinNodeCountDescription
+    "[max]" = AzureVmMaxNodeCountDescription
+})
 
 CheckCurrentCluster
-CheckNumberRange ([ref]$min) "min" -min 2 -max 100 -default 2
-CheckNumberRange ([ref]$max) "max" -min 2 -max 100 -default 4
+CheckNumberRange $min "min" -min 2 -max 100
+CheckNumberRange $max "max" -min 2 -max 100
 
 Write-Info "Enable node autoscaler"
 

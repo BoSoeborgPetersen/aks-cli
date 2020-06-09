@@ -4,13 +4,13 @@ CheckCurrentCluster
 
 $installed = KubectlQuery "get deploy tiller-deploy" -n kube-system
 
-if($installed)
+if ($installed)
 {
     Write-Info "Tiller (Helm server-side) is installed"
-    ExecuteCommand "aks tiller upgrade"
+    AksCommand tiller upgrade
 }
 else
 {
     Write-Info "Tiller (Helm server-side) is not installed"
-    ExecuteCommand "aks tiller install"
+    AksCommand tiller install
 }

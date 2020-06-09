@@ -1,19 +1,22 @@
-param($index)
+param($index = -1)
 
-WriteAndSetUsage "aks kured logs [index]"
+WriteAndSetUsage "aks kured logs" ([ordered]@{
+    "[index]" = "Index of the pod to show logs from"
+})
 
 CheckCurrentCluster
+$deployment = KuredDeploymentName
 
-if($index)
+if ($index -ne -1)
 {
     Write-Info "Show Kured (KUbernetes REboot Daemon) logs from pod (index: $index)"
     
-    $pod = KubectlGetPod "kured" "kured" $index
-    KubectlCommand "logs $pod -n kured"
+    $pod = KubectlGetPod $deployment $deployment $index
+    KubectlCommand "logs $pod -n $deployment"
 }
 else
 {
     Write-Info "Show Kured (KUbernetes REboot Daemon) logs with Stern"
 
-    ExecuteCommand "stern kured -n kured"
+    SternCommand $deployment -n $deployment
 }

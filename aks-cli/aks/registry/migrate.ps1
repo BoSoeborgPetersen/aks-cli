@@ -1,8 +1,13 @@
 # LaterDo: Add a lot more checks.
-# TODO: Allow to run from other subscriptions (add subscription parameter, calculate other variables from that).
+# LaterDo: Allow to run from other subscriptions (add subscription parameter, calculate other variables from that).
 param($oldRegistry, $oldRegistryRepo, $newRegistryRepo, $newRegistry)
 
-WriteAndSetUsage "aks registry migrate <old registry> <old registry repo> <new registry repo> [new registry]"
+WriteAndSetUsage "aks registry migrate" ([ordered]@{
+    "<old registry>" = "Old Azure registry"
+    "<old registry repo>" = "Old Azure registry repository"
+    "<new registry repo>" = "New Azure registry repository"
+    "[new registry]" = "New Azure Registry"
+})
 
 CheckVariable $oldRegistry "old registry"
 CheckVariable $oldRegistryRepo "old registry repo"

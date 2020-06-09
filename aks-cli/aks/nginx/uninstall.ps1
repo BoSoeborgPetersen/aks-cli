@@ -1,21 +1,25 @@
-param($deployment, [switch] $purge)
+param($prefix, [switch] $purge, [switch] $yes)
 
-WriteAndSetUsage "aks nginx uninstall [deployment name] [-purge]"
+WriteAndSetUsage "aks nginx uninstall" ([ordered]@{
+    "[prefix]" = "Kubernetes deployment name prefix"
+    "[-purge]" = "Flag to delete Kubernetes namespace"
+    "[-yes]" = "Skip verification"
+})
 
 $namespace = "ingress"
 CheckCurrentCluster
-$nginxDeployment = GetNginxDeploymentName $deployment
+$deployment = NginxDeploymentName $prefix
 
-Write-Info "Uninstall Nginx"
+Write-Info "Uninstalling Nginx"
 
-Helm3Command "uninstall $nginxDeployment -n $namespace"
-
-if ($purge)
+if ($yes -or (AreYouSure))
 {
-    Write-Info "Remove Nginx namespace"
+    HelmCommand "uninstall $deployment" -n $namespace
     
-    if (AreYouSure)
+    if ($purge)
     {
+        Write-Info "Remove Nginx namespace"
+        
         KubectlCommand "delete ns $namespace"
     }
 }

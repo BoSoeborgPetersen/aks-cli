@@ -1,17 +1,20 @@
 # TODO: Check if Service Principal is authorized.
 param($globalSubscription)
 
-WriteAndSetUsage "aks service-principal unauthorize <global subscription>"
+WriteAndSetUsage "aks service-principal unauthorize" ([ordered]@{
+    "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
+})
 
 CheckCurrentCluster
-$resourceGroup = GetCurrentClusterResourceGroup
+CheckVariable $globalSubscription "global subscription"
+$resourceGroup = CurrentClusterResourceGroup
 AzCheckSubscription $globalSubscription
-$subscriptionId = GetCurrentSubscription
+$subscriptionId = CurrentSubscription
 
 $registry = AzQuery "acr list" -q [].name -o tsv -s $globalSubscription
 AzCheckContainerRegistry $registry $globalSubscription
-$globalSubscriptionId = AzQuery "account list" -q "`"[?name=='$globalSubscription'].id`"" -o tsv
-$globalResourceGroup = AzQuery "acr list" -q "`"[?name=='$registry'].resourceGroup`"" -o tsv -s $globalSubscription
+$globalSubscriptionId = AzQuery "account list" -q "[?name=='$globalSubscription'].id" -o tsv
+$globalResourceGroup = AzQuery "acr list" -q "[?name=='$registry'].resourceGroup" -o tsv -s $globalSubscription
 AzCheckResourceGroup $globalResourceGroup $globalSubscription
 
 Write-Info "Unauthorize AKS cluster Service Principal from accessing global resources (cluster Resource Group & Azure Container Registry)"

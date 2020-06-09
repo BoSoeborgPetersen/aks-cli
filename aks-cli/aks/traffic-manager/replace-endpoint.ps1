@@ -1,10 +1,12 @@
-# TODO: REWRITE!!!
-param($new, $old)
+# TODO: Rewrite
+param($new, $old = "AKS")
 
-WriteAndSetUsage "aks traffic-manager replace-endpoint <new>"
+WriteAndSetUsage "aks traffic-manager replace-endpoint" ([ordered]@{
+    "<new>" = "new endpoint name"
+    "[old]" = "old endpoint name"
+})
 
 CheckVariable $new "new endpoint name"
-SetDefaultIfEmpty ([ref]$old) "AKS"
 
-AzCommand "network traffic-manager endpoint create -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n $old --type azureEndpoints --target-resource-id $AzureReservedIpName --endpoint-status enabled"
-AzCommand "network traffic-manager endpoint update -g $AzureServiceResourceGroupName --profile-name $AzureTrafficManagerName -n $new --endpoint-status Disabled"
+AzCommand "network traffic-manager endpoint create -g $AzureServiceResourceGroup --profile-name $AzureTrafficManager -n $old --type azureEndpoints --target-resource-id $AzureReservedIp --endpoint-status enabled"
+AzCommand "network traffic-manager endpoint update -g $AzureServiceResourceGroup --profile-name $AzureTrafficManager -n $new --endpoint-status Disabled"

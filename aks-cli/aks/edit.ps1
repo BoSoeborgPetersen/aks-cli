@@ -1,14 +1,21 @@
-# LaterDo: Add "-allNamespaces" parameter.
-param($type, $regex, $index, $namespace)
+param($type, $regex, $index = 0, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks edit <type> <regex> [index] [namespace]"
+WriteAndSetUsage "aks edit" ([ordered]@{
+    "<type>" = "Kubernetess resource type"
+    "[regex]" = "Expression to match against name"
+    "[index]" = "Index of the pod to open shell in"
+    "[namespace]" = KubernetesNamespaceDescription
+    "[-allNamespaces]" = KubernetesAllNamespacesDescription
+})
 
 CheckCurrentCluster
 CheckKubectlCommand $type "Edit"
 CheckVariable $regex "regex"
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace
 
-Write-Info "Edit '$type'" -r $regex -i $index -n $namespace
+$namespace, $name = KubectlGetRegex -t $type -r $regex -i $index -n $namespace
 
-$resource = KubectlGetRegex $type $regex $namespace $index
+Write-Info "Edit resource '$name' of type '$type'" -r $regex -i $index -n $namespace
 
-KubectlCommand "edit $type $resource" -n $namespace
+KubectlCommand "edit $type $name" -n $namespace

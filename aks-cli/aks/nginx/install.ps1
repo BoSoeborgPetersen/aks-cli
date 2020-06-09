@@ -1,35 +1,38 @@
-# TODO: Change the naming-convention.ps1 to allow Communicate to use their own names somehow.
-param($sku, $deployment, $configPrefix, [switch] $addIp)
+param($prefix, $configPrefix, [switch] $addIp, $sku = "Basic")
 
-WriteAndSetUsage "aks nginx install [sku] [deployment name] [config prefix] [-add ip]"
+WriteAndSetUsage "aks nginx install" ([ordered]@{
+    "[prefix]" = "Kubernetes deployment name prefix"
+    "[config prefix]" = "AKS-CLI config file name prefix"
+    "[-add ip]" = "Flag to add Azure Public IP"
+    "[sku]" = "Azure Public IP SKU"
+})
 
 $namespace = "ingress"
 CheckCurrentCluster
-$cluster = GetCurrentClusterName
-$resourceGroup = GetCurrentClusterResourceGroup
-SetDefaultIfEmpty ([ref]$sku) "Basic"
+$cluster = CurrentClusterName
+$resourceGroup = CurrentClusterResourceGroup
 
-$dnsName = PrependWithDash $resourceGroup $deployment
-$ipName = ClusterToIpAddressName $cluster $deployment
-$nginxDeploymentName = GetNginxDeploymentName $deployment
-$configFile = PrependWithDash "nginx-config.yaml" $configPrefix
+$dns = PrependWithDash $prefix "$resourceGroup"
+$publicIp = PublicIpName -prefix $prefix -cluster $cluster
+$deployment = NginxDeploymentName $prefix
+$configFile = PrependWithDash $configPrefix "nginx-config.yaml"
+
+Write-Info "Installing Nginx"
 
 if (AreYouSure)
 {
-    Write-Info "Install Nginx"
-
     if ($addIp)
     {
-        AzCommand "network public-ip create -g $resourceGroup -n $ipName --allocation-method Static --sku $sku --idle-timeout 30"
+        AzCommand "network public-ip create -g $resourceGroup -n $publicIp --allocation-method Static --sku $sku --idle-timeout 30"
     }
-    $ip = AzQuery "network public-ip show -g $resourceGroup -n $ipName" -q [ipAddress] -o tsv
+    $ip = AzQuery "network public-ip show -g $resourceGroup -n $publicIp" -q [ipAddress] -o tsv
     KubectlCommand "create ns $namespace"
 
-    if ($deployment)
+    if ($prefix)
     {
-        $extraParams = "--set controller.electionID='$deployment-ingress-controller-leader' --set controller.ingressClass='$deployment' --set controller.extraArgs.default-ssl-certificate=default/$deployment-certificate"
+        $extraParams = "--set controller.electionID='$prefix-ingress-controller-leader' --set controller.ingressClass='$prefix' --set controller.extraArgs.default-ssl-certificate=default/$prefix-certificate"
     }
 
-    # TODO: Replace ' with ", and " with '
-    Helm3Command "install '$nginxDeploymentName' stable/nginx-ingress -n $namespace --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dnsName -f $PSScriptRoot/config/$configFile"
+    # LaterDo: Replace ' with ", and " with '
+    HelmCommand "install '$deployment' stable/nginx-ingress --set defaultBackend.autoscaling.minReplicas=1 --set controller.service.internal.enabled=false --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
 }

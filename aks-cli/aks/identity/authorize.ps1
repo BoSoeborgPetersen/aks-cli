@@ -1,19 +1,21 @@
-# TODO: Check if Managed Identity is already authorized.
-# TODO: With more than 1 registry in the global subscription, show menu to choose.
+# LaterDo: Check if Managed Identity is already authorized.
+# LaterDo: With more than 1 registry in the global subscription, show menu to choose.
 param($globalSubscription)
 
-WriteAndSetUsage "aks identity authorize <global subscription>"
+WriteAndSetUsage "aks identity authorize" ([ordered]@{
+    "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
+})
 
 CheckCurrentCluster
 CheckVariable $globalSubscription "global subscription"
-$resourceGroup = GetCurrentClusterResourceGroup
+$resourceGroup = CurrentClusterResourceGroup
 AzCheckSubscription $globalSubscription
-$subscriptionId = GetCurrentSubscription
+$subscriptionId = CurrentSubscription
 
 $registry = AzQuery "acr list" -q [].name -o tsv -s $globalSubscription
 AzCheckContainerRegistry $registry $globalSubscription
-$globalSubscriptionId = AzQuery "account list" -q "`"[?name=='$globalSubscription'].id`"" -o tsv
-$globalResourceGroup = AzQuery "acr list" -q "`"[?name=='$registry'].resourceGroup`"" -o tsv -s $globalSubscription
+$globalSubscriptionId = AzQuery "account list" -q "[?name=='$globalSubscription'].id" -o tsv
+$globalResourceGroup = AzQuery "acr list" -q "[?name=='$registry'].resourceGroup" -o tsv -s $globalSubscription
 AzCheckResourceGroup $globalResourceGroup $globalSubscription
 
 Write-Info "Authorize AKS cluster Managed Identity to access global resources: 

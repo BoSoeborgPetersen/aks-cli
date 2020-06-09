@@ -8,13 +8,19 @@ Write-Info "Deleting current AKS cluster"
     
 if (AreYouSure)
 {
+    # Remove dependent resources.
+    AksCommand "kured uninstall"
+    AksCommand "nginx uninstall" # MaybeDo: Add -removeIp parameter.
+    AksCommand "cert-manager uninstall"
+    AksCommand "insights uninstall"
+
     $id = AzAksCurrentQuery "show" -q servicePrincipalProfile -o tsv
     # $userId = AzAksCurrentQuery "show" -q identityProfile.kubeletidentity.clientId -o tsv
 
-    # $resourceGroup = GetCurrentClusterResourceGroup
-    # $subscriptionId = GetCurrentSubscription
-    # $globalSubscriptionId = AzQuery "account list" -q "`"[?name=='$globalSubscription'].id`"" -o tsv
-    # $globalResourceGroup = AzQuery "acr list" -q "`"[?name=='$registry'].resourceGroup`"" -o tsv -s $globalSubscription
+    # $resourceGroup = CurrentClusterResourceGroup
+    # $subscriptionId = CurrentSubscription
+    # $globalSubscriptionId = AzQuery "account list" -q "[?name=='$globalSubscription'].id" -o tsv
+    # $globalResourceGroup = AzQuery "acr list" -q "[?name=='$registry'].resourceGroup" -o tsv -s $globalSubscription
     
     # if ($id -eq "msi")
     # {
@@ -39,6 +45,6 @@ if (AreYouSure)
         AzCommand "ad sp delete --id $id"
     }
 
-    Write-Info "Cluster has been deleted."
+    Write-Info "Cluster has been deleted"
     SwitchCurrentCluster -refresh
 }

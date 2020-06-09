@@ -1,4 +1,4 @@
-function Logo()
+function Logo
 {
     Write-Host ''
     Write-Host '      __       __   ___   _______  '
@@ -10,12 +10,12 @@ function Logo()
     Write-Host ''
 }
 
-function Welcome()
+function Welcome
 {
     Write-Host (ConditionalOperator $GlobalIsDevelopment " --- DEVELOPMENT EDITION --- `n`n") -NoNewline
     Write-Host 'Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!'
     Write-Host ''
-    Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm & helm3), Wercher/Stern (stern)'
+    Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm), Wercher/Stern (stern)'
     Write-Host 'Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu'
 }
 
@@ -28,13 +28,15 @@ function ShowCommands($commands)
 {
     Write-Host ''
     $maxSubCommandLength = ($commands.Keys | Measure-Object -Maximum -Property Length).Maximum
+
     ForEach ($key in ($commands.Keys | Sort-Object)) {
         Write-Host ("    $($key.PadRight($maxSubCommandLength + 4)): $($commands["$key"])")
     }
+
     Write-Host ''
 }
 
-function ShowGeneralFlags()
+function ShowGeneralFlags
 {
     Write-Host 'General flags: -h (help), -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).'
     Write-Host ''
@@ -42,17 +44,20 @@ function ShowGeneralFlags()
 
 function ShowExample($commands)
 {
-    $commandToShowAsExample = $commands.keys | Sort-Object($_) | Select-Object -first 1
+    $commandToShowAsExample = $commands.keys | Sort-Object | Select-Object -first 1
+
     if ($commandToShowAsExample.Contains('|'))
     {
         $commandToShowAsExample = $commandToShowAsExample.Split('|')[0]
     }
+
     Write-Host ("e.g. try '$commandPrefix $commandToShowAsExample'")
 }
 
 function ShowMenu($commandPrefix, $commands)
 {
     Logo
+
     if ($commandPrefix -eq "aks")
     {
         Welcome
@@ -61,6 +66,7 @@ function ShowMenu($commandPrefix, $commands)
     {
         ShowCommandBreadcrumbs $commandPrefix
     }
+
     Write-Host ''
     Write-Host 'Here are the commands:'
     ShowCommands $commands
@@ -74,7 +80,7 @@ function ShowSubMenu($commands)
     ShowMenu "aks $($params[0])" $commands
 }
 
-function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $false, $multiKey = $false)
+function CheckCommand($commandPrefix, $command, $commands, $noScriptFile, $multiKey)
 {
     if ($command) 
     {
@@ -96,7 +102,7 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $fals
 
         if ($commandExists) 
         {
-            if($noScriptfile)
+            if ($noScriptfile)
             {
                 return
             }
@@ -104,6 +110,7 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile = $fals
             $commandPrefixPath = $commandPrefix.Replace(' ', '/')
             $path = "$GlobalRoot/$commandPrefixPath/$command.ps1"
             $scriptExists = [System.IO.File]::Exists($path)
+
             if ($scriptExists) 
             {
                 SetCurrentCommandText $commands["$command"]
@@ -130,29 +137,31 @@ function CheckNoScriptSubCommand($command, $commands)
     CheckCommand "aks $($params[0])" $command $commands $true $multiKey
 }
 
-function CheckKubectlCommand($command, $operationName, [switch] $includeAll)
+function CheckKubectlCommand($command, $operation, [switch] $includeAll)
 {
     $allCommand = @{
-        "all" = "$operationName standard Kubernetes resources."
+        "all" = "$operation standard Kubernetes resources"
     }
+
     $nonAllCommands = @{
-        "cert|certificate" = "$operationName Certificates."
-        "challenge" = "$operationName Challenges."
-        "cm|configmap" = "$operationName ConfigMap."
-        "ds|daemonset" = "$operationName DaemonSet."
-        "deploy|deployment" = "$operationName Deployments."
-        "ev|event" = "$operationName Event."
-        "hpa|horizontalpodautoscaler" = "$operationName Horizontal Pod Autoscalers."
-        "ing|ingress" = "$operationName Ingress."
-        "issuer" = "$operationName Issuers."
-        "ns|namespace" = "$operationName Namespace."
-        "no|node" = "$operationName Nodes."
-        "order" = "$operationName Orders."
-        "po|pod" = "$operationName Pods."
-        "rs|replicaset" = "$operationName Replica Sets."
-        "secret" = "$operationName Secrets."
-        "svc|service" = "$operationName Services."
+        "cert|certificate" = "$operation Certificates"
+        "challenge" = "$operation Challenges"
+        "cm|configmap" = "$operation ConfigMap"
+        "ds|daemonset" = "$operation DaemonSet"
+        "deploy|deployment" = "$operation Deployments"
+        "ev|event" = "$operation Event"
+        "hpa|horizontalpodautoscaler" = "$operation Horizontal Pod Autoscalers"
+        "ing|ingress" = "$operation Ingress"
+        "issuer" = "$operation Issuers"
+        "ns|namespace" = "$operation Namespace"
+        "no|node" = "$operation Nodes"
+        "order" = "$operation Orders"
+        "po|pod" = "$operation Pods"
+        "rs|replicaset" = "$operation Replica Sets"
+        "secret" = "$operation Secrets"
+        "svc|service" = "$operation Services"
     }
+
     if ($includeAll)
     {
         $commands = $allCommand + $nonAllCommands
@@ -161,6 +170,7 @@ function CheckKubectlCommand($command, $operationName, [switch] $includeAll)
     {
         $commands = $nonAllCommands
     }
+
     CheckNoScriptSubCommand $command $commands
 }
 
@@ -185,15 +195,31 @@ function SubSubMenu($commands)
     Invoke-Expression "$path $($params | Select-Object -Skip 3)"
 }
 
-function AreYouSure()
+function AreYouSure
 {
     Write-Host ''
     $esc = "$([char]27)"
     $red = "$esc[31m"
-    $question = '{0}{1}' -f $red, 'Are you sure you want to proceed?'
+    $question = $red + "Are you sure you want to proceed?" 
     $choices  = '&Yes', '&No'
     $decision = $Host.UI.PromptForChoice("", $question, $choices, 1)
     Write-Host ''
 
     return $decision -eq 0
+}
+
+function WantToContinue($question)
+{
+    Write-Host ''
+    $esc = "$([char]27)"
+    $red = "$esc[31m"
+    $question = $red + "$question, proceed?" 
+    $choices  = '&Yes', '&No'
+    $decision = $Host.UI.PromptForChoice("", $question, $choices, 1)
+    Write-Host ''
+
+    if ($decision -ne 0)
+    {
+        exit
+    }
 }

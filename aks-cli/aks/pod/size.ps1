@@ -1,28 +1,35 @@
-param($regex, $namespace)
+param($regex, $index = 0, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks pod size <regex> [namespace]"
+WriteAndSetUsage "aks pod size" ([ordered]@{
+    "<regex>" = "Expression to match against name"
+    "[index]" = "Index of the pod to open shell in"
+    "[namespace]" = KubernetesNamespaceDescription
+    "[-allNamespaces]" = KubernetesAllNamespacesDescription
+})
 
-CheckCurrentCluster
 CheckVariable $regex "regex"
+CheckCurrentCluster
+$namespace = ConditionalOperator $allNamespaces "all" $namespace
+KubectlCheckNamespace $namespace
 
-$pod = KubectlGetRegex "pod" $regex $namespace
+$namespace, $name = KubectlGetRegex -t pod -r $regex -i $index -n $namespace
 
-function testCommand([ref] $command, $tryCommand)
+function testCommand($command, $tryCommand)
 {
-    if (!$command.value)
+    if (!$command)
     {
-        $output = KubectlQuery "exec $pod" -n $namespace -postFix "-- $tryCommand 2>&1"
+        $output = KubectlQuery "exec $name" -n $namespace -postFix "-- $tryCommand 2>&1"
         if (!($output -like "*command terminated with exit code 126*"))
         {
-            $command.value = $tryCommand
+            $command = $tryCommand
         }
     }
+    return $command
 }
 
-Write-Info "Show pod '$pod' content size" -r $regex $namespace
+Write-Info "Show pod '$name' content size" -r $regex -n $namespace
 
-$command = ""
-testCommand ([ref]$command) "du -h -s"
-testCommand ([ref]$command) "powershell -c `"'{0} MB' -f ((Get-ChildItem C:\app\ -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum / 1MB)`""
+$command = testCommand $command "du -h -s"
+$command = testCommand $command "powershell -c `"'{0} MB' -f ((Get-ChildItem C:\app\ -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum / 1MB)`""
 
-KubectlCommand "exec $pod" -n $namespace -postFix "-- $command"
+KubectlCommand "exec $name" -n $namespace -postFix "-- $command"

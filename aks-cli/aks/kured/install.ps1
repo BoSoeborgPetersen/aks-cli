@@ -1,8 +1,16 @@
-WriteAndSetUsage "aks kured install"
+param([switch] $skipNamespace)
+
+WriteAndSetUsage "aks kured install" ([ordered]@{
+    "[-skipNamespace]" = "Skip Namespace creation"
+})
 
 CheckCurrentCluster
+$deployment = KuredDeploymentName
 
 Write-Info "Installing Kured (KUbernetes REboot Daemon)"
 
-KubectlCommand "create ns kured"
-Helm3Command "install kured stable/kured --namespace kured --set nodeSelector.`"beta\.kubernetes\.io/os`"=linux"
+if (!$skipNamespace)
+{
+    KubectlCommand "create ns $deployment"
+}
+HelmCommand "install $deployment kured/kured --set nodeSelector.`"beta\.kubernetes\.io/os`"=linux" -n $deployment

@@ -1,19 +1,21 @@
 param($location)
 
-WriteAndSetUsage "aks versions [location]"
+WriteAndSetUsage "aks versions" ([ordered]@{
+    "[location]" = (AzureLocationDescription "Current AKS cluster location")
+})
 
 CheckCurrentClusterOrVariable $location "[location]"
 
-if ($location) 
+if ($location)
 {
     AzCheckLocation $location
     Write-Info "Available AKS versions for location '$location'"
 }
 else
 {
-    $location = GetCurrentClusterLocation
+    $location = CurrentClusterLocation
     Write-Info "Available AKS versions for cluster location '$location'"
 }
 
 $versions = AzAksCommand "get-versions" -l $location -q orchestrators
-($versions | ConvertFrom-Json | Select-Object @{ name='Version';expression= { "$($_.orchestratorVersion) $($_.isPreview -replace 'True','(Preview)')" }} | Format-Table -HideTableHeaders | Out-String).Trim()
+($versions | ConvertFrom-Json | Sort-Object {[version] $_.orchestratorVersion} | Select-Object @{ name='Version';expression= { "$($_.orchestratorVersion) $($_.isPreview -replace 'True','(Preview)')" }} | Format-Table -HideTableHeaders | Out-String).Trim()

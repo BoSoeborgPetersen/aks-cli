@@ -1,8 +1,20 @@
-param($environmentName)
+param($name, [switch] $replaceDefaultKubernetesResources)
 
-WriteAndSetUsage "aks devops environment replace <environment name>"
+WriteAndSetUsage "aks devops environment replace" ([ordered]@{
+    "<name>" = "Environment Name"
+})
 
-CheckVariable $environmentName "environment name"
+CheckVariable $name "environment name"
 
-aks devops environment delete $environmentName
-aks devops environment create $environmentName
+Write-Info "Replacing Environment"
+
+if ($replaceDefaultKubernetesResources)
+{
+    AksCommand devops environment delete $name -addDefaultKubernetesResources
+    AksCommand devops environment create $name -removeDefaultKubernetesResources
+}
+else 
+{
+    AksCommand devops environment delete $name
+    AksCommand devops environment create $name
+}

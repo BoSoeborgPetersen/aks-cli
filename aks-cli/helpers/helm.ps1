@@ -1,30 +1,49 @@
-function HelmCommand($command)
+function HelmNamespaceString($namespace)
 {
-    ExecuteCommand "helm $command $debugString"
+    return ConditionalOperator $namespace " -n $namespace"
 }
 
-function Helm3Command($command)
+function Helm2Command($command)
 {
-    ExecuteCommand "helm3 $command $debugString"
+    ExecuteCommand ("helm2 $command" + $debugString)
+}
+
+function HelmCommand($command, $namespace)
+{
+    $namespaceString = HelmNamespaceString $namespace
+
+    ExecuteCommand ("helm $command" + $namespaceString + $debugString)
+}
+
+function Helm2Query($command)
+{
+    return ExecuteQuery ("helm2 $command" + $debugString)
 }
 
 function HelmQuery($command)
 {
-    return ExecuteQuery "helm $command $debugString"
+    return ExecuteQuery ("helm $command" + $debugString)
 }
 
-function Helm3Query($command)
+function HelmCheck($chart, $namespace)
 {
-    return ExecuteQuery "helm3 $command $debugString"
+    $namespaceString = HelmNamespaceString $namespace
+
+    $check = ExecuteQuery ("helm3 test $chart" + $namespaceString + " 2>null")
+
+    if (!$check) 
+    {
+        Write-Error "Chart '$chart' does not exist" -n $namespace
+    }
 }
 
 function HelmLatestChartVersion($chart)
 {
-    return ((Helm3Query "search repo $chart -o json") | ConvertFrom-Json | Select-Object version | Format-Wide | Out-String).Replace('v', '').Trim()
+    return HelmQuery "search repo $chart -o json | jq -r ' .[] | .version' | % TrimStart v"
 }
 
-function HelmAddRepo($name)
+function HelmAddRepo($name, $url)
 {
-    Helm3Command "repo add stable $name"
-    Helm3Command "repo update"
+    HelmCommand "repo add $name $url"
+    HelmCommand "repo update"
 }

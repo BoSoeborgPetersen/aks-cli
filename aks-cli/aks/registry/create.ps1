@@ -1,12 +1,15 @@
 param($resourceGroup, $globalSubscription)
 
-WriteAndSetUsage "aks registry create <resource group> <global subscription>"
+WriteAndSetUsage "aks registry create" ([ordered]@{
+    "<resourceGroup>" = "Azure Resource Group"
+    "<globalSubscription>" = "Azure Subscription for Azure Container Registry"
+})
 
 CheckVariable $resourceGroup "resource group"
 CheckVariable $globalSubscription "global subscription"
-$globalResourceGroup = ResourceGroupToGlobalResourceGroupName $resourceGroup
+$globalResourceGroup = GlobalResourceGroupName -resourceGroup $resourceGroup
 AzCheckResourceGroup $globalResourceGroup $globalSubscription
-$registry = ResourceGroupToRegistryName $resourceGroup
+$registry = RegistryName -resourceGroup $resourceGroup
 AzCheckNotContainerRegistry $registry $globalSubscription
 
 AzCommand "acr create -n $registry -g $globalResourceGroup --sku Standard --subscription '$globalSubscription'"

@@ -1,4 +1,5 @@
 SubMenu @{
-    "standard" = "Create AKS cluster (does not switch to it)."
-    "windows" = "Create AKS cluster with Windows node pool (does not switch to it)."
+    "check" = "Check AKS cluster"
+    "standard" = "Create AKS cluster"
+    "windows" = "Create AKS cluster with Windows node pool"
 }

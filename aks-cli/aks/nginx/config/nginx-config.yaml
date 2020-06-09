@@ -1,4 +1,9 @@
 controller:
+  nodeSelector:
+    "beta.kubernetes.io/os": linux
   kind: DaemonSet 
   service:
     externalTrafficPolicy: "Local"
+defaultBackend:
+  nodeSelector:
+    "beta.kubernetes.io/os": linux
