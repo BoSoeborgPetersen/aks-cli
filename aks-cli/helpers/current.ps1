@@ -1,7 +1,8 @@
 function ChooseSubscriptionMenu()
 {
-    if(!$GlobalSubscriptions){
-        $global:GlobalSubscriptions = az account list | ConvertFrom-Json
+    if (!$GlobalSubscriptions)
+    {
+        $global:GlobalSubscriptions = az account list --all | ConvertFrom-Json | Sort-Object -Property Name
     }
     if ($GlobalSubscriptions.length -eq 1)
     {
@@ -60,7 +61,7 @@ function ChooseClusterMenu([switch] $refresh = $false)
     if ($refresh -or !$GlobalSubscriptionUsedForClusters -or !$GlobalClusters -or ($GlobalCurrentSubscription -ne $GlobalSubscriptionUsedForClusters))
     {
         $global:GlobalSubscriptionUsedForClusters = $GlobalCurrentSubscription
-        $global:GlobalClusters = az aks list | ConvertFrom-Json
+        $global:GlobalClusters = az aks list | ConvertFrom-Json | Sort-Object -Property Name
     }
     if ($GlobalClusters.length -eq 1)
     {
