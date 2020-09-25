@@ -23,7 +23,7 @@ RUN pwsh -c "Install-Module PSMenu -Force" && \
 RUN apk add nano --no-cache 
   
 # Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 40 MB) 
-ENV KUBECTL_CERT_MANAGER_VERSION=0.16.1
+ENV KUBECTL_CERT_MANAGER_VERSION=1.0.2
 RUN az aks install-cli --only-show-errors && \ 
     curl -L https://github.com/jetstack/cert-manager/releases/download/v${KUBECTL_CERT_MANAGER_VERSION}/kubectl-cert_manager-linux-amd64.tar.gz -o /tmp/kubectl-cert-manager.tar.gz && \ 
     tar zxf /tmp/kubectl-cert-manager.tar.gz && \ 
@@ -36,7 +36,7 @@ RUN curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/do
     chmod +x /usr/local/bin/stern 
  
 # Install Helm-Cli version 2 (helm2) (90 MB) 
-ENV HELM_VERSION=2.16.10
+ENV HELM_VERSION=2.16.12
 RUN curl -LO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \ 
     mkdir helm2 && \ 
     tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --directory helm2 && \ 
