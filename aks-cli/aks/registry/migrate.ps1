@@ -26,7 +26,4 @@ foreach($imageTag in $imageTags.Split(" "))
 {
     Write-Info "Moving '$oldRegistry.azurecr.io/${oldRegistryRepo}:$imageTag' to '$newRegistry.azurecr.io/${newRegistryRepo}:$imageTag'"
     AzCommand "acr import -n $newRegistry --source $oldRegistry.azurecr.io/${oldRegistryRepo}:$imageTag --image ${newRegistryRepo}:$imageTag"
-    AzCommand "acr repository delete -n $oldRegistry --image ${oldRegistryRepo}:$imageTag -y"
 }
-
-AzCommand "acr repository delete -n $oldRegistry --repository $oldRegistryRepo"

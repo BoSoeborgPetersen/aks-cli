@@ -26,6 +26,8 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
     - Kured repo (<https://weaveworks.github.io/kured>)
     - 2to3 plugin (<https://github.com/helm/helm-2to3>)
 - Wercher/Stern (stern)
+- Kubectx
+- Kubens
 - Nano
 - Bash Completion for PowerShell, for each CLI
 

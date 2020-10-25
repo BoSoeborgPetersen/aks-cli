@@ -30,5 +30,5 @@ else
     
 if (AreYouSure)
 {
-    AzAksCurrentCommand "upgrade" -version $version
+    AzAksCurrentCommand "upgrade -y" -version $version
 }

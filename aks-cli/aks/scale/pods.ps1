@@ -7,7 +7,7 @@ WriteAndSetUsage "aks scale pods" ([ordered]@{
 })
 
 CheckCurrentCluster
-CheckNumberRange $count "count" -min 1 -max 100
+CheckNumberRange $count "count" -min 0 -max 100
 KubectlCheckNamespace $namespace
 $deployment = KubectlCheckDeployment $deployment $namespace
 

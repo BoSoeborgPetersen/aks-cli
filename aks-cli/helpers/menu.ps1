@@ -15,7 +15,7 @@ function Welcome
     Write-Host (ConditionalOperator $GlobalIsDevelopment " --- DEVELOPMENT EDITION --- `n`n") -NoNewline
     Write-Host 'Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!'
     Write-Host ''
-    Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm), Wercher/Stern (stern)'
+    Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm), Wercher/Stern (stern), Kubectx, Kubens'
     Write-Host 'Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu'
 }
 
