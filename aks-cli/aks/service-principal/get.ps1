@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks service-principal get"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

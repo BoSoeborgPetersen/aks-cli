@@ -44,8 +44,10 @@ function WriteAdvancedUsage($usage, $parameters)
     Write-Verbose $usageText
 }
 
-function WriteAndSetUsage($usage, $parameters)
+function WriteAndSetUsage($parameters)
 {
+    $usage = CurrentUsage
+
     if ($help)
     {
         WriteAdvancedHelp $usage $parameters

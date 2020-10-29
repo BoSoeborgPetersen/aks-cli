@@ -1,6 +1,6 @@
 # LaterDo: Remove role assignments to Cluster Resource Group and Container Registry Group.
 # LaterDo: Remove user assigned managed identity if it is still there.
-WriteAndSetUsage "aks delete"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

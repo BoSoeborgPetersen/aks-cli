@@ -1,6 +1,6 @@
 param($index = -1)
 
-WriteAndSetUsage "aks cert-manager logs" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[index]" = "Index of the pod to show logs from"
 })
 

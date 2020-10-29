@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks insights uninstall"
+WriteAndSetUsage
 
 CheckCurrentCluster
 $resourceGroup = CurrentClusterResourceGroup

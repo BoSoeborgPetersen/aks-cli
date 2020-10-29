@@ -1,6 +1,6 @@
 param($environment, $namespace)
 
-WriteAndSetUsage "aks devops environment-kubernetes remove" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<environment>" = "Environment Name"
     "<namespace>" = "Kubernetes namespace"
 })

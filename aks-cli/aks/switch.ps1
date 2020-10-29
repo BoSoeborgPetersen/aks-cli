@@ -1,6 +1,6 @@
 param($command, [switch] $cluster, $resourceGroup, [switch] $clean)
 
-WriteAndSetUsage "aks switch" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-cluster]" = "Only switch AKS cluster, not Azure subscription"
     "[resource group]" = "Switch to this AKS cluster, instead of using menu"
     "[-clean]" = "Clear and replace AKS cluster credentials"

@@ -1,6 +1,6 @@
 param($name)
 
-WriteAndSetUsage "aks devops environment show" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Environment Name"
 })
 

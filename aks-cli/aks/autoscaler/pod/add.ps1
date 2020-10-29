@@ -1,6 +1,6 @@
 param($deployment, $min = 3, $max = 6, $limit = 60, $namespace)
 
-WriteAndSetUsage "aks autoscaler pod add" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[deployment]" = KubernetesDeploymentDescription
     "[min]" = KubernetesMinPodCountDescription
     "[max]" = KubernetesMaxPodCountDescription

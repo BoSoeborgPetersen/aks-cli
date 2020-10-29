@@ -1,6 +1,6 @@
 param($count, $deployment, $namespace)
 
-WriteAndSetUsage "aks scale pods" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<count>" = "Number of pods"
     "[deployment]" = "Kubenetes deployment"
     "[namespace]" = KubernetesNamespaceDescription

@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks cert-manager upgrades"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

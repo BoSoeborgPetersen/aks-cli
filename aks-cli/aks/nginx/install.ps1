@@ -1,6 +1,6 @@
 param($prefix, $configPrefix, [switch] $addIp, $sku = "Basic")
 
-WriteAndSetUsage "aks nginx install" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
     "[config prefix]" = "AKS-CLI config file name prefix"
     "[-add ip]" = "Flag to add Azure Public IP"

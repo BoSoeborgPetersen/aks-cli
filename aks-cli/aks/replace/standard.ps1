@@ -1,6 +1,6 @@
 param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks replace standard" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<location>" = AzureLocationDescription
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"

@@ -1,6 +1,6 @@
 param($deployment, $namespace)
 
-WriteAndSetUsage "aks pod delete" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[deployment]" = "Kubernetes deployment"
     "[namespace]" = KubernetesNamespaceDescription
 })

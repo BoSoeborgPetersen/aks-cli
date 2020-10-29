@@ -1,7 +1,7 @@
 # LaterDo: When dependant resources does not exists, help with solution (resource group does not exist => create with "aks resource-group create $resourceGroup <location>")
 param($resourceGroup, $minNodeCount = 3, $maxNodeCount = 20, $nodeSize, $loadBalancerSku = "standard", $windowsAdminUsername = "azureuser", $windowsAdminPassword, $windowsNodeCount = 2, $windowsNodeSize = "Standard_H8", $windowsNodepool = "winvms", [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks create windows" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "[minNodeCount]" = "Autoscaler Minimum Node Count (default: 3)"
     "[maxNodeCount]" = "Autoscaler Maximum Node Count (default: 20)"

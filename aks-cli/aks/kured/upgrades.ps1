@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks kured upgrades"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

@@ -1,6 +1,6 @@
 param($name, $namespace = "default")
 
-WriteAndSetUsage "aks devops service-connection check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Service Connection Name"
     "[namespace]" = "Kubernetes namespace"
 })

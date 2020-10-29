@@ -1,7 +1,7 @@
 # LaterDo: When dependant resources does not exists, help with solution (resource group does not exist => create with "aks resource-group create $resourceGroup <location>")
 param($resourceGroup, $minNodeCount = 3, $maxNodeCount = 20, $nodeSize, $loadBalancerSku = "basic", [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks create standard" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "[minNodeCount]" = "Autoscaler Minimum Node Count (default: 3)"
     "[maxNodeCount]" = "Autoscaler Maximum Node Count (default: 20)"

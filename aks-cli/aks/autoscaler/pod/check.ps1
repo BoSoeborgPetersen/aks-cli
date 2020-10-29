@@ -1,6 +1,6 @@
 param($deployment, $namespace)
 
-WriteAndSetUsage "aks autoscaler pod check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[deployment]" = KubernetesDeploymentDescription
     "[namespace]" = KubernetesNamespaceDescription
 })

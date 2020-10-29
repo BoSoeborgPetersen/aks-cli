@@ -1,6 +1,6 @@
 param($prefix, $configPrefix)
 
-WriteAndSetUsage "aks nginx upgrade" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
 })
 

@@ -1,6 +1,6 @@
 param($version, [switch] $purge, [switch] $yes)
 
-WriteAndSetUsage "aks cert-manager uninstall" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[version]" = "Helm Chart version"
     "[-purge]" = "Also remove Kubernetes namespace and Cert-Manager Custom Resource Definitions (CRDs)"
     "[-yes]" = "Skip verification"

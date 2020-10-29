@@ -1,7 +1,7 @@
 # LaterDo: Add (cloud-services, communicate, identity) parameter, that causes more checks
 param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks setup check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<location>" = AzureLocationDescription
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"

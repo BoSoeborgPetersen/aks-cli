@@ -1,6 +1,6 @@
 param($location)
 
-WriteAndSetUsage "aks versions" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[location]" = (AzureLocationDescription "Current AKS cluster location")
 })
 

@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks kured replace"
+WriteAndSetUsage
 
 Write-Info "Replacing Kured (KUbernetes REboot Daemon)"
 

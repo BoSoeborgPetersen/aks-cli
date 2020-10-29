@@ -1,6 +1,6 @@
 param($name, $approver = "[Identity]\Contributors")
 
-WriteAndSetUsage "aks devops environment-checks add" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Environment Name"
 })
 

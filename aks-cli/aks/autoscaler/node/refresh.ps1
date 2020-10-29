@@ -1,6 +1,6 @@
 param($min, $max)
 
-WriteAndSetUsage "aks autoscaler node refresh" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[min]" = AzureVmMinNodeCountDescription
     "[max]" = AzureVmMaxNodeCountDescription
 })

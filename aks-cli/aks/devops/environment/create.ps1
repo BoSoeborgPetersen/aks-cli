@@ -1,7 +1,7 @@
 # LaterDo: Add Approval/Check (e.g. '[Identity]\Contributors')
 param($name, [switch] $addDefaultKubernetesResources)
 
-WriteAndSetUsage "aks devops environment create" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Environment Name"
     "[-addDefaultKubernetesResources]" = "Add Kubernetes resources for default namespaces (default, ingress, cert-manager)"
 })

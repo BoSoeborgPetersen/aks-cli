@@ -1,6 +1,6 @@
 param($version)
 
-WriteAndSetUsage "aks cert-manager check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[version]" = "Helm Chart version"
 })
 

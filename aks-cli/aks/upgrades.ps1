@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks upgrades"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

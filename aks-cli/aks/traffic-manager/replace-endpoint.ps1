@@ -1,7 +1,7 @@
 # TODO: Rewrite
 param($new, $old = "AKS")
 
-WriteAndSetUsage "aks traffic-manager replace-endpoint" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<new>" = "new endpoint name"
     "[old]" = "old endpoint name"
 })

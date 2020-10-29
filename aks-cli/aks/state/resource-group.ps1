@@ -1,7 +1,7 @@
 # MaybeDo: Use this default resource group in all aks functions that require a resource group.
 param($resourceGroup)
 
-WriteAndSetUsage "aks state resource-group" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[resource group]" = "Default resource group"
 })
 

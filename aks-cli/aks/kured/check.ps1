@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks kured check"
+WriteAndSetUsage
 
 CheckCurrentCluster
 $deployment = KuredDeploymentName

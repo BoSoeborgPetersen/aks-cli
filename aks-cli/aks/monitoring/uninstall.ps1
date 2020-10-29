@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks monitoring uninstall"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

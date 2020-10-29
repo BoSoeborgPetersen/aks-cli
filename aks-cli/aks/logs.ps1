@@ -1,6 +1,6 @@
 param($regex, $index = -1, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks logs" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[regex]" = "Expression to match against name"
     "[index]" = "Index of the pod to open shell in"
     "[namespace]" = KubernetesNamespaceDescription

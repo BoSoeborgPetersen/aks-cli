@@ -1,6 +1,6 @@
 param([switch] $disable)
 
-WriteAndSetUsage "aks state whatif" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-disable]" = "Flag to disable WhatIf (Dry Run) execution"
 })
 

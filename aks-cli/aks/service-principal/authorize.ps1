@@ -1,7 +1,7 @@
 # TODO: Check if Service Principal is already authorized.
 param($globalSubscription)
 
-WriteAndSetUsage "aks service-principal authorize" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
 })
 

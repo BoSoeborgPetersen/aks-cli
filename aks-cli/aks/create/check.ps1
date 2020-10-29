@@ -1,7 +1,7 @@
 # LaterDo: Add windows parameter, that causes more checks
 param($resourceGroup, $minNodeCount = 3, $maxNodeCount = 20, $nodeSize, $loadBalancerSku = "basic", [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks create check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "[minNodeCount]" = "Autoscaler Minimum Node Count (default: 3)"
     "[maxNodeCount]" = "Autoscaler Maximum Node Count (default: 20)"

@@ -1,6 +1,6 @@
 param($type, $regex, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks get" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<type>" = "Kubernetess resource type"
     "[regex]" = "Expression to match against name"
     "[namespace]" = KubernetesNamespaceDescription

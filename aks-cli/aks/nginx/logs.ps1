@@ -1,6 +1,6 @@
 param($index = -1, $prefix)
 
-WriteAndSetUsage "aks nginx logs" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[index]" = "Index of the pod to show logs from"
     "[prefix]" = "Kubernetes deployment name prefix"
 })

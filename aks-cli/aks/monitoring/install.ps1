@@ -1,5 +1,5 @@
 # TODO: Rewrite config files to new format.
-WriteAndSetUsage "aks monitoring install"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

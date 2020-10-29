@@ -1,7 +1,7 @@
 # TODO: Test
 param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, $windowsAdminUsername, $windowsAdminPassword, $windowsNodeCount, $windowsNodeSize, $windowsNodepool, [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks setup cloud-services" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<location>" = AzureLocationDescription
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"

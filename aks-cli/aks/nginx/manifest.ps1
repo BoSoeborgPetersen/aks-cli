@@ -1,6 +1,6 @@
 param($configPrefix)
 
-WriteAndSetUsage "aks nginx manifest" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[config prefix]" = "AKS-CLI config file name prefix"
 })
 

@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks insights check"
+WriteAndSetUsage
 
 CheckCurrentCluster
 $resourceGroup = CurrentClusterResourceGroup

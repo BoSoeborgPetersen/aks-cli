@@ -1,7 +1,7 @@
 # TODO: Test
 param($resourceGroup, $location, $globalSubscription, $minNodeCount, $maxNodeCount, $nodeSize, $loadBalancerSku, [switch] $useServicePrincipal)
 
-WriteAndSetUsage "aks setup identity" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<location>" = AzureLocationDescription
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"

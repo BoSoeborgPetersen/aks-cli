@@ -1,6 +1,6 @@
 param($resourceGroup, $globalSubscription)
 
-WriteAndSetUsage "aks registry create" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<globalSubscription>" = "Azure Subscription for Azure Container Registry"
 })

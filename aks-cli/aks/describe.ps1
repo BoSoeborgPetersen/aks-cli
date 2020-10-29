@@ -1,6 +1,6 @@
 param($type, $regex, $index = 0, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks describe" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<type>" = "Kubernetess resource type"
     "[regex]" = "Expression to match against name"
     "[index]" = "Index of the pod to open shell in"

@@ -1,6 +1,6 @@
 param($name, $location)
 
-WriteAndSetUsage "aks resource-group check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Name"
     "<location>" = AzureLocationDescription
 })

@@ -1,6 +1,6 @@
 param($resourceGroup, $globalSubscription)
 
-WriteAndSetUsage "aks keyvault create" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
 })

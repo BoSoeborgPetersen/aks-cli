@@ -1,6 +1,6 @@
 param($version, [switch] $preview)
 
-WriteAndSetUsage "aks upgrade" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[version]" = "Version to upgrade to (default: newest stable upgradable version)"
     "[-preview]" = "Allow upgrade to preview version"
 })

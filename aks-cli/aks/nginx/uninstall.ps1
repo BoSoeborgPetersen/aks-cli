@@ -1,6 +1,6 @@
 param($prefix, [switch] $purge, [switch] $yes)
 
-WriteAndSetUsage "aks nginx uninstall" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
     "[-purge]" = "Flag to delete Kubernetes namespace"
     "[-yes]" = "Skip verification"

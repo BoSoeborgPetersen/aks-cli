@@ -1,6 +1,6 @@
 # TODO: Refactor
 
-WriteAndSetUsage "aks devops replace-cluster"
+WriteAndSetUsage
 
 Write-Info "Azure DevOps: Replacing service-connection, environment and running pipelines"
 

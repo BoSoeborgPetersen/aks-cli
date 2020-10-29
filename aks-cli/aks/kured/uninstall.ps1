@@ -1,6 +1,6 @@
 param([switch] $yes, [switch] $skipNamespace)
 
-WriteAndSetUsage "aks kured uninstall" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-yes]" = "Skip verification"
     "[-skipNamespace]" = "Skip Namespace deletion"
 })

@@ -1,6 +1,6 @@
 param($environment, $namespace)
 
-WriteAndSetUsage "aks devops environment-kubernetes show" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<environment>" = "Environment Name"
     "<namespace>" = "Kubernetes namespace"
 })

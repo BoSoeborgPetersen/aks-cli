@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks autoscaler node check"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

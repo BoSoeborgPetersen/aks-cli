@@ -1,6 +1,6 @@
 param([switch] $disable)
 
-WriteAndSetUsage "aks state verbose" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-disable]" = "Flag to disable verbose output"
 })
 

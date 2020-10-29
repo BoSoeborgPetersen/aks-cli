@@ -1,6 +1,6 @@
 param($globalSubscription)
 
-WriteAndSetUsage "aks identity check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
 })
 

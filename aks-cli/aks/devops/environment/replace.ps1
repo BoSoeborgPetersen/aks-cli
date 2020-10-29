@@ -1,6 +1,6 @@
 param($name, [switch] $replaceDefaultKubernetesResources)
 
-WriteAndSetUsage "aks devops environment replace" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Environment Name"
 })
 

@@ -1,6 +1,6 @@
 param($prefix)
 
-WriteAndSetUsage "aks nginx check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
 })
 

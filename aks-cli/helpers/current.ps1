@@ -183,3 +183,13 @@ function CurrentCommandText
 {
     return $global:GlobalCurrentCommandText
 }
+
+function SetCurrentUsage($usage)
+{
+    $global:GlobalCurrentUsage = $usage
+}
+
+function CurrentUsage
+{
+    return $global:GlobalCurrentUsage
+}

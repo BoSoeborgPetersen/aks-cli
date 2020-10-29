@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks insights install"
+WriteAndSetUsage
 
 CheckCurrentCluster
 $resourceGroup = CurrentClusterResourceGroup

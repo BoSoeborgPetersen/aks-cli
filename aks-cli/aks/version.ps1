@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks version"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

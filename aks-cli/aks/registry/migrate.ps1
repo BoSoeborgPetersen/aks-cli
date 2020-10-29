@@ -2,7 +2,7 @@
 # LaterDo: Allow to run from other subscriptions (add subscription parameter, calculate other variables from that).
 param($oldRegistry, $oldRegistryRepo, $newRegistryRepo, $newRegistry)
 
-WriteAndSetUsage "aks registry migrate" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<old registry>" = "Old Azure registry"
     "<old registry repo>" = "Old Azure registry repository"
     "<new registry repo>" = "New Azure registry repository"

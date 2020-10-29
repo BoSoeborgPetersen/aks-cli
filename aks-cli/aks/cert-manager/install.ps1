@@ -1,6 +1,6 @@
 param($version, [switch] $skipNamespace)
 
-WriteAndSetUsage "aks cert-manager install" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[version]" = "Helm Chart version"
     "[-skipNamespace]" = "Skip Namespace creation"
 })

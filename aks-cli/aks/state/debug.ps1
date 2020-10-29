@@ -1,6 +1,6 @@
 param([switch] $disable)
 
-WriteAndSetUsage "aks state debug" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-disable]" = "Flag to disable debug output"
 })
 

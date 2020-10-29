@@ -1,5 +1,5 @@
 # TODO: Test
-WriteAndSetUsage "aks monitoring check"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

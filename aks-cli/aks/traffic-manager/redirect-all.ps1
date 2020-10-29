@@ -1,7 +1,7 @@
 # TODO: Rewrite
 # BUG: Problem observed when the dns name of public IP that the new endpoint points to has the dns name of the old IP that the old endpoint is pointing to. Replacing endpont instead of adding should fix it.
 
-WriteAndSetUsage "aks traffic-manager redirect-all"
+WriteAndSetUsage
 
 # Step 1: Choose source cluster
 Write-Info "Choose source AKS cluster"

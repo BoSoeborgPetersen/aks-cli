@@ -1,7 +1,7 @@
 # TODO: Test
 param($resourceGroup, $globalSubscription)
 
-WriteAndSetUsage "aks registry check" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"
     "<globalSubscription>" = "Azure Subscription for Azure Container Registry"
 })

@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks devops pipeline deploy"
+WriteAndSetUsage
 
 # TODO: Rewrite
 az devops configure --defaults organization=https://dev.azure.com/3Shape/

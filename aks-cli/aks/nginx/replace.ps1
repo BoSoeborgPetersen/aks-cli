@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks nginx replace"
+WriteAndSetUsage
 
 Write-Info "Replacing Nginx"
 

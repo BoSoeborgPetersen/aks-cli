@@ -114,6 +114,8 @@ function CheckCommand($commandPrefix, $command, $commands, $noScriptFile, $multi
             if ($scriptExists) 
             {
                 SetCurrentCommandText $commands["$command"]
+                SetCurrentUsage "$commandPrefix $command"
+
                 return $path
             }
             else

@@ -1,6 +1,6 @@
 param($name, [switch] $removeDefaultKubernetesResources)
 
-WriteAndSetUsage "aks devops environment delete" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Environment Name"
     "[-removeDefaultKubernetesResources]" = "Remove Kubernetes resources for default namespaces (default, ingress, cert-manager)"
 })

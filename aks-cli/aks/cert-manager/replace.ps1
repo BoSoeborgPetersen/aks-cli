@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks cert-manager replace"
+WriteAndSetUsage
 
 Write-Info "Replacing Cert-Manager"
 

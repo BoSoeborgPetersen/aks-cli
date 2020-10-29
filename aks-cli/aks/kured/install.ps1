@@ -1,6 +1,6 @@
 param([switch] $skipNamespace)
 
-WriteAndSetUsage "aks kured install" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[-skipNamespace]" = "Skip Namespace creation"
 })
 

@@ -1,6 +1,6 @@
 param($name, $location)
 
-WriteAndSetUsage "aks resource-group create" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<name>" = "Name"
     "<location>" = AzureLocationDescription
 })

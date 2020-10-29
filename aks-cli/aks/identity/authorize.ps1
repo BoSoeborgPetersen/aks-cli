@@ -2,7 +2,7 @@
 # LaterDo: With more than 1 registry in the global subscription, show menu to choose.
 param($globalSubscription)
 
-WriteAndSetUsage "aks identity authorize" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<globalSubscription>" = "Azure Subscription for global resources (cluster Resource Group & Azure Container Registry)"
 })
 

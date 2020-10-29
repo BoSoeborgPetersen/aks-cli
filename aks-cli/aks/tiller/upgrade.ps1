@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks tiller upgrade"
+WriteAndSetUsage
 
 CheckCurrentCluster
 

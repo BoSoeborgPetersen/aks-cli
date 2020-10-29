@@ -1,6 +1,6 @@
 param($regex, $shell, $index = 0, $namespace, [switch] $allNamespaces)
 
-WriteAndSetUsage "aks shell" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[regex]" = "Expression to match against name"
     "[shell]" = "Shell type (ash, bash, cmd, powershell)"
     "[index]" = "Index of the pod to open shell in"

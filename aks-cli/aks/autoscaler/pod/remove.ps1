@@ -1,6 +1,6 @@
 param($deployment, $namespace)
 
-WriteAndSetUsage "aks autoscaler pod remove" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[deployment]" = KubernetesDeploymentDescription
     "[namespace]" = KubernetesNamespaceDescription
 })

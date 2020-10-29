@@ -1,6 +1,6 @@
 param($count)
 
-WriteAndSetUsage "aks scale nodes" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "<count>" = "Number of nodes (VMs)"
 })
 

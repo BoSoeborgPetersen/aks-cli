@@ -1,4 +1,4 @@
-WriteAndSetUsage "aks cert-manager upgrade"
+WriteAndSetUsage
 
 CheckCurrentCluster
 $deployment = CertManagerDeploymentName

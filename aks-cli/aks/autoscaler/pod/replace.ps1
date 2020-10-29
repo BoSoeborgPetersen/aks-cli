@@ -1,6 +1,6 @@
 param($deployment, $min, $max, $limit, $namespace)
 
-WriteAndSetUsage "aks autoscaler pod replace" ([ordered]@{
+WriteAndSetUsage ([ordered]@{
     "[deployment]" = KubernetesDeploymentDescription
     "[min]" = KubernetesMinPodCountDescription
     "[max]" = KubernetesMaxPodCountDescription
