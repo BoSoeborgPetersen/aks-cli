@@ -1,8 +1,8 @@
 param($type, $regex, $namespace, [switch] $allNamespaces)
 
 WriteAndSetUsage ([ordered]@{
-    "[type]" = "Kubernetes resource type (e.g. 'pod')"
-    "[regex]" = "Expression to match against name"
+    "<type>" = "Kubernetes resource type (e.g. 'pod')"
+    "<regex>" = "Expression to match against name"
     "[namespace]" = KubernetesNamespaceDescription
     "[-allNamespaces]" = KubernetesAllNamespacesDescription
 })

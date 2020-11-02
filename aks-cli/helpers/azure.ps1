@@ -65,7 +65,7 @@ function AzCheckUpgradableVersion($version, $preview)
 
     $previewString = ConditionalOperator $preview "" "!isPreview &&"
     $check = AzAksCurrentQuery "get-upgrades" -q "controlPlaneProfile.upgrades[?$previewString kubernetesVersion=='$version'].kubernetesVersion" -o tsv
-    Check $check "Upgradable version '$version' does not exist"
+    Check $check "Version '$version', is not an upgradable version"
 }
 
 function AzCheckResourceGroup($name, $subscription, $location)

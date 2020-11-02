@@ -1,7 +1,7 @@
 param($regex, $shell, $index = 0, $namespace, [switch] $allNamespaces)
 
 WriteAndSetUsage ([ordered]@{
-    "[regex]" = "Expression to match against name"
+    "<regex>" = "Expression to match against name"
     "[shell]" = "Shell type (ash, bash, cmd, powershell)"
     "[index]" = "Index of the pod to open shell in"
     "[namespace]" = KubernetesNamespaceDescription

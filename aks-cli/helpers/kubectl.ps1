@@ -1,6 +1,6 @@
 function KubectlCommand($command, $regex, $namespace, $output, $jsonPath, $postFix)
 {
-    $regexString = ConditionalOperator $regex " | grep -E $regex -i"
+    $regexString = ConditionalOperator $regex " | sed -E -n '1p;/$regex/p' "
     $namespaceString = KubectlNamespaceString $namespace
     $outputString = ConditionalOperator $output " -o $output"
     $outputString = ConditionalOperator $jsonPath " -o jsonpath=`"$jsonPath`""
