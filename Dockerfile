@@ -59,8 +59,7 @@ RUN curl -sSLo /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-
     rm /tmp/helm.tar.gz
 
 # Install 2to3 plugin for Helm-Cli version 3 (helm 2to3)
-RUN helm repo add stable https://kubernetes-charts.storage.googleapis.com && \
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
+RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add jetstack https://charts.jetstack.io && \
     helm repo add kured https://weaveworks.github.io/kured && \
     helm repo update && \

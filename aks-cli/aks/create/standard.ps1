@@ -15,7 +15,7 @@ CheckNumberRange $maxNodeCount "max node count" -min 2 -max 100
 AzCheckVirtualMachineSize $nodeSize
 AzCheckLoadBalancerSku $loadBalancerSku
 
-$cluster = Cluster -resourceGroup $resourceGroup
+$cluster = ClusterName -resourceGroup $resourceGroup
 $location = AzQuery "group show -g $resourceGroup" -q location -o tsv
 $version = AzAksQuery "get-versions" -l $location -q "orchestrators[?!isPreview].orchestratorVersion | sort(@) | [-1]" -o tsv
 

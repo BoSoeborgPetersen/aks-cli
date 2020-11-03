@@ -1,4 +1,4 @@
-param($command, [switch] $cluster, $resourceGroup, [switch] $clean)
+param([switch] $cluster, $resourceGroup, [switch] $clean)
 
 WriteAndSetUsage ([ordered]@{
     "[-cluster]" = "Only switch AKS cluster, not Azure subscription"

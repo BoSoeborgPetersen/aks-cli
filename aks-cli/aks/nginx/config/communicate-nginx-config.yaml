@@ -1,4 +1,10 @@
 controller:
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        "kubernetes.io/os": linux
+  nodeSelector:
+    "kubernetes.io/os": linux
   kind: DaemonSet
   config:
     proxy-send-timeout: "1800"
@@ -11,3 +17,6 @@ controller:
     externalTrafficPolicy: "Local"
     annotations:
       service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: 30
+defaultBackend:
+  nodeSelector:
+    "kubernetes.io/os": linux

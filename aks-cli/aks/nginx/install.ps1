@@ -34,5 +34,5 @@ if (AreYouSure)
     }
 
     # LaterDo: Replace ' with ", and " with '
-    HelmCommand "install '$deployment' stable/nginx-ingress --set defaultBackend.autoscaling.minReplicas=1 --set controller.service.internal.enabled=false --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
+    HelmCommand "install '$deployment' ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
 }

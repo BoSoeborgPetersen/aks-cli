@@ -16,5 +16,5 @@ Write-Info "Upgrade Nginx"
 
 if (AreYouSure)
 {
-    HelmCommand "upgrade $deployment stable/nginx-ingress --atomic --reuse-values --set defaultBackend.autoscaling.minReplicas=1 --set controller.service.internal.enabled=false --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
+    HelmCommand "upgrade $deployment ingress-nginx/ingress-nginx --atomic --reuse-values --set defaultBackend.autoscaling.minReplicas=1 --set controller.service.internal.enabled=false --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
 }

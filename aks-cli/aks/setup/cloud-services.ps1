@@ -18,10 +18,10 @@ WriteAndSetUsage ([ordered]@{
 })
 
 WantToContinue "Create Azure Resource Group '$resourceGroup', in location '$location'"
-AksCommand resource-group create $resourceGroup $location
+AksCommand resource-group create -name $resourceGroup -location $location
 
 WantToContinue "Create AKS cluster, in resource group '$resourceGroup'"
-AksCommand create windows $resourceGroup $minNodeCount $maxNodeCount $nodeSize $loadBalancerSku $windowsAdminUsername $windowsAdminPassword $windowsNodeCount $windowsNodeSize $windowsNodepool $useServicePrincipal
+AksCommand create windows -resourceGroup $resourceGroup -minNodeCount $minNodeCount -maxNodeCount $maxNodeCount -nodeSize $nodeSize -loadBalancerSku $loadBalancerSku -windowsAdminUsername $windowsAdminUsername -windowsAdminPassword $windowsAdminPassword -windowsNodeCount $windowsNodeCount -windowsNodeSize $windowsNodeSize -windowsNodepool $windowsNodepool $useServicePrincipal
 
 WantToContinue "Authorize AKS cluster Managed Identity to access global resources (cluster Resource Group & Azure Container Registry) in subscription '$globalSubscription'"
 AksCommand identity authorize $globalSubscription

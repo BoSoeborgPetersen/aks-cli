@@ -13,4 +13,4 @@ if (!$skipNamespace)
 {
     KubectlCommand "create ns $deployment"
 }
-HelmCommand "install $deployment kured/kured --set nodeSelector.`"beta\.kubernetes\.io/os`"=linux" -n $deployment
+HelmCommand "install $deployment kured/kured --set nodeSelector.`"kubernetes\.io/os`"=linux" -n $deployment
