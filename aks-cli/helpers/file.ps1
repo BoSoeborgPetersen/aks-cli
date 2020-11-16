@@ -11,3 +11,14 @@ function DeleteTempFile($filepath)
 {
     Remove-Item $filepath
 }
+
+function SaveFile($content, $filePath)
+{
+    Write-Verbose "Writing file '$filePath'"
+    $content | Out-File -FilePath $filepath
+}
+
+# function LoadFile($filepath)
+# {
+#     return Get-Content -Path $filepath
+# }

@@ -48,7 +48,7 @@ MainMenu @{
     "keyvault" = "Azure Key Vault operations"
     "kured" = "Kured (KUbernetes REboot Daemon) operations"
     "logs" = "Get container logs"
-    # "monitoring" = "Prometheus and Grafana operations"
+    "monitoring" = "Prometheus and Grafana operations"
     "nginx" = "Nginx operations"
     "pod" = "Kubernetes pod operations"
     "registry" = "Azure Container Registry operations"
@@ -68,4 +68,5 @@ MainMenu @{
     "upgrades" = "Get AKS cluster upgradable versions"
     "version" = "Get AKS cluster version"
     "versions" = "Get AKS versions"
+    "workload" = "Last-Applied-Config operations"
 }

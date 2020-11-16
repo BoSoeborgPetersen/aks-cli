@@ -70,7 +70,7 @@ function DevOpsOrganizationName
 # LaterDo: Is there any way to determine this.
 function DevOpsProjectName
 {
-    return "Identity"
+    return "Services"
 }
 
 function DevOpsUnixName($name)

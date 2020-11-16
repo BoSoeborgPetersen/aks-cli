@@ -10,4 +10,4 @@ KubectlCheckNamespace $namespace
 
 Write-Info "Showing Service Connection"
 
-AzDevOpsCommand "service-endpoint list" -q "[?name=='$name-$namespace']"
+AzDevOpsCommand "service-endpoint list" -q "[?name=='$name']"

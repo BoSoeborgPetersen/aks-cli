@@ -180,21 +180,43 @@ function MainMenu($commands)
 {
     $path = CheckCommand "aks" $params[0] $commands
     
-    Invoke-Expression "$path $($params | Select-Object -Skip 1)"
+    Invoke-Expression "$path $(QuoteParamsWithSpaces($params | Select-Object -Skip 1))"
 }
 
 function SubMenu($commands)
 {
     $path = CheckCommand "aks $($params[0])" $params[1] $commands
 
-    Invoke-Expression "$path $($params | Select-Object -Skip 2)"
+    Invoke-Expression "$path $(QuoteParamsWithSpaces($params | Select-Object -Skip 2))"
 }
 
 function SubSubMenu($commands)
 {
     $path = CheckCommand "aks $($params[0]) $($params[1])" $params[2] $commands
 
-    Invoke-Expression "$path $($params | Select-Object -Skip 3)"
+    Invoke-Expression "$path $(QuoteParamsWithSpaces($params | Select-Object -Skip 3))"
+}
+
+function QuoteParamsWithSpaces($params)
+{
+    if ($params -is [array])
+    {
+        for ($i=0; $i -lt $params.length; $i++)
+        {
+            if ($params[$i] -match " ")
+            {
+                $params[$i] = (('"' + $params[$i] +'"'))
+            }
+        }
+    }
+    else 
+    {
+        if ($params -match " ")
+        {
+            $params = (('"' + $params +'"'))
+        }
+    }
+    return $params
 }
 
 function AreYouSure

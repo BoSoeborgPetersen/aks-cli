@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/azure-cli:latest
 RUN az extension add --name azure-devops
 
 # Install PowerShell Core (134 MB)
-ENV POWERSHELL_VERSION=7.0.3
+ENV POWERSHELL_VERSION=7.1.0
 RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl libssl1.1 libstdc++ tzdata userspace-rcu zlib icu-libs curl lttng-ust -X https://dl-cdn.alpinelinux.org/alpine/edge/main --no-cache && \
     curl -sSLo /tmp/powershell.tar.gz https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell-${POWERSHELL_VERSION}-linux-alpine-x64.tar.gz && \
     mkdir -p /opt/microsoft/powershell/7 && \
@@ -21,7 +21,7 @@ RUN pwsh -c "Install-Module PSMenu -Force && Install-Module PSBashCompletions -S
 RUN apk add nano --no-cache
 
 # Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 50 MB)
-ENV KUBECTL_CERT_MANAGER_VERSION=1.0.2
+ENV KUBECTL_CERT_MANAGER_VERSION=1.1.0
 RUN az aks install-cli --only-show-errors && \
     curl -sSLo /tmp/kubectl-cert-manager.tar.gz https://github.com/jetstack/cert-manager/releases/download/v${KUBECTL_CERT_MANAGER_VERSION}/kubectl-cert_manager-linux-amd64.tar.gz && \
     tar -zxf /tmp/kubectl-cert-manager.tar.gz kubectl-cert_manager -C /usr/local/bin && \
@@ -44,15 +44,21 @@ RUN curl -sSLo /tmp/kubens.tar.gz https://github.com/ahmetb/kubectx/releases/dow
     tar -zxf /tmp/kubens.tar.gz kubens -C /usr/local/bin && \
     rm /tmp/kubens.tar.gz
 
+# Install maorfr/helm-backup (??? MB)
+ENV HELM_BACKUP_VERSION=0.1.2
+RUN curl -sSLo /tmp/helm-backup.tar.gz https://github.com/maorfr/helm-backup/releases/download/${HELM_BACKUP_VERSION}/helm-backup-linux-${HELM_BACKUP_VERSION}.tgz && \
+    tar -zxf /tmp/helm-backup.tar.gz backup -C /usr/local/bin && \
+    rm /tmp/helm-backup.tar.gz
+
 # Install Helm-Cli version 2 (helm2) (40 MB)
-ENV HELM_VERSION=2.16.12
+ENV HELM_VERSION=2.17.0
 RUN curl -sSLo /tmp/helm2.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -zxf /tmp/helm2.tar.gz linux-amd64/helm && \
     mv /linux-amd64/helm /usr/local/bin/helm2 && \
     rm /tmp/helm2.tar.gz
 
 # Install Helm-Cli version 3 (helm) (~90 MB)
-ENV HELM_VERSION=3.3.4
+ENV HELM_VERSION=3.4.1
 RUN curl -sSLo /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -zxf /tmp/helm.tar.gz linux-amd64/helm && \
     mv /linux-amd64/helm /usr/local/bin/helm && \

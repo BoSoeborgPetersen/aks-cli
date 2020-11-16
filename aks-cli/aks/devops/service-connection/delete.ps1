@@ -16,5 +16,5 @@ $roleBinding = DevOpsRoleBindingName $name
 KubectlCommand "delete serviceaccount $serviceAccount" -n $namespace
 KubectlCommand "delete rolebinding $roleBinding" -n $namespace
 
-$id = AzDevOpsQuery "service-endpoint list" -q "[?name=='$name-$namespace'].id" -o tsv
+$id = AzDevOpsQuery "service-endpoint list" -q "[?name=='$name'].id" -o tsv
 AzDevOpsCommand "service-endpoint delete --id $id -y"
