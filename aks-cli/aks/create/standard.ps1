@@ -1,5 +1,5 @@
 # LaterDo: When dependant resources does not exists, help with solution (resource group does not exist => create with "aks resource-group create $resourceGroup <location>")
-param($resourceGroup, $minNodeCount = 3, $maxNodeCount = 20, $nodeSize, $loadBalancerSku = "basic", [switch] $useServicePrincipal)
+param($resourceGroup, $minNodeCount = 3, $maxNodeCount = 20, $nodeSize = "Standard_D2s_v3", $loadBalancerSku = "basic", [switch] $useServicePrincipal)
 
 WriteAndSetUsage ([ordered]@{
     "<resourceGroup>" = "Azure Resource Group"

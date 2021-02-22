@@ -12,7 +12,7 @@ KubectlCheckNamespace $namespace
 
 Write-Info "Loading Last-Applied-Config" -r $regex -n $namespace
 
-$files = Get-ChildItem -Path /app/mapped/last-applied/ | ForEach-Object { $_.FullName }
+$files = Get-ChildItem -Path /app/temp/last-applied/ | ForEach-Object { $_.FullName }
 
 Write-Verbose "Files: $files"
 

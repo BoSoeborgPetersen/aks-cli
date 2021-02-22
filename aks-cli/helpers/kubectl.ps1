@@ -124,21 +124,26 @@ function KubectlCheckPodAutoscaler($name, $namespace)
     Check $check "Horizontal Pod Autoscaler '$name' in namespace '$namespace' does not exist!"
 }
 
-function KubectlSaveLastApplied($type, $name, $namespace, $output = 'yaml', $filePath = '/app/mapped/last-applied')
+function KubectlSaveLastApplied($type, $name, $namespace, $output = 'yaml', $filePath = '/app/temp/last-applied')
 {
+    if ($namespace)
+    {
+        $fullFilePath = "$filePath/$namespace-$name-$type.$output"
+    }
+    else
+    {
+        $fullFilePath = "$filePath/default-$name-$type.$output"
+    }
+
+    Write-Info "Saving '$type/$name' to '$fullFilePath'"
+    
     if ( -not (Test-Path $filePath) ) 
     {
         mkdir -p $filePath
     }
     $lastApplied = KubectlQuery "apply view-last-applied $type $name" -o $output -n $namespace
-    if ($namespace)
-    {
-        SaveFile $lastApplied "$filePath/$namespace-$name-$type.$output"
-    }
-    else
-    {
-        SaveFile $lastApplied "$filePath/default-$name-$type.$output"
-    }
+    
+    SaveFile $lastApplied $fullFilePath
 }
 
 function KubectlCreateNamespace($name)

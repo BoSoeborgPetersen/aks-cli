@@ -17,7 +17,7 @@ WriteAndSetUsage ([ordered]@{
 
 if (!$windowsAdminPassword)
 {
-    $windowsAdminPassword = [System.Web.Security.Membership]::GeneratePassword(30,10)
+    $windowsAdminPassword = Get-Password -PasswordLength 30
     Write-Info "Generated Windows Admin Password '$windowsAdminPassword'"
 }
 

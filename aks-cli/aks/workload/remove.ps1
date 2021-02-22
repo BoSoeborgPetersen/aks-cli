@@ -10,11 +10,11 @@ CheckCurrentCluster
 $namespace = ConditionalOperator $allNamespaces "all" $namespace
 KubectlCheckNamespace $namespace
 
-Write-Info "Saving Last-Applied-Config" -r $regex -n $namespace
+Write-Info "Removing workload" -r $regex -n $namespace
 
 $types = $('service','deployment','horizontalpodautoscaler','issuer','ingress')
 
-Write-Verbose "Types: $types"
+Write-Info "Types: $types"
 
 foreach($type in $types)
 {
@@ -22,10 +22,13 @@ foreach($type in $types)
 
     $names = (KubectlQuery "get $type" -j "{$.items[?(@.metadata.name!='kubernetes')].metadata.name}" -r $regex -n $namespace -o json) -split ' '
 
-    Write-Verbose "Names: $names"
+    Write-Info "Names: $names"
 
-    foreach($name in $names)
+    if (AreYouSure)
     {
-        KubectlSaveLastApplied $type $name $namespace
+        foreach($name in $names)
+        {
+            KubectlCommand "delete $type $name"
+        }
     }
 }

@@ -35,6 +35,7 @@ Get-ChildItem "$PSScriptRoot/helpers/" -Filter *.ps1 -Recurse | ForEach-Object{ 
 CheckCurrentSubscription
 
 MainMenu @{
+    "az" = "Execute az command with -g and -n filled out"
     "autoscaler" = "Setup automatic pod or node scaling"
     "cert-manager" = "Certificate Manager operations"
     "create" = "Create AKS cluster"

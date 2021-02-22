@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/azure-cli:latest
 RUN az extension add --name azure-devops
 
 # Install PowerShell Core (134 MB)
-ENV POWERSHELL_VERSION=7.1.0
+ENV POWERSHELL_VERSION=7.1.1
 RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl libssl1.1 libstdc++ tzdata userspace-rcu zlib icu-libs curl lttng-ust -X https://dl-cdn.alpinelinux.org/alpine/edge/main --no-cache && \
     curl -sSLo /tmp/powershell.tar.gz https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell-${POWERSHELL_VERSION}-linux-alpine-x64.tar.gz && \
     mkdir -p /opt/microsoft/powershell/7 && \
@@ -15,7 +15,7 @@ RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl 
     rm /tmp/powershell.tar.gz
 
 # Install Powershell modules (0 MB)
-RUN pwsh -c "Install-Module PSMenu -Force && Install-Module PSBashCompletions -Scope CurrentUser -Force"
+RUN pwsh -c "Install-Module PSMenu -Force && Install-Module PSBashCompletions -Scope CurrentUser -Force && Install-Module -Name GetPassword -Confirm"
 
 # Install Nano (6 MB)
 RUN apk add nano --no-cache
@@ -58,7 +58,7 @@ RUN curl -sSLo /tmp/helm2.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux
     rm /tmp/helm2.tar.gz
 
 # Install Helm-Cli version 3 (helm) (~90 MB)
-ENV HELM_VERSION=3.4.1
+ENV HELM_VERSION=3.5.2
 RUN curl -sSLo /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -zxf /tmp/helm.tar.gz linux-amd64/helm && \
     mv /linux-amd64/helm /usr/local/bin/helm && \
