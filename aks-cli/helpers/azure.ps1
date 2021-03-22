@@ -87,9 +87,9 @@ function AzCheckServicePrincipal($name)
     Check $check "Service Principal '$name' does not exist"
 }
 
-function AzCheckVirtualMachineSize($name)
+function AzCheckVirtualMachineSize($location, $name)
 {
-    $check = (!$name) -or (AzQuery "vm list-sizes -l northeurope" -q "[?name=='$name'].name" -o tsv)
+    $check = (!$name) -or (AzQuery "vm list-sizes -l $location" -q "[?name=='$name'].name" -o tsv)
     Check $check "Virtual Machine Size '$name' does not exist"
 }
 

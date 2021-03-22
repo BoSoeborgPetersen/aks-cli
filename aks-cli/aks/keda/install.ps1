@@ -5,14 +5,14 @@ WriteAndSetUsage ([ordered]@{
 })
 
 CheckCurrentCluster
-$deployment = KuredDeploymentName
+$deployment = KedaDeploymentName
 
 $operationName = ConditionalOperator $upgrade "Upgrading" "Installing"
-Write-Info "$operationName Kured (KUbernetes REboot Daemon)"
+Write-Info "$operationName Keda (Kubernetes Event-driven Autoscaling)"
 
 if (!$skipNamespace)
 {
     KubectlCommand "create ns $deployment"
 }
 $operation = ConditionalOperator $upgrade "upgrade" "install"
-HelmCommand "$operation $deployment kured/kured --set nodeSelector.`"kubernetes\.io/os`"=linux" -n $deployment
+HelmCommand "$operation $deployment kedacore/keda --set nodeSelector.`"kubernetes\.io/os`"=linux" -n $deployment

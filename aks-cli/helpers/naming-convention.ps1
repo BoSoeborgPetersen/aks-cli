@@ -56,6 +56,11 @@ function NginxDeploymentName($prefix)
     return PrependWithDash $prefix "nginx-ingress"
 }
 
+function KedaDeploymentName
+{
+    return "keda"
+}
+
 function KuredDeploymentName
 {
     return "kured"

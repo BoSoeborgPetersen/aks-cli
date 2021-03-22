@@ -39,7 +39,7 @@ function HelmCheck($chart, $namespace)
 
 function HelmLatestChartVersion($chart)
 {
-    return HelmQuery "search repo $chart -o json | jq -r ' .[] | .version' | % TrimStart v"
+    return HelmQuery "search repo $chart -o json | jq -r ' .[] | select(.name==\`"$chart\`") | .version' | % TrimStart v"
 }
 
 function HelmAddRepo($name, $url)

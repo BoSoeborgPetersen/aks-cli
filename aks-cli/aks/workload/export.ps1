@@ -12,7 +12,7 @@ KubectlCheckNamespace $namespace
 
 Write-Info "Saving Last-Applied-Config" -r $regex -n $namespace
 
-$types = $('service','deployment','horizontalpodautoscaler','issuer','ingress')
+$types = $('Service','Deployment','HorizontalPodAutoscaler','Issuer','Ingress', 'CronJob', 'ScaledObject')
 
 Write-Verbose "Types: $types"
 
@@ -29,3 +29,5 @@ foreach($type in $types)
         KubectlSaveLastApplied $type $name $namespace
     }
 }
+
+KubectlSaveLastApplied Secret keda-metric-connectionstring-secret default

@@ -1,4 +1,4 @@
-param($prefix, $configPrefix, [switch] $addIp, $sku = "Basic", $ip, [switch] $oldDnsNamingConvention)
+param($prefix, $configPrefix, [switch] $addIp, $sku = "Basic", $ip, [switch] $oldDnsNamingConvention, [switch] $skip, [switch] $upgrade)
 
 WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
@@ -7,6 +7,9 @@ WriteAndSetUsage ([ordered]@{
     "[sku]" = "Azure Public IP SKU"
     "[ip]" = "Azure Public IP to use"
 })
+
+Write-Debug "Prefix $prefix"
+Write-Debug "Config Prefix: $configPrefix"
 
 $namespace = "ingress"
 CheckCurrentCluster
@@ -26,9 +29,10 @@ $publicIp = PublicIpName -prefix $prefix -cluster $cluster
 $deployment = NginxDeploymentName $prefix
 $configFile = PrependWithDash $configPrefix "nginx-config.yaml"
 
-Write-Info "Installing Nginx"
+$operationName = ConditionalOperator $upgrade "Upgrading" "Installing"
+Write-Info "$operationName Nginx"
 
-if (AreYouSure)
+if ($skip -or (AreYouSure))
 {
     if ($addIp)
     {
@@ -46,5 +50,6 @@ if (AreYouSure)
     }
 
     # LaterDo: Replace ' with ", and " with '
-    HelmCommand "install '$deployment' ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
+    $operation = ConditionalOperator $upgrade "upgrade" "install"
+    HelmCommand "$operation $deployment ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP='$ip' $extraParams --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-load-balancer-resource-group`"=$resourceGroup --set controller.service.annotations.`"service\.beta\.kubernetes\.io/azure-dns-label-name`"=$dns -f $PSScriptRoot/config/$configFile" -n $namespace
 }

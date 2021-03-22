@@ -6,23 +6,23 @@ WriteAndSetUsage ([ordered]@{
     "[-clean]" = "Clear and replace AKS cluster credentials"
 })
 
-if (!$cluster)
+if ($clean)
 {
-    SwitchCurrentSubscription -clear
+    Write-Info "Clearing AKS cluster credentials"
+    KubectlClearConfig $resourceGroup
 }
 
 if (!$resourceGroup)
 {
+    if (!$cluster)
+    {
+        SwitchCurrentSubscription -clear
+    }
+
     SwitchCurrentCluster -clear
 }
 else
 {
-    if ($clean)
-    {
-        Write-Info "Clearing AKS cluster credentials"
-        KubectlClearConfig $resourceGroup
-    }
-    
-    Write-Info "Switching AKS cluster"
+    Write-Info "Switching AKS cluster '$resourceGroup'"
     SwitchCurrentClusterTo $resourceGroup
 }

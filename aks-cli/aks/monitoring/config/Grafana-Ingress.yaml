@@ -1,0 +1,41 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: grafana-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: communicate-grafana@3shape.com
+    privateKeySecretRef:
+      name: grafana-issuer
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress-trafficmanager
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: grafana-issuer
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/whitelist-source-range: 79.171.146.0/26, 185.147.72.0/26, 195.49.232.0/22
+spec:
+  tls:
+  - hosts:
+    - ${{ClusterName}}-grafana.trafficmanager.net
+    secretName: grafana-certificate-trafficmanager
+  rules:
+  - host: ${{ClusterName}}-grafana.trafficmanager.net
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 80

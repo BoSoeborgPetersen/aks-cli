@@ -1,5 +1,5 @@
 Clear-Host
-az login -o none
+az login --use-device-code -o none
 
 New-Alias aks "$PSScriptRoot/aks.ps1" -Scope Global
 New-Alias test "$PSScriptRoot/test.ps1" -Scope Global

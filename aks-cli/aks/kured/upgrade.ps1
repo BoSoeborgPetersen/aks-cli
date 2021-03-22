@@ -1,8 +1,3 @@
 WriteAndSetUsage
 
-CheckCurrentCluster
-$deployment = KuredDeploymentName
-
-Write-Info "Upgrading Kured"
-
-HelmCommand "upgrade $deployment kured/kured --reuse-values" -n $deployment
+AksCommand kured install -skipNamespace -upgrade

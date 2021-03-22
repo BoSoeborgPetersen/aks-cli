@@ -1,21 +1,41 @@
-# TODO: Rewrite config files to new format.
 WriteAndSetUsage
 
 CheckCurrentCluster
+$cluster = CurrentClusterName
+$resourceGroup = CurrentClusterResourceGroup
+$subscriptionId = CurrentSubscription
+$publicIp = PublicIpName -cluster $cluster
+$publicIpId = "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.Network/publicIPAddresses/$publicIp"
+
+Write-Info "Create monitoring namespace"
+KubectlCommand "create ns monitoring"
 
 Write-Info "Installing Prometheus"
 
-HelmAddRepo prometheus-community 'https://prometheus-community.github.io/helm-charts'
+HelmCommand "install --upgrade prometheus prometheus/prometheus" -n monitoring
+# Add Prometheus traffic manager with an endpoint for the cluster primary ip
+AzCommand "network traffic-manager profile create -n $resourceGroup-prometheus -g $resourceGroup --routing-method Performance --unique-dns-name $resourceGroup-prometheus"
+AzCommand "network traffic-manager endpoint create -n AKS -g $resourceGroup --profile-name $resourceGroup-prometheus --type azureEndpoints --target-resource-id $publicIpId"
+# Setup Ingress rules for Prometheus
+$filepath = "~/$(New-Guid).yaml"
+(Get-Content "$PSScriptRoot/config/Prometheus-Ingress.yaml") -replace '\${{ClusterName}}',"$cluster" | Out-File $filepath
+KubectlCommand "apply -n monitoring -f $filepath"
+Remove-Item $filepath
 
-HelmCommand "install prometheus prometheus-community/prometheus" -n monitoring
-# HelmCommand "install prometheus prometheus-community/prometheus -f $PSScriptRoot/config/helm-prometheus.yaml" -n monitoring
+Write-Info "Installing Grafana"
 
-# Write-Info "Installing Grafana"
+# Add Prometheus data source on Grafana install
+KubectlCommand "apply -n monitoring -f '$PSScriptRoot/config/configmaps/DataSource.yaml'"
+KubectlCommand "apply -n monitoring -f '$PSScriptRoot/config/configmaps/K8s Cluster Summary.yaml'"
+KubectlCommand "apply -n monitoring -f '$PSScriptRoot/config/configmaps/NGINX Ingress Controller.yaml'"
 
-# KubectlCommand "apply -n monitoring -f 'config/configmaps/DataSource.yaml'"
-# KubectlCommand "apply -n monitoring -f 'config/configmaps/K8s Cluster Summary.yaml'"
-# KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node 2.yaml'"
-# KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node w_ process info.yaml'"
-# KubectlCommand "apply -n monitoring -f 'config/configmaps/Windows Node.yaml'"
+HelmCommand "install --upgrade grafana grafana/grafana --set sidecar.datasources.enabled=true --set sidecar.dashboards.enabled=true --set persistence.enabled=true" -n monitoring
 
-# HelmCommand "install grafana stable/grafana -f config/helm-grafana.yaml" -n monitoring
+# Add Grafana traffic manager with an endpoint for the cluster primary ip
+AzCommand "network traffic-manager profile create -n $resourceGroup-grafana -g $resourceGroup --routing-method Performance --unique-dns-name $resourceGroup-grafana"
+AzCommand "network traffic-manager endpoint create -n AKS -g $resourceGroup --profile-name $resourceGroup-grafana --type azureEndpoints --target-resource-id $publicIpId"
+# Setup Ingress rules for Grafana
+$filepath = "~/$(New-Guid).yaml"
+(Get-Content "$PSScriptRoot/config/Grafana-Ingress.yaml") -replace '\${{ClusterName}}',"$cluster" | Out-File $filepath
+KubectlCommand "apply -n monitoring -f $filepath"
+Remove-Item $filepath

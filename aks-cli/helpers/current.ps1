@@ -101,7 +101,7 @@ function SwitchCurrentClusterTo($resourceGroup)
     $global:GlobalClusters = az aks list | ConvertFrom-Json
     $global:GlobalCurrentCluster = $GlobalClusters | Where-Object { $_.name -match $cluster }
 
-    AzAksCurrentCommand "get-credentials"
+    AzAksCommand "get-credentials -g $resourceGroup -n $cluster"
 
     UpdateShellWindowTitle
     UpdateShellPrompt

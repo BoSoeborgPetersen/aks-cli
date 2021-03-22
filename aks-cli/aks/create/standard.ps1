@@ -9,14 +9,15 @@ WriteAndSetUsage ([ordered]@{
     "[-useServicePrincipal]" = "Use Service Principal instead of Managed Identity"
 })
 
+$location = AzQuery "group show -g $resourceGroup" -q location -o tsv
+
 AzCheckResourceGroup $resourceGroup
 CheckNumberRange $minNodeCount "min node count" -min 2 -max 100
 CheckNumberRange $maxNodeCount "max node count" -min 2 -max 100
-AzCheckVirtualMachineSize $nodeSize
+AzCheckVirtualMachineSize $location $nodeSize
 AzCheckLoadBalancerSku $loadBalancerSku
 
 $cluster = ClusterName -resourceGroup $resourceGroup
-$location = AzQuery "group show -g $resourceGroup" -q location -o tsv
 $version = AzAksQuery "get-versions" -l $location -q "orchestrators[?!isPreview].orchestratorVersion | sort(@) | [-1]" -o tsv
 
 $nodeSizeString = ConditionalOperator $nodeSize "-s '$nodeSize'"
@@ -34,7 +35,7 @@ if ($useServicePrincipal)
     $servicePrincipalString = "--service-principal $($servicePrincipalObject.AppId) --client-secret '$($servicePrincipalObject.Password)'"
 }
 
-AzAksCommand "create -g $resourceGroup -n $cluster -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --no-ssh-key --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount"
+AzAksCommand "create -g $resourceGroup -n $cluster -k $version $nodeSizeString $servicePrincipalString --load-balancer-sku $loadBalancerSku --no-ssh-key -c $minNodeCount --enable-cluster-autoscaler --min-count $minNodeCount --max-count $maxNodeCount"
 
 Write-Info "Cluster has been created, switching cluster"
 SwitchCurrentClusterTo $resourceGroup

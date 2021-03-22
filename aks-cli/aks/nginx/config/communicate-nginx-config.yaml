@@ -17,6 +17,13 @@ controller:
     externalTrafficPolicy: "Local"
     annotations:
       service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: 30
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "10254" #"9182"
 defaultBackend:
   nodeSelector:
     "kubernetes.io/os": linux
