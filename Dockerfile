@@ -64,7 +64,7 @@ RUN curl -sSLo /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-
     mv /linux-amd64/helm /usr/local/bin/helm && \
     rm /tmp/helm.tar.gz
 
-# Install 2to3 plugin for Helm-Cli version 3 (helm 2to3)
+# Setup Helm 3
 RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add jetstack https://charts.jetstack.io && \
     helm repo add kured https://weaveworks.github.io/kured && \
@@ -72,7 +72,45 @@ RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add prometheus https://prometheus-community.github.io/helm-charts && \
     helm repo add grafana https://grafana.github.io/helm-charts && \
     helm repo update && \
-    helm plugin install https://github.com/helm/helm-2to3
+    helm plugin install https://github.com/helm/helm-2to3 && \
+    helm plugin install https://github.com/fabmation-gmbh/helm-whatup
+
+# Install K9s (derailed/k9s)
+ENV K9S_VERSION=0.24.7
+RUN curl -sSLo /tmp/k9s.tar.gz https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz && \
+    tar -zxf /tmp/k9s.tar.gz k9s -C /usr/local/bin && \
+    rm /tmp/k9s.tar.gz
+
+# Install Popeye (derailed/popeye)
+ENV POPEYE_VERSION=0.9.0
+RUN curl -sSLo /tmp/popeye.tar.gz https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_x86_64.tar.gz && \
+    tar -zxf /tmp/popeye.tar.gz popeye -C /usr/local/bin && \
+    rm /tmp/popeye.tar.gz
+
+# Install KubeAudit (Shopify/kubeaudit)
+ENV KUBEAUDIT_VERSION=0.12.0
+RUN curl -sSLo /tmp/kubeaudit.tar.gz https://github.com/Shopify/kubeaudit/releases/download/v${KUBEAUDIT_VERSION}/kubeaudit_${KUBEAUDIT_VERSION}_linux_amd64.tar.gz && \
+    tar -zxf /tmp/kubeaudit.tar.gz kubeaudit -C /usr/local/bin && \
+    rm /tmp/kubeaudit.tar.gz
+
+# Install NodeShell (kvaps/kubectl-node-shell)
+ENV NODESHELL_VERSION=1.2.5
+RUN curl -sSLo /tmp/nodeshell.tar.gz https://github.com/kvaps/kubectl-node-shell/archive/refs/tags/v${NODESHELL_VERSION}.tar.gz && \
+    tar -zxf /tmp/nodeshell.tar.gz kubectl-node-shell-1.2.5/kubectl-node_shell -C /tmp/ && \
+    mv /tmp/kubectl-node-shell-1.2.5/kubectl-node_shell /usr/local/bin/kubectl-node_shell && \
+    rm /tmp/nodeshell.tar.gz
+
+# Install Kubespy (pulumi/kubespy)
+ENV KUBESPY_VERSION=0.6.0
+RUN curl -sSLo /tmp/kubespy.tar.gz https://github.com/pulumi/kubespy/releases/download/v${KUBESPY_VERSION}/kubespy-v${KUBESPY_VERSION}-linux-amd64.tar.gz && \
+    tar -zxf /tmp/kubespy.tar.gz kubespy -C /tmp/ && \
+    mv /tmp/kubespy /usr/local/bin/kubectl-spy && \
+    rm /tmp/kubespy.tar.gz
+
+# TODO: Add Kubie (https://github.com/sbstp/kubie)
+# TODO: Add Kubebox (https://github.com/astefanutti/kubebox)
+# TODO: Add Kube-prompt (https://github.com/c-bata/kube-prompt)
+# TODO: Add Kube-ops-view 
 
 # Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions

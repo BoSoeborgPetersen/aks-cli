@@ -71,3 +71,5 @@ $arguments=@{
 $filepath = SaveTempFile($arguments)
 AzDevOpsCommand "service-endpoint create --service-endpoint-configuration $filepath"
 DeleteTempFile($filepath)
+
+# AzDevOpsCommand "service-endpoint azurerm create --azure-rm-service-principal-id $ServicePrincipal --azure-rm-subscription-id $SubscriptionId --azure-rm-subscription-name $SubscriptionName --name $SubscriptionName --azure-rm-tenant-id $TenantId --project $ProjectName --org $Organization"
