@@ -32,6 +32,9 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
 - Popeye
 - KubeAudit
 - NodeShell
+- Kubespy
+- Kubebox
+- Kube-prompt
 - Nano
 - Bash Completion for PowerShell, for each CLI
 
@@ -45,43 +48,51 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
   /  ____  \  |  |\  \    ____|  |
  /__/    \__\ |__| \__\  |_______|
 
+ --- DEVELOPMENT EDITION ---
+
 Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!
 
-Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm), Wercher/Stern (stern), Kubectx, Kubens, K9s, Popeye, KubeAudit, NodeShell
+Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm),
+  Wercher/Stern (stern), Kubectx, Kubens, K9s, Popeye, KubeAudit, NodeShell, Kubespy, Kubebox, Kube-prompt
 Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
 Here are the commands:
 
-    autoscaler           : Setup automatic pod or node scaling.
-    cert-manager         : Certificate Manager operations.
-    create               : Create AKS cluster.
-    current              : Get current AKS cluster.
-    delete               : Delete AKS cluster.
-    describe             : Describe Kubernetes resources.
-    devops               : Azure DevOps operations.
-    edit                 : Edit Kubernetes resource.
-    get                  : Get Kubernetes resources.
+    autoscaler           : Setup automatic pod or node scaling
+    az                   : Execute az command with -g and -n filled out
+    cert-manager         : Certificate Manager operations
+    create               : Create AKS cluster
+    delete               : Delete AKS cluster
+    describe             : Describe Kubernetes resources
+    devops               : Azure DevOps operations
+    edit                 : Edit Kubernetes resource
+    get                  : Get Kubernetes resources
     identity             : Azure Managed Identity operations
-    insights             : AKS insights operations.
-    keyvault             : Azure Key Vault operations.
-    kured                : Kured (KUbernetes REboot Daemon) operations.
-    logs                 : Get container logs.
-    nginx                : Nginx operations.
-    pod                  : Kubernetes pod operations.
-    registry             : Azure Container Registry operations.
-    resource-group       : Azure Resource Group operations.
-    scale                : Scale operations.
+    insights             : AKS insights operations
+    keda                 : Keda (Kubernetes Event-driven Autoscaling) operations
+    keyvault             : Azure Key Vault operations
+    kured                : Kured (KUbernetes REboot Daemon) operations
+    logs                 : Get container logs
+    monitoring           : Prometheus and Grafana operations
+    nginx                : Nginx operations
+    pod                  : Kubernetes pod operations
+    registry             : Azure Container Registry operations
+    resource-group       : Azure Resource Group operations
+    scale                : Scale operations
     service-principal    : Azure Service Principal operations
-    shell                : Open shell inside container.
-    switch               : Switch Azure subscription / AKS cluster.
-    tiller               : Tiller (Helm v2 server side component) operations.
-    top                  : Show Kubernetes resource utilization.
-    upgrade              : Upgrade AKS cluster.
-    upgrades             : Get AKS cluster upgradable versions.
-    version              : Get AKS cluster version.
-    versions             : Get AKS versions.
+    setup                : Create and setup AKS cluster
+    shell                : Open shell inside container
+    show                 : Show AKS information
+    state                : Change default state operations
+    switch               : Switch Azure subscription / AKS cluster
+    top                  : Show Kubernetes resource utilization
+    upgrade              : Upgrade AKS cluster
+    upgrades             : Get AKS cluster upgradable versions
+    version              : Get AKS cluster version
+    versions             : Get AKS versions
+    workload             : Last-Applied-Config operations
 
-General flags: -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
+General flags: -h (help), -v (show executed queries/commands), -debug (show debug output), -whatif (dry run).
 
 e.g. try 'aks autoscaler'
 ```

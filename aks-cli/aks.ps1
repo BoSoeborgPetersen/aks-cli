@@ -63,7 +63,6 @@ MainMenu @{
     "show" = "Show AKS information"
     "state" = "Change default state operations"
     "switch" = "Switch Azure subscription / AKS cluster"
-    "tiller" = "Tiller (Helm v2 server side component) operations"
     "top" = "Show Kubernetes resource utilization"
     # "traffic-manager" = "Azure Traffic Manager operations"
     "upgrade" = "Upgrade AKS cluster"

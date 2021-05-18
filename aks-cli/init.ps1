@@ -20,7 +20,6 @@ Register-BashArgumentCompleter stern /usr/share/bash-completion/completions/ster
 Register-BashArgumentCompleter kubens /usr/share/bash-completion/completions/kubens.bash
 Register-BashArgumentCompleter ctx /usr/share/bash-completion/completions/kubectx.bash
 Register-BashArgumentCompleter ns /usr/share/bash-completion/completions/kubens.bash
-Register-BashArgumentCompleter helm2 /usr/share/bash-completion/completions/helm2.bash
 Register-BashArgumentCompleter helm /usr/share/bash-completion/completions/helm.bash
 Register-BashArgumentCompleter h /usr/share/bash-completion/completions/helm.bash
 
