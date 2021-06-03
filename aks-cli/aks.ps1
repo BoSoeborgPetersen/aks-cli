@@ -69,5 +69,6 @@ MainMenu @{
     "upgrades" = "Get AKS cluster upgradable versions"
     "version" = "Get AKS cluster version"
     "versions" = "Get AKS versions"
+    "vpa" = "Vertical Pod Autoscaler operations"
     "workload" = "Last-Applied-Config operations"
 }

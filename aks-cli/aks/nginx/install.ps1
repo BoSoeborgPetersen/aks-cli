@@ -2,10 +2,13 @@ param($prefix, $configPrefix, [switch] $addIp, $sku = "Basic", $ip, [switch] $ol
 
 WriteAndSetUsage ([ordered]@{
     "[prefix]" = "Kubernetes deployment name prefix"
-    "[config prefix]" = "AKS-CLI config file name prefix"
-    "[-add ip]" = "Flag to add Azure Public IP"
+    "[configPrefix]" = "AKS-CLI config file name prefix"
+    "[-addIp]" = "Flag to add Azure Public IP"
     "[sku]" = "Azure Public IP SKU"
     "[ip]" = "Azure Public IP to use"
+    "[oldDnsNamingConvention]" = "Add '-aks' to dns name"
+    "[skip]" = "Skip AreYouSure"
+    "[upgrade]" = "Upgrade instead of installing"
 })
 
 Write-Debug "Prefix $prefix"
@@ -25,7 +28,7 @@ else
 {
     $dns = PrependWithDash $prefix "$groupName"
 }
-$publicIp = PublicIpName -prefix $prefix -cluster $cluster
+$publicIp = PublicIpName -prefix $prefix -cluster $resourceGroup
 $deployment = NginxDeploymentName $prefix
 $configFile = PrependWithDash $configPrefix "nginx-config.yaml"
 

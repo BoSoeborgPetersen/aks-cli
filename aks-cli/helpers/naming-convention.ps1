@@ -66,6 +66,11 @@ function KuredDeploymentName
     return "kured"
 }
 
+function VpaDeploymentName
+{
+    return "vpa"
+}
+
 # LaterDo: Is there any way to determine this.
 function DevOpsOrganizationName
 {
