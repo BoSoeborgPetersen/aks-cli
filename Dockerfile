@@ -1,63 +1,41 @@
-# Base image with Azure-Cli (712 MB)
+# Base image with Azure-Cli (az)
 FROM mcr.microsoft.com/azure-cli:latest
 
-# Install DevOps extension for Azure Cli (az devops) (17 MB)
+# Install DevOps extension for Azure Cli (az devops)
 RUN az extension add --name azure-devops
 
-# Install PowerShell Core (134 MB)
-ENV POWERSHELL_VERSION=7.1.3
+# Install PowerShell Core (pwsh)
 RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl libssl1.1 libstdc++ tzdata userspace-rcu zlib icu-libs curl lttng-ust -X https://dl-cdn.alpinelinux.org/alpine/edge/main --no-cache && \
-    curl -sSLo /tmp/powershell.tar.gz https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell-${POWERSHELL_VERSION}-linux-alpine-x64.tar.gz && \
     mkdir -p /opt/microsoft/powershell/7 && \
-    tar -zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7 && \
+    curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*powershell-[^-]+-linux-alpine-x64[^\"]*' | xargs curl -sSL | tar -zx -C /opt/microsoft/powershell/7 && \
     chmod +x /opt/microsoft/powershell/7/pwsh && \
-    ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh && \
-    rm /tmp/powershell.tar.gz
+    ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh 
 
-# Install Powershell modules (0 MB)
+# Install Powershell modules
 RUN pwsh -c "Install-Module PSMenu -Force && Install-Module PSBashCompletions -Scope CurrentUser -Force && Install-Module -Name GetPassword -Confirm"
 
-# Install Nano (6 MB)
+# Install Nano (nano)
 RUN apk add nano --no-cache
 
-# Install Kubernetes-Cli (kubectl) (45 MB) + (plugin: 50 MB)
-ENV KUBECTL_CERT_MANAGER_VERSION=1.4.3
+# Install Kubernetes-Cli (kubectl, kubectl cert-manager)
 RUN az aks install-cli --only-show-errors && \
-    curl -sSLo /tmp/kubectl-cert-manager.tar.gz https://github.com/jetstack/cert-manager/releases/download/v${KUBECTL_CERT_MANAGER_VERSION}/kubectl-cert_manager-linux-amd64.tar.gz && \
-    tar -zxf /tmp/kubectl-cert-manager.tar.gz kubectl-cert_manager -C /usr/local/bin && \
-    rm /tmp/kubectl-cert-manager.tar.gz
+    curl -sSL https://github.com/jetstack/cert-manager/releases/latest/download/kubectl-cert_manager-linux-amd64.tar.gz | tar -zx kubectl-cert_manager -C /usr/local/bin
 
-# Install Wercker\Stern (22 MB)
-ENV STERN_VERSION=1.11.0
-RUN curl -sSLo /usr/local/bin/stern https://github.com/wercker/stern/releases/download/${STERN_VERSION}/stern_linux_amd64 && \
+# Install Wercker\Stern (stern)
+RUN curl -sSLo /usr/local/bin/stern https://github.com/wercker/stern/releases/latest/download/stern_linux_amd64 && \
     chmod +x /usr/local/bin/stern
 
-# Install ahmetb/kubectx (28 MB)
-ENV KUBECTX_VERSION=0.9.4
-RUN curl -sSLo /tmp/kubectx.tar.gz https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_x86_64.tar.gz && \
-    tar -zxf /tmp/kubectx.tar.gz kubectx -C /usr/local/bin && \
-    rm /tmp/kubectx.tar.gz
+# Install ahmetb/kubectx (kubectx)
+RUN curl -s https://api.github.com/repos/ahmetb/kubectx/releases/latest | jq -r '.assets[] | select(.name|test("kubectx_[^_]+_linux_x86_64.tar.gz")) | .browser_download_url' | xargs curl -sSL | tar -zx kubectx -C /usr/local/bin
 
-# Install ahmetb/kubectx/kubens (28 MB)
-ENV KUBENS_VERSION=0.9.4
-RUN curl -sSLo /tmp/kubens.tar.gz https://github.com/ahmetb/kubectx/releases/download/v${KUBENS_VERSION}/kubens_v${KUBENS_VERSION}_linux_x86_64.tar.gz && \
-    tar -zxf /tmp/kubens.tar.gz kubens -C /usr/local/bin && \
-    rm /tmp/kubens.tar.gz
+# Install ahmetb/kubectx/kubens (kubens)
+RUN curl -s https://api.github.com/repos/ahmetb/kubectx/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kubens_[^_]+_linux_x86_64[^\"]*' | xargs curl -sSL | tar -zx kubens -C /usr/local/bin
 
-# Install maorfr/helm-backup (??? MB)
-ENV HELM_BACKUP_VERSION=0.1.3
-RUN curl -sSLo /tmp/helm-backup.tar.gz https://github.com/maorfr/helm-backup/releases/download/${HELM_BACKUP_VERSION}/helm-backup-linux-${HELM_BACKUP_VERSION}.tgz && \
-    tar -zxf /tmp/helm-backup.tar.gz backup -C /usr/local/bin && \
-    rm /tmp/helm-backup.tar.gz
+# Install Helm-Cli (helm)
+RUN curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name | xargs -I {} curl -sSL https://get.helm.sh/helm-{}-linux-amd64.tar.gz | tar -zx linux-amd64/helm && \
+    mv /linux-amd64/helm /usr/local/bin/helm
 
-# Install Helm-Cli version 3 (helm) (~90 MB)
-ENV HELM_VERSION=3.6.3
-RUN curl -sSLo /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
-    tar -zxf /tmp/helm.tar.gz linux-amd64/helm && \
-    mv /linux-amd64/helm /usr/local/bin/helm && \
-    rm /tmp/helm.tar.gz
-
-# Setup Helm 3
+# Setup Helm
 RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add jetstack https://charts.jetstack.io && \
     helm repo add kured https://weaveworks.github.io/kured && \
@@ -66,54 +44,37 @@ RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add prometheus https://prometheus-community.github.io/helm-charts && \
     helm repo add grafana https://grafana.github.io/helm-charts && \
     helm repo update && \
-    helm plugin install https://github.com/fabmation-gmbh/helm-whatup
+    helm plugin install https://github.com/fabmation-gmbh/helm-whatup && \
+    rm /tmp/helm-whatup.tgz && \
+    rm -r /tmp/helm-whatup
 
-# Install K9s (derailed/k9s)
-ENV K9S_VERSION=0.24.15
-RUN curl -sSLo /tmp/k9s.tar.gz https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz && \
-    tar -zxf /tmp/k9s.tar.gz k9s -C /usr/local/bin && \
-    rm /tmp/k9s.tar.gz
+# Install maorfr/helm-backup (backup)
+RUN curl -s https://api.github.com/repos/maorfr/helm-backup/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*helm-backup-linux[^\"]*' | xargs curl -sSL | tar -zx backup -C /usr/local/bin
 
-# Install Popeye (derailed/popeye)
-ENV POPEYE_VERSION=0.9.7
-RUN curl -sSLo /tmp/popeye.tar.gz https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_x86_64.tar.gz && \
-    tar -zxf /tmp/popeye.tar.gz popeye -C /usr/local/bin && \
-    rm /tmp/popeye.tar.gz
+# Install derailed/k9s (k9s)
+RUN curl -sSL https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz | tar -zx k9s -C /usr/local/bin
 
-# Install KubeAudit (Shopify/kubeaudit)
-ENV KUBEAUDIT_VERSION=0.14.2
-RUN curl -sSLo /tmp/kubeaudit.tar.gz https://github.com/Shopify/kubeaudit/releases/download/v${KUBEAUDIT_VERSION}/kubeaudit_${KUBEAUDIT_VERSION}_linux_amd64.tar.gz && \
-    tar -zxf /tmp/kubeaudit.tar.gz kubeaudit -C /usr/local/bin && \
-    rm /tmp/kubeaudit.tar.gz
+# Install derailed/popeye (popeye)
+RUN curl -sSL https://github.com/derailed/popeye/releases/latest/download/popeye_Linux_x86_64.tar.gz | tar -zx popeye -C /usr/local/bin
 
-# Install NodeShell (kvaps/kubectl-node-shell)
-ENV NODESHELL_VERSION=1.5.3
-RUN curl -sSLo /tmp/nodeshell.tar.gz https://github.com/kvaps/kubectl-node-shell/archive/refs/tags/v${NODESHELL_VERSION}.tar.gz && \
-    tar -zxf /tmp/nodeshell.tar.gz kubectl-node-shell-${NODESHELL_VERSION}/kubectl-node_shell -C /tmp/ && \
-    mv /tmp/kubectl-node-shell-${NODESHELL_VERSION}/kubectl-node_shell /usr/local/bin/kubectl-node_shell && \
-    rm /tmp/nodeshell.tar.gz
+# Install Shopify/kubeaudit (kubeaudit)
+RUN curl -s https://api.github.com/repos/Shopify/kubeaudit/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kubeaudit_[^_]+_linux_amd64[^\"]*' | xargs curl -sSL | tar -zx kubeaudit -C /usr/local/bin
 
-# Install Kubespy (pulumi/kubespy)
-ENV KUBESPY_VERSION=0.6.0
-RUN curl -sSLo /tmp/kubespy.tar.gz https://github.com/pulumi/kubespy/releases/download/v${KUBESPY_VERSION}/kubespy-v${KUBESPY_VERSION}-linux-amd64.tar.gz && \
-    tar -zxf /tmp/kubespy.tar.gz kubespy -C /tmp/ && \
-    mv /tmp/kubespy /usr/local/bin/kubectl-spy && \
-    rm /tmp/kubespy.tar.gz
+# Install kvaps/kubectl-node-shell (kubectl node-shell)
+RUN curl -Lo /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
+    chmod +x /usr/local/bin/kubectl-node_shell
 
-# Install Kubebox (astefanutti/kubebox)
-ENV KUBEBOX_VERSION=0.9.0
-RUN curl -Lo /usr/local/bin/kubebox https://github.com/astefanutti/kubebox/releases/download/v${KUBEBOX_VERSION}/kubebox-linux && \
+# Install pulumi/kubespy (kubespy)
+RUN curl -s https://api.github.com/repos/pulumi/kubespy/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kubespy-[^-]+-linux-amd64[^\"]*' | xargs curl -sSL | tar -zx kubespy -C /usr/local/bin
+
+# Install astefanutti/kubebox (kubebox)
+RUN curl -Lo /usr/local/bin/kubebox https://github.com/astefanutti/kubebox/releases/latest/download/kubebox-linux && \
     chmod +x /usr/local/bin/kubebox
 
-# Install Kube-prompt (c-bata/kube-prompt)
-ENV KUBEPROMPT_VERSION=1.0.11
-RUN curl -sSLo /tmp/kube-prompt.zip https://github.com/c-bata/kube-prompt/releases/download/v${KUBEPROMPT_VERSION}/kube-prompt_v${KUBEPROMPT_VERSION}_linux_amd64.zip && \
-    unzip /tmp/kube-prompt.zip -d /usr/local/bin && \
-    ln -s /usr/local/bin/kube-prompt /usr/local/bin/kubectl-prompt && \
-    rm /tmp/kube-prompt.zip
-
-# TODO: Add Kubie (https://github.com/sbstp/kubie)
-# TODO: Add Kube-ops-view 
+# Install c-bata/kube-prompt (kube-prompt)
+RUN curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kube-prompt_[^_]+_linux_amd64[^\"]*' | xargs curl -sSLo /tmp/kube-prompt.zip && \ 
+    unzip /tmp/kube-prompt.zip -d /usr/local/bin && \ 
+    rm /tmp/kube-prompt.zip 
 
 # Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions

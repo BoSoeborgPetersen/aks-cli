@@ -11,11 +11,11 @@ WriteAndSetUsage ([ordered]@{
     "[-useServicePrincipal]" = "Use Service Principal instead of Managed Identity"
 })
 
-# WantToContinue "Create Azure Resource Group '$resourceGroup', in location '$location'"
-# AksCommand resource-group create $resourceGroup $location
+WantToContinue "Create Azure Resource Group '$resourceGroup', in location '$location'"
+AksCommand resource-group create $resourceGroup $location
 
-# WantToContinue "Create AKS cluster, in resource group '$resourceGroup'"
-# AksCommand create standard $resourceGroup $minNodeCount $maxNodeCount $nodeSize $loadBalancerSku $useServicePrincipal
+WantToContinue "Create AKS cluster, in resource group '$resourceGroup'"
+AksCommand create standard $resourceGroup $minNodeCount $maxNodeCount $nodeSize $loadBalancerSku $useServicePrincipal
 
 WantToContinue "Authorize AKS cluster Managed Identity to access global resources (cluster Resource Group & Azure Container Registry) in subscription '$globalSubscription'"
 AksCommand identity authorize $globalSubscription
