@@ -46,6 +46,7 @@ MainMenu @{
     "get" = "Get Kubernetes resources"
     "identity" = "Azure Managed Identity operations"
     "insights" = "AKS insights operations"
+    "invoke" = "Execute command in the current cluster"
     "keda" = "Keda (Kubernetes Event-driven Autoscaling) operations"
     "keyvault" = "Azure Key Vault operations"
     "kured" = "Kured (KUbernetes REboot Daemon) operations"
