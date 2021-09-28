@@ -18,12 +18,12 @@ kind: Ingress
 metadata:
   name: grafana-ingress-trafficmanager
   annotations:
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/issuer: grafana-issuer
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/whitelist-source-range: 79.171.146.0/26, 185.147.72.0/26, 195.49.232.0/22, 217.66.102.249/28, 212.90.183.32/29
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - ${{ClusterName}}-grafana.trafficmanager.net
