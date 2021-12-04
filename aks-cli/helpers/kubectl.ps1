@@ -146,6 +146,21 @@ function KubectlSaveLastApplied($type, $name, $namespace, $output = 'yaml', $fil
     SaveFile $lastApplied $fullFilePath
 }
 
+function KubectlSaveHelmSecret($name, $version, $namespace, $output = 'json', $filePath = '/app/temp/helm-secret')
+{
+    $fullFilePath = "$filePath/sh.helm.release.v1.$name.v$version.$output"
+
+    Write-Info "Saving '$name' to '$fullFilePath'"
+    
+    if ( -not (Test-Path $filePath) ) 
+    {
+        mkdir -p $filePath
+    }
+    $secret = KubectlQuery "get secret sh.helm.release.v1.$name.v$version" -o $output -n $namespace
+    
+    SaveFile $secret $fullFilePath
+}
+
 function KubectlCreateNamespace($name)
 {
     $check = KubectlQuery "get ns" -j "{$.items[?(@.metadata.name=='$name')].metadata.name}"

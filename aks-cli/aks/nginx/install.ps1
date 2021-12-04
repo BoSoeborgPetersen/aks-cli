@@ -49,7 +49,7 @@ if ($skip -or (AreYouSure))
 
     if ($prefix)
     {
-        $extraParams = "--set controller.electionID='$prefix-ingress-controller-leader' --set controller.ingressClass='$prefix' --set controller.ingressClassResource.name='$prefix' --set controller.extraArgs.default-ssl-certificate=default/$prefix-certificate"
+        $extraParams = "--set controller.electionID='$prefix-ingress-controller-leader' --set controller.ingressClass='$prefix' --set controller.ingressClassResource.name='$prefix' --set controller.ingressClassResource.controllerValue='k8s.io/$deployment' --set controller.ingressClassByName=true --set controller.extraArgs.default-ssl-certificate=default/$prefix-certificate"
     }
 
     # LaterDo: Replace ' with ", and " with '

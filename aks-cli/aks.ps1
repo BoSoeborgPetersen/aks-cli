@@ -55,6 +55,7 @@ MainMenu @{
     "nginx" = "Nginx operations"
     "pod" = "Kubernetes pod operations"
     "registry" = "Azure Container Registry operations"
+    "release" = "Helm release operations (export/import)"
     # "replace" = "Replace AKS cluster operations"
     "resource-group" = "Azure Resource Group operations"
     "scale" = "Scale operations"

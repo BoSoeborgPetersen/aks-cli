@@ -3,11 +3,6 @@ function HelmNamespaceString($namespace)
     return ConditionalOperator $namespace " -n $namespace"
 }
 
-function Helm2Command($command)
-{
-    ExecuteCommand ("helm2 $command" + $debugString)
-}
-
 function HelmCommand($command, $namespace)
 {
     $namespaceString = HelmNamespaceString $namespace
@@ -15,21 +10,18 @@ function HelmCommand($command, $namespace)
     ExecuteCommand ("helm $command" + $namespaceString + $debugString)
 }
 
-function Helm2Query($command)
+function HelmQuery($command, $namespace)
 {
-    return ExecuteQuery ("helm2 $command" + $debugString)
-}
+    $namespaceString = HelmNamespaceString $namespace
 
-function HelmQuery($command)
-{
-    return ExecuteQuery ("helm $command" + $debugString)
+    return ExecuteQuery ("helm $command" + $namespaceString + $debugString)
 }
 
 function HelmCheck($chart, $namespace)
 {
     $namespaceString = HelmNamespaceString $namespace
 
-    $check = ExecuteQuery ("helm3 test $chart" + $namespaceString + " 2>null")
+    $check = ExecuteQuery ("helm test $chart" + $namespaceString + " 2>null")
 
     if (!$check) 
     {

@@ -19,12 +19,8 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
 - Kubernetes-CLI (kubectl)
   - Cert-Manager extension (kubectl cert-manager)
 - Helm-CLI
-  - Version 2 (helm2)
-  - Version 3 (helm)
-    - Stable repo (<https://kubernetes-charts.storage.googleapis.com>)
-    - Cert-Manager repo (<https://charts.jetstack.io>)
-    - Kured repo (<https://weaveworks.github.io/kured>)
-    - 2to3 plugin (<https://github.com/helm/helm-2to3>)
+  - Cert-Manager repo (<https://charts.jetstack.io>)
+  - Kured repo (<https://weaveworks.github.io/kured>)
 - Wercher/Stern (stern)
 - Kubectx
 - Kubens
@@ -52,8 +48,8 @@ By default the container launches the AKS-CLI, which after selecting the Azure s
 
 Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!
 
-Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm v2 & v3 CLI (helm2 & helm),
-  Wercher/Stern (stern), Kubectx, Kubens, K9s, Popeye, KubeAudit, NodeShell, Kubespy, Kubebox, Kube-prompt
+Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm CLI (helm),
+  Wercher/Stern (stern), Kubectx, Kubens, K9s, Popeye, KubeAudit, Kubescape, NodeShell, Kubespy, Kubebox, Kube-prompt
 Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu
 
 Here are the commands:

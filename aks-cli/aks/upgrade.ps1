@@ -9,8 +9,9 @@ CheckCurrentCluster
 
 if ($version) 
 {
+    $currentVersion = AzAksCurrentQuery "show" -q kubernetesVersion -o tsv
     AzCheckUpgradableVersion $version $preview
-    Write-Info "Upgrading current cluster to version '$version'"
+    Write-Info "Upgrading current cluster from '$currentVersion' to version '$version'"
 }
 else
 {
@@ -19,8 +20,10 @@ else
 
     if ($version)
     {
+        $currentVersion = AzAksCurrentQuery "show" -q kubernetesVersion -o tsv
+
         $previewString = ConditionalOperator $preview "(allow previews)"
-        Write-Info "Upgrading current cluster to version '$version', which is the newest upgradable version $previewString"
+        Write-Info "Upgrading current cluster from '$currentVersion' to version '$version', which is the newest upgradable version $previewString"
     }
     else
     {

@@ -51,9 +51,6 @@ RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     rm /tmp/helm-whatup.tgz && \
     rm -r /tmp/helm-whatup
 
-# Install maorfr/helm-backup (backup)
-RUN curl -s https://api.github.com/repos/maorfr/helm-backup/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*helm-backup-linux[^\"]*' | xargs curl -sSL | tar -zx backup -C /usr/local/bin
-
 # Install derailed/k9s (k9s)
 RUN curl -sSL https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz | tar -zx k9s -C /usr/local/bin
 
@@ -62,6 +59,9 @@ RUN curl -sSL https://github.com/derailed/popeye/releases/latest/download/popeye
 
 # Install Shopify/kubeaudit (kubeaudit)
 RUN curl -s https://api.github.com/repos/Shopify/kubeaudit/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kubeaudit_[^_]+_linux_amd64[^\"]*' | xargs curl -sSL | tar -zx kubeaudit -C /usr/local/bin
+
+# Install Kubescape
+RUN curl -s https://raw.githubusercontent.com/armosec/kubescape/master/install.sh | /bin/bash
 
 # Install kvaps/kubectl-node-shell (kubectl node-shell)
 RUN curl -Lo /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \

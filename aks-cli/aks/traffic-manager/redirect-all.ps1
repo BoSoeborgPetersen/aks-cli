@@ -13,23 +13,34 @@ $targetCluster = ClusterMenu
 
 Write-Info "Redirect all Traffic Managers from '$($sourceCluster.name)' to '$($targetCluster.name)'"
 
-# Step 5: Find all traffic managers pointing to the Public IP resource of the source cluster.
+# Step 3: Find all traffic managers pointing to the Public IP resource of the source cluster.
 $subscriptionId = CurrentSubscription
 $sourceResourceGroup = $sourceCluster.resourceGroup
-$sourcePublicIp = PublicIpName -cluster $sourceCluster.name
-# $sourcePublicIp = "$($sourceCluster.resourceGroup)-ip"
-$sourcePublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$sourceResourceGroup/providers/Microsoft.Network/publicIPAddresses/$sourcePublicIp"
-$trafficManagers = AzQuery "network traffic-manager profile list" -q "[?endpoints[].targetResourceId==$sourcePublicIpId]" | ConvertFrom-Json
+$sourceNodeResourceGroup = $sourceCluster.nodeResourceGroup
+$sourceIpAddresses = AzQuery "network public-ip list" -q "[?resourceGroup=='$sourceResourceGroup' && starts_with(ipConfiguration.resourceGroup,'$sourceNodeResourceGroup')].id" -o tsv
+# $sourcePublicIp = PublicIpName -cluster $sourceCluster.name
+# $sourcePublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$sourceResourceGroup/providers/Microsoft.Network/publicIPAddresses/$sourcePublicIp"
 
-# Step 6: Update Traffic Managers to point to the Public IP resource of the target cluster.
 if (AreYouSure)
 {
-    $targetResourceGroup = $targetCluster.resourceGroup
-    $targetPublicIp = PublicIpName -cluster $targetCluster.name
-    $targetPublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$targetResourceGroup/providers/Microsoft.Network/publicIPAddresses/$targetPublicIp"
-    foreach($trafficManager in $trafficManagers)
+    foreach($sourceIpAddress in $sourceIpAddresses)
     {
-        AzCommand "network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($trafficManager.endpoints[0].name)' --type azureEndpoints"
-        AzCommand "network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n 'AKS' --type azureEndpoints --target-resource-id $targetPublicIpId"
+        $trafficManagers = AzQuery "network traffic-manager profile list" -q "[?endpoints[].targetResourceId==$sourceIpAddress]" | ConvertFrom-Json
+
+        # Step 4: Update Traffic Managers to point to the Public IP resource of the target cluster.
+        $targetResourceGroup = $targetCluster.resourceGroup
+
+        $targetPublicIp = PublicIpName -cluster $targetCluster.name
+        $targetPublicIpId = "/subscriptions/$subscriptionId/resourceGroups/$targetResourceGroup/providers/Microsoft.Network/publicIPAddresses/$targetPublicIp"
+
+        foreach($trafficManager in $trafficManagers)
+        {
+            AzCommand "network traffic-manager endpoint create -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($targetCluster.name)' --type azureEndpoints --target-resource-id $targetPublicIpId"
+            foreach($endpoint in $trafficManager.endpoints)
+            {
+                AzCommand "network traffic-manager endpoint update -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($endpoint.name)' --endpoint-status Disabled"
+                # AzCommand "network traffic-manager endpoint delete -g $($trafficManager.resourceGroup) --profile-name $($trafficManager.name) -n '$($endpoint.name)' --type $($endpoint.type)"
+            }
+        }
     }
 }
