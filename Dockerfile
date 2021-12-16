@@ -79,6 +79,10 @@ RUN curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | gr
     unzip /tmp/kube-prompt.zip -d /usr/local/bin && \ 
     rm /tmp/kube-prompt.zip 
 
+# Install Linkerd
+RUN curl -fsL https://run.linkerd.io/install | sh && \
+    ln -s /root/.linkerd2/bin/linkerd /usr/bin/linkerd
+
 # Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions
 RUN apk add bash-completion && \
