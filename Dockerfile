@@ -1,5 +1,8 @@
 # Base image with Azure-Cli (az)
-FROM mcr.microsoft.com/azure-cli:latest
+FROM mcr.microsoft.com/azure-cli:2.31.0
+
+# Install Bicep
+RUN az bicep install
 
 # Install DevOps extension for Azure Cli (az devops)
 RUN az extension add --name azure-devops
