@@ -86,7 +86,7 @@ function SwitchCurrentCluster([switch] $clear, [switch] $refresh)
     AzAksCurrentCommand 'get-credentials --overwrite-existing > $1'
 
     UpdateShellWindowTitle
-    UpdateShellPrompt
+    # UpdateShellPrompt
     
     if ($clear)
     {
@@ -104,7 +104,7 @@ function SwitchCurrentClusterTo($resourceGroup)
     AzAksCommand "get-credentials -g $resourceGroup -n $cluster"
 
     UpdateShellWindowTitle
-    UpdateShellPrompt
+    # UpdateShellPrompt
 }
 
 function CheckCurrentCluster

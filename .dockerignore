@@ -1,2 +1,4 @@
 *
 !aks-cli/*
+!aks-cli.omp.json
+!Microsoft.PowerShell_profile.ps1

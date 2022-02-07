@@ -1,0 +1,52 @@
+{
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "blocks": [
+      {
+        "alignment": "left",
+        "segments": [
+          {
+            "foreground": "#ffffff",
+            "background": "#6e11a3",
+            "properties": {
+              "template": " AKS-CLI "
+            },
+            "style": "powerline",
+            "powerline_symbol": "\ue0b0",
+            "type": "text"
+          },
+          {
+            "foreground": "#000000",
+            "background": "#f8d775",
+            "properties": {
+              "folder_separator_icon": "/",
+              "home_icon": "~",
+              "style": "full",
+              "template": " \uf74a  {{ .Path }} "
+            },
+            "style": "powerline",
+            "powerline_symbol": "\ue0b0",
+            "type": "path"
+          },
+          {
+            "foreground": "#ffffff",
+            "background": "#123786",
+            "background_templates": [
+              "{{ if gt .Code 0 }}#e91e63{{ end }}"
+            ],
+            "properties": {
+              "template": " \uFD31 {{.Context}}:{{if .Namespace}}{{.Namespace}}{{else}}default{{end}} "
+            },
+            "style": "diamond",
+            "trailing_diamond": "\ue0b4",
+            "type": "kubectl"
+          }
+        ],
+        "type": "prompt"
+      }
+    ],
+    "console_title": false,
+    "console_title_style": "template",
+    "console_title_template": "AKS-CLI",
+    "final_space": true,
+    "version": 1
+  }

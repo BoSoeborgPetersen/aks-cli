@@ -15,9 +15,39 @@ function Welcome
     Write-Host (ConditionalOperator $GlobalIsDevelopment " --- DEVELOPMENT EDITION --- `n`n") -NoNewline
     Write-Host 'Welcome to the AKS (Azure Kubernetes Service) CLI (aks)!'
     Write-Host ''
-    Write-Host 'Also available: Azure CLI (az), Kubernetes CLI (kubectl), Helm CLI (helm),'
-    Write-Host '  Wercher/Stern (stern), Kubectx, Kubens, K9s, Popeye, KubeAudit, Kubescape, NodeShell, Kubespy, Kubebox, Kube-prompt'
-    Write-Host 'Also: Azure DevOps CLI extension (az devops), Curl, Git, Nano, PS-Menu'
+    Write-Host "Get list of tools present with 'aks tools'"
+    Write-Host ''
+}
+
+function Tools
+{
+    Write-Host ''
+    Write-Host 'List of available tools:'
+    Write-Host ''
+    Write-Host '    a / aks              : AKS CLI'
+    Write-Host '    az                   : Azure CLI'
+    Write-Host '    az bicep             : Azure Bicep CLI extension'
+    Write-Host '    az devops            : Azure DevOps CLI extension'
+    Write-Host '    ctx / kubectx        : Kubectx'
+    Write-Host '    curl                 : Curl'
+    Write-Host '    git                  : Git'
+    Write-Host '    h / helm             : Helm CLI'
+    Write-Host '    helm whatup          : Helm WhatUp CLI extension'
+    Write-Host '    k / kubectl          : Kubernetes CLI'
+    Write-Host '    kubectl cert-manager : Kubernetes Cert-Manager CLI extension'
+    Write-Host '    kubectl node-shell   : NodeShell'
+    Write-Host '    k9s                  : K9s'
+    Write-Host '    kube-prompt          : Kube-prompt'
+    Write-Host '    kubeaudit            : KubeAudit'
+    Write-Host '    kubebox              : KubeBox'
+    Write-Host '    kubescape            : KubeScape'
+    Write-Host '    kubespy              : KubeSpy'
+    Write-Host '    nano                 : Nano'
+    Write-Host '    ns / kubens          : Kubens'
+    Write-Host '    popeye               : Popeye'
+    Write-Host '    pwsh                 : PowerShell Core'
+    Write-Host '    stern                : Wercher/Stern'
+    Write-Host ''
 }
 
 function ShowCommandBreadcrumbs($commandPrefix)
@@ -68,7 +98,6 @@ function ShowMenu($commandPrefix, $commands)
         ShowCommandBreadcrumbs $commandPrefix
     }
 
-    Write-Host ''
     Write-Host 'Here are the commands:'
     ShowCommands $commands
     ShowGeneralFlags

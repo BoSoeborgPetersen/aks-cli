@@ -1,6 +1,0 @@
-TestCommand "aks top po"
-TestCommand "aks top pod"
-TestCommand "aks top pods"
-TestCommand "aks top no"
-TestCommand "aks top node"
-TestCommand "aks top nodes"

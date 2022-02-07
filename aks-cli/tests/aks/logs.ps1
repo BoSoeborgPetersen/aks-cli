@@ -1,1 +1,0 @@
-TestCommand "aks logs $kubernetesDeployment"

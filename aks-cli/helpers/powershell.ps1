@@ -92,15 +92,15 @@ function UpdateShellWindowTitle
     $host.ui.RawUI.WindowTitle = (CurrentClusterName) + (ConditionalOperator $GlobalIsDevelopment ' (dev)')
 }
 
-function UpdateShellPrompt
-{
-    function global:prompt
-    {
-        Write-Host "AKS $(get-location) [" -NoNewline
-        Write-Host (kubectx -c) -ForegroundColor DarkRed -NoNewline
-        Write-Host ":" -NoNewline
-        Write-Host (kubens -c) -ForegroundColor DarkGreen -NoNewline
-        Write-Host "]>" -NoNewline
-        return " "
-    }
-}
+# function UpdateShellPrompt
+# {
+#     function global:prompt
+#     {
+#         Write-Host "AKS $(get-location) [" -NoNewline
+#         Write-Host (kubectx -c) -ForegroundColor DarkRed -NoNewline
+#         Write-Host ":" -NoNewline
+#         Write-Host (kubens -c) -ForegroundColor DarkGreen -NoNewline
+#         Write-Host "]>" -NoNewline
+#         return " "
+#     }
+# }
