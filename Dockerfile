@@ -1,5 +1,5 @@
 # Base image with Azure-Cli (az)
-FROM mcr.microsoft.com/azure-cli:2.32.0
+FROM mcr.microsoft.com/azure-cli:2.33.0
 
 # Install Bicep
 RUN az bicep install
@@ -15,7 +15,6 @@ RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl 
     ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh 
 
 # Install Powershell modules
-# RUN pwsh -c "Install-Module PSMenu -Force && Install-Module PSBashCompletions -Scope CurrentUser -Force && Install-Module -Name GetPassword -Confirm && Install-Module PSReadLine -Force -Confirm"
 RUN pwsh -c "Install-Module PSMenu -Force" && \
     pwsh -c "Install-Module PSBashCompletions -Force" && \
     pwsh -c "Install-Module GetPassword -Force" && \
@@ -83,9 +82,19 @@ RUN curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | gr
     unzip /tmp/kube-prompt.zip -d /usr/local/bin && \ 
     rm /tmp/kube-prompt.zip 
 
+# # Install Kui (kubectl kui)
+# RUN curl -s https://api.github.com/repos/kubernetes-sigs/kui/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*Kui-linux-x64.zip[^\"]*' | xargs curl -sSLo /tmp/kui.zip && \ 
+#     unzip /tmp/kui.zip -d /usr/local/bin && \ 
+#     rm /tmp/kui.zip
+
 # Install Linkerd
 RUN curl -fsL https://run.linkerd.io/install | sh && \
     ln -s /root/.linkerd2/bin/linkerd /usr/bin/linkerd
+
+# Install Istioctl
+RUN curl -s https://api.github.com/repos/istio/istio/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*istio-[^-]+-linux-amd64[^\"]*' | xargs curl -sSLo /tmp/istio.tar.gz && \
+    tar -ztf istio.tar.gz | grep bin/istioctl | xargs tar -zxf /tmp/istio.tar.gz --strip-components=2 -C /usr/local/bin && \
+    rm /tmp/istio.tar.gz
 
 # Install Terminal-Icons (required by Oh My Posh)
 RUN mkdir -p ~/.local/share/fonts && \

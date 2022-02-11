@@ -83,10 +83,9 @@ function SwitchCurrentCluster([switch] $clear, [switch] $refresh)
 
     $global:GlobalCurrentCluster = ClusterMenu -refresh $refresh
 
-    AzAksCurrentCommand 'get-credentials --overwrite-existing > $1'
+    AzAksCurrentCommand 'get-credentials -a --overwrite-existing > $1'
 
     UpdateShellWindowTitle
-    # UpdateShellPrompt
     
     if ($clear)
     {
@@ -101,10 +100,9 @@ function SwitchCurrentClusterTo($resourceGroup)
     $global:GlobalClusters = az aks list | ConvertFrom-Json
     $global:GlobalCurrentCluster = $GlobalClusters | Where-Object { $_.name -match $cluster }
 
-    AzAksCommand "get-credentials -g $resourceGroup -n $cluster"
+    AzAksCommand "get-credentials -g $resourceGroup -n $cluster -a"
 
     UpdateShellWindowTitle
-    # UpdateShellPrompt
 }
 
 function CheckCurrentCluster

@@ -24,6 +24,6 @@ foreach($file in $files)
     $version = $file -replace '/app/temp/helm-secret/sh\.helm\.release\.v1\.[\w-]+\.v(\d+)\.json', '$1'
     Write-Verbose "Name: $name"
     Write-Verbose "Version: $version"
-    KubectlCommand "apply -f $file"
+    KubectlCommand "create -f $file"
     HelmCommand "rollback $name $version"
 }

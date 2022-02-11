@@ -1,3 +1,4 @@
+# TODO: Add message reading something like "ACCESS DENIED !!!", when unauthorized.
 param([switch] $cluster, $resourceGroup, [switch] $clean)
 
 WriteAndSetUsage ([ordered]@{

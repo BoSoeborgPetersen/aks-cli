@@ -34,7 +34,7 @@
               "{{ if gt .Code 0 }}#e91e63{{ end }}"
             ],
             "properties": {
-              "template": " \uFD31 {{.Context}}:{{if .Namespace}}{{.Namespace}}{{else}}default{{end}} "
+              "template": " \uFD31 {{.Cluster}}:{{if .Namespace}}{{.Namespace}}{{else}}default{{end}} "
             },
             "style": "diamond",
             "trailing_diamond": "\ue0b4",

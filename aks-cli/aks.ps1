@@ -1,4 +1,4 @@
-# TODO: Create workflow for creating AKS cluster and setting everything up (cluster, cluster setup, devops, traffic-manager), with 1 aks command.
+# TODO: Generalize code for Helm chart operations
 
 # LaterDo: Improve functions for working with multiple nginx's in a cluster
 
@@ -38,24 +38,22 @@ MainMenu @{
     "az" = "Execute az command with -g and -n filled out"
     "autoscaler" = "Setup automatic pod or node scaling"
     "cert-manager" = "Certificate Manager operations"
-    "delete" = "Delete AKS cluster"
     "describe" = "Describe Kubernetes resources"
     "devops" = "Azure DevOps operations"
     "edit" = "Edit Kubernetes resource"
     "get" = "Get Kubernetes resources"
+    "helm" = "Helm release operations (export/import)"
     "identity" = "Azure Managed Identity operations"
     "insights" = "AKS insights operations"
     "invoke" = "Execute command in the current cluster"
     "keda" = "Keda (Kubernetes Event-driven Autoscaling) operations"
-    "keyvault" = "Azure Key Vault operations"
     "kured" = "Kured (KUbernetes REboot Daemon) operations"
+    "last-applied" = "Last-Applied-Config operations"
     "logs" = "Get container logs"
     "monitoring" = "Prometheus and Grafana operations"
     "nginx" = "Nginx operations"
     "pod" = "Kubernetes pod operations"
     "registry" = "Azure Container Registry operations"
-    "release" = "Helm release operations (export/import)"
-    # "replace" = "Replace AKS cluster operations"
     "scale" = "Scale operations"
     "service-principal" = "Azure Service Principal operations"
     "shell" = "Open shell inside container"
@@ -64,11 +62,10 @@ MainMenu @{
     "switch" = "Switch Azure subscription / AKS cluster"
     "tools" = "Show other tools present"
     "top" = "Show Kubernetes resource utilization"
-    # "traffic-manager" = "Azure Traffic Manager operations"
+    "traffic-manager" = "Azure Traffic Manager operations"
     "upgrade" = "Upgrade AKS cluster"
     "upgrades" = "Get AKS cluster upgradable versions"
     "version" = "Get AKS cluster version"
     "versions" = "Get AKS versions"
     "vpa" = "Vertical Pod Autoscaler operations"
-    "workload" = "Last-Applied-Config operations"
 }

@@ -39,14 +39,21 @@ function AzDevOpsQuery($command, $query, $subscription, $output)
 function AzDevOpsInvokeCommand($area, $resource, $parameters, $methodHttp, $filepath, $query, $output)
 {
     $filepathString = ConditionalOperator $filepath " --in-file $filepath"
+    $apiVersion = AzDevOpsApiVersion
     $project = DevOpsProjectName
-    AzCommand "devops invoke --area $area --resource $resource --route-parameters project=$project $parameters --http-method $methodHttp --api-version 6.0-preview $filepathString" -q $query -o $output
+    AzCommand "devops invoke --area $area --resource $resource --route-parameters project=$project $parameters --http-method $methodHttp --api-version $apiVersion $filepathString" -q $query -o $output
 }
 
 function AzDevOpsInvokeQuery($area, $resource, $parameters, $query, $output)
 {
+    $apiVersion = AzDevOpsApiVersion
     $project = DevOpsProjectName
-    AzQuery "devops invoke --area $area --resource $resource --route-parameters project=$project --query-parameters $parameters --http-method GET --api-version 6.0-preview" -q $query -o $output
+    AzQuery "devops invoke --area $area --resource $resource --route-parameters project=$project --query-parameters $parameters --http-method GET --api-version $apiVersion" -q $query -o $output
+}
+
+function AzDevOpsApiVersion()
+{
+    return "7.1-preview"
 }
 
 function AzDevOpsEnvironmentId($name)

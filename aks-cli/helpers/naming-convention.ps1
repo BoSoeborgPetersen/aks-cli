@@ -74,13 +74,13 @@ function VpaDeploymentName
 # LaterDo: Is there any way to determine this.
 function DevOpsOrganizationName
 {
-    return "3Shape"
+    return "NetsMS"
 }
 
 # LaterDo: Is there any way to determine this.
 function DevOpsProjectName
 {
-    return "Services"
+    return "PaymentServices"
 }
 
 function DevOpsUnixName($name)

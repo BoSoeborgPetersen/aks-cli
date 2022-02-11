@@ -13,6 +13,11 @@ Set-Alias ctx kubectx -Scope Global
 Set-Alias ns kubens -Scope Global
 Set-Alias h helm -Scope Global
 
+# Alias functions
+function global:kg { kubectl get $args }
+function global:ktopco { kg po | grep actor | awk '{print $1}' | k top po --containers }
+function global:k-top-co { kg po | grep actor | awk '{print $1}' | k top po --containers }
+
 # Helper functions
 function global:.. { Set-Location .. }
 function global:... { Set-Location ../.. }
