@@ -1,5 +1,5 @@
 # Base image with Azure-Cli (az)
-FROM mcr.microsoft.com/azure-cli:2.33.0
+FROM mcr.microsoft.com/azure-cli:2.37.0
 
 # Install Bicep
 RUN az bicep install
@@ -25,7 +25,7 @@ RUN apk add nano --no-cache
 
 # Install Kubernetes-Cli (kubectl, kubectl cert-manager)
 RUN az aks install-cli --only-show-errors && \
-    curl -sSL https://github.com/jetstack/cert-manager/releases/latest/download/kubectl-cert_manager-linux-amd64.tar.gz | tar -zx kubectl-cert_manager -C /usr/local/bin
+    curl -sSL https://github.com/jetstack/cert-manager/releases/latest/download/kubectl-cert_manager-linux-amd64.tar.gz | tar -zx ./kubectl-cert_manager -C /usr/local/bin
 
 # Install Wercker\Stern (stern)
 RUN curl -sSLo /usr/local/bin/stern https://github.com/wercker/stern/releases/latest/download/stern_linux_amd64 && \
@@ -106,6 +106,8 @@ RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/p
     chmod +x /usr/local/bin/oh-my-posh && \ 
     mkdir /root/.config/powershell
 COPY aks-cli.omp.json /root/.config/powershell/aks-cli.omp.json
+
+# TODO: https://github.com/boxboat/aks-health-check
 
 # Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions
