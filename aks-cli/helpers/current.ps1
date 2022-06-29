@@ -16,12 +16,9 @@ function SubscriptionMenu
     return $GlobalSubscriptions[$currentSubscription]
 }
 
-function SwitchCurrentSubscription([switch] $clear)
+function SwitchCurrentSubscription
 {
-    if ($clear)
-    {
-        Clear-Host
-    }
+    Clear-Host
 
     Write-Info "Choose Azure Subscription: "
 
@@ -74,10 +71,7 @@ function ClusterMenu([switch] $refresh)
 
 function SwitchCurrentCluster([switch] $clear, [switch] $refresh)
 {
-    if ($clear)
-    {
-        Clear-Host
-    }
+    Clear-Host
 
     Write-Info "Choose Kubernetes Cluster: "
 
@@ -87,10 +81,10 @@ function SwitchCurrentCluster([switch] $clear, [switch] $refresh)
 
     UpdateShellWindowTitle
     
-    if ($clear)
-    {
-        Clear-Host
-    }
+    # if ($clear)
+    # {
+    #     Clear-Host
+    # }
 }
 
 function SwitchCurrentClusterTo($resourceGroup)

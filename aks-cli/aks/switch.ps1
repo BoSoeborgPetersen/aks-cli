@@ -1,5 +1,5 @@
 # TODO: Add message reading something like "ACCESS DENIED !!!", when unauthorized.
-param([switch] $cluster, $resourceGroup, [switch] $clean)
+param([switch] $cluster, $resourceGroup, [switch] $clean, [switch] $clear = $true)
 
 WriteAndSetUsage ([ordered]@{
     "[-cluster]" = "Only switch AKS cluster, not Azure subscription"
@@ -17,10 +17,10 @@ if (!$resourceGroup)
 {
     if (!$cluster)
     {
-        SwitchCurrentSubscription -clear
+        SwitchCurrentSubscription
     }
 
-    SwitchCurrentCluster -clear
+    SwitchCurrentCluster -clear $clear
 }
 else
 {
