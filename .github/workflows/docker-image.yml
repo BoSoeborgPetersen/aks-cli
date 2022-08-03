@@ -16,7 +16,11 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PAT }}
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag bo0petersen/aks-cli:$(date +%s)
+      run: |
+        docker build . --file Dockerfile --tag bo0petersen/aks-cli:$(date +%s)
+        docker build . --file Dockerfile --tag bo0petersen/aks-cli:latest
     
     - name: Docker Push
-      run: docker push bo0petersen/aks-cli
+      run: |
+        docker push bo0petersen/aks-cli:$(date +%s)
+        docker push bo0petersen/aks-cli:latest
