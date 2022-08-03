@@ -17,10 +17,7 @@ jobs:
     
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --tag bo0petersen/aks-cli:$(date +%s)
-        docker build . --file Dockerfile --tag bo0petersen/aks-cli:latest
+        docker build . --file Dockerfile -t bo0petersen/aks-cli:latest -t bo0petersen/aks-cli:$(date +%s)
     
     - name: Docker Push
-      run: |
-        docker push bo0petersen/aks-cli:$(date +%s)
-        docker push bo0petersen/aks-cli:latest
+      run: docker push bo0petersen/aks-cli -a
