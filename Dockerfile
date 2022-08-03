@@ -1,5 +1,5 @@
 # Base image with Azure-Cli (az)
-FROM mcr.microsoft.com/azure-cli:2.37.0
+FROM mcr.microsoft.com/azure-cli
 
 # Install Bicep
 RUN az bicep install
@@ -25,7 +25,7 @@ RUN apk add nano --no-cache
 
 # Install Kubernetes-Cli (kubectl, kubectl cert-manager)
 RUN az aks install-cli --only-show-errors && \
-    curl -sSL https://github.com/jetstack/cert-manager/releases/latest/download/kubectl-cert_manager-linux-amd64.tar.gz | tar -zx ./kubectl-cert_manager -C /usr/local/bin
+    curl -sSL https://github.com/jetstack/cert-manager/releases/latest/download/kubectl-cert_manager-linux-amd64.tar.gz | tar -zx kubectl-cert_manager -C /usr/local/bin
 
 # Install Wercker\Stern (stern)
 RUN curl -sSLo /usr/local/bin/stern https://github.com/wercker/stern/releases/latest/download/stern_linux_amd64 && \
@@ -64,7 +64,7 @@ RUN curl -sSL https://github.com/derailed/popeye/releases/latest/download/popeye
 RUN curl -s https://api.github.com/repos/Shopify/kubeaudit/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*kubeaudit_[^_]+_linux_amd64[^\"]*' | xargs curl -sSL | tar -zx kubeaudit -C /usr/local/bin
 
 # Install Kubescape
-RUN curl -s https://raw.githubusercontent.com/armosec/kubescape/master/install.sh | /bin/bash
+# RUN curl -s https://raw.githubusercontent.com/armosec/kubescape/master/install.sh | /bin/bash
 
 # Install kvaps/kubectl-node-shell (kubectl node-shell)
 RUN curl -Lo /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
