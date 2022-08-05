@@ -14,10 +14,11 @@ jobs:
     
     - name: Docker Image Update Checker
       id: baseupdatecheck
-      uses: lucacome/docker-image-update-checker@v1
+      uses: giggio/docker-image-update-checker@v2
       with:
         base-image: mcr.microsoft.com/azure-cli:latest
         image: bo0petersen/aks-cli:latest
+        verbose: true # optional
     
     - name: Login to Docker Hub
       uses: docker/login-action@v2
