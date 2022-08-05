@@ -1,6 +1,9 @@
 name: Docker Image CI
 
-on: [workflow_dispatch]
+on:
+  schedule:
+    - cron: "7 5 * * *"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -9,15 +12,24 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Docker Image Update Checker
+      id: baseupdatecheck
+      uses: lucacome/docker-image-update-checker@v1
+      with:
+        base-image: mcr.microsoft.com/azure-cli
+        image: bo0petersen/aks-cli
+    
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
         username: bo0petersen
         password: ${{ secrets.DOCKER_HUB_PAT }}
+      if: steps.check.outputs.needs-updating == 'true'
     
     - name: Build the Docker image
-      run: |
-        docker build . --file Dockerfile -t bo0petersen/aks-cli:latest -t bo0petersen/aks-cli:$(date +%s)
+      run: docker build . --file Dockerfile -t bo0petersen/aks-cli:latest -t bo0petersen/aks-cli:$(date +%s)
+      if: steps.check.outputs.needs-updating == 'true'
     
     - name: Docker Push
       run: docker push bo0petersen/aks-cli -a
+      if: steps.check.outputs.needs-updating == 'true'
