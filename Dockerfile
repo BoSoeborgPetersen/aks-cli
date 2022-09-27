@@ -44,7 +44,7 @@ RUN curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_
 # Setup Helm
 RUN helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo add jetstack https://charts.jetstack.io && \
-    helm repo add kured https://weaveworks.github.io/kured && \
+    helm repo add kured https://kubereboot.github.io/kured && \
     helm repo add cowboysysop https://cowboysysop.github.io/charts && \
     helm repo add kedacore https://kedacore.github.io/charts && \
     helm repo add prometheus https://prometheus-community.github.io/helm-charts && \
