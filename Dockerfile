@@ -7,19 +7,6 @@ RUN az bicep install
 # Install DevOps extension for Azure Cli (az devops)
 RUN az extension add --name azure-devops
 
-# Install PowerShell Core (pwsh)
-RUN apk add ca-certificates less ncurses-terminfo-base krb5-libs libgcc libintl libssl1.1 libstdc++ tzdata userspace-rcu zlib icu-libs curl lttng-ust -X https://dl-cdn.alpinelinux.org/alpine/edge/main --no-cache && \
-    mkdir -p /opt/microsoft/powershell/7 && \
-    curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest | grep -E 'browser_download_url' | grep -Eo '[^\"]*powershell-[^-]+-linux-alpine-x64[^\"]*' | xargs curl -sSL | tar -zx -C /opt/microsoft/powershell/7 && \
-    chmod +x /opt/microsoft/powershell/7/pwsh && \
-    ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh 
-
-# Install Powershell modules
-RUN pwsh -c "Install-Module PSMenu -Force" && \
-    pwsh -c "Install-Module PSBashCompletions -Force" && \
-    pwsh -c "Install-Module GetPassword -Force" && \
-    pwsh -c "Install-Module PSReadLine -Force"
-
 # Install Nano (nano)
 RUN apk add nano --no-cache
 
@@ -98,16 +85,19 @@ RUN curl -s https://api.github.com/repos/istio/istio/releases/latest | grep -E '
 
 # Install Terminal-Icons (required by Oh My Posh)
 RUN mkdir -p ~/.local/share/fonts && \
-    cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf && \
-    pwsh -c "Install-Module -Name Terminal-Icons -Repository PSGallery -Force"
+    cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+    # pwsh -c "Install-Module -Name Terminal-Icons -Repository PSGallery -Force"
 
 # Oh My Posh # TODO: Move OMP file and put other oh my posh stuff in powershell profile
 RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && \ 
     chmod +x /usr/local/bin/oh-my-posh && \ 
-    mkdir /root/.config/powershell
-COPY aks-cli.omp.json /root/.config/powershell/aks-cli.omp.json
+    mkdir /root/.config/oh-my-posh
+COPY aks-cli.omp.json /root/.config/oh-my-posh/aks-cli.omp.json
 
 # TODO: https://github.com/boxboat/aks-health-check
+
+# Install Golang
+RUN apk add git make musl-dev go --no-cache
 
 # Install Bash completion
 ENV COMPLETIONS=/usr/share/bash-completion/completions
@@ -121,7 +111,7 @@ RUN apk add bash-completion && \
 
 WORKDIR /app
 COPY aks-cli aks-cli
-# Copy PowerShell profile
-COPY Microsoft.PowerShell_profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
+# Copy Bash profile
+COPY aks-cli_profile.sh /etc/profile.d/aks-cli_profile.sh
 
-ENTRYPOINT [ "pwsh", "-NoExit", "-NoLogo", "-f", "aks-cli/init.ps1" ]
+ENTRYPOINT [ "bash", "--init-file", "new-dev-aks-cli/init.sh" ]

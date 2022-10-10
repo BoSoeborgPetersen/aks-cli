@@ -73,9 +73,8 @@
                 "guid": "{3cf0be50-3aa0-4f1d-b4f1-c6ccbe6b7ef3}",
                 "name": "AKS-CLI (Development)",
                 "startingDirectory": "c:/git/OpenSource/aks-cli",
-                "commandline": "pwsh -c \"& { docker pull mcr.microsoft.com/azure-cli:latest && docker build . -t dev-aks-cli && docker run --rm -it -v c:/git/OpenSource/aks-cli/mapped:/app/mapped -v c:/git/OpenSource/aks-cli/aks-cli:/app/dev-aks-cli --entrypoint pwsh dev-aks-cli -NoExit -NoLogo -f dev-aks-cli/init.ps1 }\"",
+                "commandline": "pwsh -c \"& { cd c:/git/OpenSource/new-aks-cli && docker pull mcr.microsoft.com/azure-cli:latest && docker build . -t new-dev-aks-cli && docker run --rm -it -v c:/git/OpenSource/new-aks-cli/mapped:/app/mapped -v c:/git/OpenSource/new-aks-cli/aks-cli:/app/new-dev-aks-cli --entrypoint bash new-dev-aks-cli --init-file new-dev-aks-cli/init.sh }\"",
                 "icon": "c:/git/OpenSource/aks-cli/Aks-cli.png",
-                "backgroundImage": "c:/git/OpenSource/aks-cli/Aks-cli.png",
                 "backgroundImage": "%USERPROFILE%/OneDrive/Billeder/Icons/AKS.png",
                 "tabColor": "#8B008B"
             }

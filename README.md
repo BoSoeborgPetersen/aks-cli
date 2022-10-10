@@ -1,3 +1,5 @@
+// NOWDO: Rewrite
+
 # Azure Kubernetes Service CLI
 
 Azure-CLI extended with AKS-CLI, PowerShell Core, Kubernetes-CLI, Helm-CLI & Wercher/Stern.
