@@ -5,31 +5,32 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+	v "github.com/spf13/viper"
 )
 
 func IsDevelopmentMode() bool {
-	return FileExists("/app/new-dev-aks-cli")
+	return FileExists(v.GetString("AksCliDevelopmentPath"))
 }
 
-func SetDebuggingState(disable bool) {
-	GlobalStateDebugging = !disable
-}
+// func SetDebuggingState(disable bool) {
+// 	SetGlobalStateDebugging = !disable
+// }
 
-func SetWhatIfState(disable bool) {
-	GlobalStateWhatIf = !disable
-}
+// func SetWhatIfState(disable bool) {
+// 	SetGlobalStateWhatIf = !disable
+// }
 
-func SetVerboseState(disable bool) {
-	GlobalStateVerbose = !disable
-}
+// func SetVerboseState(disable bool) {
+// 	SetGlobalStateVerbose = !disable
+// }
 
-func SetDefaultResourceGroup(resourceGroup string) {
-	GlobalDefaultResourceGroup = resourceGroup
-}
+// func SetDefaultResourceGroup(resourceGroup string) {
+// 	SetGlobalDefaultResourceGroup = resourceGroup
+// }
 
-func DefaultResourceGroup() string {
-	return GlobalDefaultResourceGroup
-}
+// func DefaultResourceGroup() string {
+// 	return GlobalDefaultResourceGroup
+// }
 
 func WriteErrorMessage(message string) {
 	color.Red(message)
@@ -58,9 +59,9 @@ func WriteError(message string) {
 }
 
 func WriteErrorF(message string, f WriteFlags) {
-	regexString := ConditionalOperator(f.Regex, Format(" matching '%s'", f.Regex))
-	indexString := ConditionalOperator(f.Index != 0, fmt.Sprintf(" with index '%d'", f.Index))
-	namespaceString := ConditionalOperator(f.Namespace, Format(" in namespace '%s'", f.Namespace))
+	regexString := If(f.Regex, Format(" matching '%s'", f.Regex))
+	indexString := If(f.Index != 0, fmt.Sprintf(" with index '%d'", f.Index))
+	namespaceString := If(f.Namespace, Format(" in namespace '%s'", f.Namespace))
 
 	// NOWDO: Add logging
 	// log.Fatal(err)
@@ -92,9 +93,9 @@ func WriteInfo(message string) {
 }
 
 func WriteInfoF(message string, f WriteFlags) {
-	regexString := ConditionalOperator(f.Regex, Format(" matching '%s'", f.Regex))
-	indexString := ConditionalOperator(f.Index != 0, fmt.Sprintf(" with index '%d'", f.Index))
-	namespaceString := ConditionalOperator(f.Namespace, Format(" in namespace '%s'", f.Namespace))
+	regexString := If(f.Regex, Format(" matching '%s'", f.Regex))
+	indexString := If(f.Index != 0, fmt.Sprintf(" with index '%d'", f.Index))
+	namespaceString := If(f.Namespace, Format(" in namespace '%s'", f.Namespace))
 
 	WriteInfoMessage(Format("%s%s%s%s", message, regexString, indexString, namespaceString))
 
@@ -104,7 +105,7 @@ func WriteInfoF(message string, f WriteFlags) {
 }
 
 func UpdateShellWindowTitle() {
-	windowTitle := CurrentClusterName() + ConditionalOperator(IsDevelopmentMode(), " (dev)")
+	windowTitle := CurrentClusterName() + If(IsDevelopmentMode(), " (dev)")
 	fmt.Print("\033]0;" + windowTitle + "\007")
 }
 

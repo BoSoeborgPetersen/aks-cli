@@ -1,14 +1,10 @@
 package helpers
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
+	c "github.com/spf13/cobra"
+	v "github.com/spf13/viper"
 )
 
-//	type Subscriptions struct {
-//		Subscriptions []Subscription
-//	}
 type Subscription struct {
 	Id       string
 	Name     string
@@ -22,77 +18,117 @@ type Cluster struct {
 	Fqdn              string
 }
 
-// type Deployment struct {
-
-// }
-
 func GetEnv[T any](name string, t T) T {
-	DeserializeB(HandleError(os.ReadFile("aks.config")), &t)
+	v.UnmarshalKey(name, &t)
 	return t
+}
+
+func GetGlobalSubscriptions() []Subscription {
+	return GetEnv("GlobalSubscriptions", []Subscription{})
+}
+func SetGlobalSubscriptions(t []Subscription) {
+	v.Set("GlobalSubscriptions", t)
+}
+
+func GetGlobalCurrentSubscription() Subscription {
+	return GetEnv("GlobalCurrentSubscription", Subscription{})
+}
+func SetGlobalCurrentSubscription(t Subscription) {
+	v.Set("GlobalCurrentSubscription", t)
+}
+
+// ----------------
+
+func GetGlobalSubscriptionUsedForClusters() Subscription {
+	return GetEnv("GlobalSubscriptionUsedForClusters", Subscription{})
+}
+func SetGlobalSubscriptionUsedForClusters(t Subscription) {
+	v.Set("GlobalSubscriptionUsedForClusters", t)
+}
+
+func GetGlobalClusters() []Cluster {
+	return GetEnv("GlobalClusters", []Cluster{})
+}
+func SetGlobalClusters(t []Cluster) {
+	v.Set("GlobalClusters", t)
 }
 
 func GetGlobalCurrentCluster() Cluster {
 	return GetEnv("GlobalCurrentCluster", Cluster{})
 }
-
-func SetEnv[T any](name string, t T) {
-	jsonBytes, err := json.Marshal(t)
-	jsonString := string(jsonBytes)
-	if err != nil {
-		fmt.Print("Error: ")
-		fmt.Println(err.Error())
-	}
-	// fmt.Print("SetEnv: ")
-	// fmt.Println(jsonString)
-
-	f, _ := os.Create("aks.config")
-	f.WriteString(jsonString)
-	// os.Setenv(name, jsonString)
-}
-
 func SetGlobalCurrentCluster(t Cluster) {
-	SetEnv("GlobalCurrentCluster", t)
+	v.Set("GlobalCurrentCluster", t)
 }
 
-// func GetGlobalCurrentCluster() Cluster {
-// 	return Get("GlobalCurrentCluster")
-// 	// cluster := Cluster{}
-// 	// GetEnv("GlobalCurrentCluster", &cluster)
-// 	// return cluster
+// ----------------
+
+// func GetGlobalSubscriptionUsedForDeployments() Subscription {
+// 	return GetEnv("GlobalSubscriptionUsedForDeployments", Subscription{})
+// }
+// func SetGlobalSubscriptionUsedForDeployments(t Subscription) {
+// 	v.Set("GlobalSubscriptionUsedForDeployments", t)
 // }
 
-var GlobalSubscriptionUsedForClusters Subscription
-var GlobalClusters []Cluster
+// func GetGlobalClusterUsedForDeployments() Cluster {
+// 	return GetEnv("GlobalClusterUsedForDeployments", Cluster{})
+// }
+// func SetGlobalClusterUsedForDeployments(t Cluster) {
+// 	v.Set("GlobalClusterUsedForDeployments", t)
+// }
 
-// var GlobalCurrentCluster Cluster
-var GlobalCurrentSubscription Subscription
-var GlobalSubscriptions []Subscription
-var GlobalCurrentUsage string
+// func GetGlobalDeployments() []string {
+// 	return GetEnv("GlobalDeployments", []string{})
+// }
+// func SetGlobalDeployments(t []string) {
+// 	v.Set("GlobalDeployments", t)
+// }
 
-var GlobalSubscriptionUsedForDeployments Subscription
-var GlobalClusterUsedForDeployments Cluster
-// var GlobalDeployments []Deployment
-var GlobalDeployments []string
+// ----------------------------------------------
 
-var GlobalStateDebugging bool
-var GlobalStateWhatIf bool
-var GlobalStateVerbose bool
-var GlobalDefaultResourceGroup string
+func GetGlobalDebuggingState() bool {
+	return v.GetBool("GlobalDebuggingState")
+}
+func SetGlobalDebuggingState(t bool) {
+	v.Set("GlobalDebuggingState", t)
+}
+
+func GetGlobalWhatIfState() bool {
+	return v.GetBool("GlobalWhatIfState")
+}
+func SetGlobalWhatIfState(t bool) {
+	v.Set("GlobalWhatIfState", t)
+}
+
+func GetGlobalVerboseState() bool {
+	return v.GetBool("GlobalVerboseState")
+}
+func SetGlobalVerboseState(t bool) {
+	v.Set("GlobalVerboseState", t)
+}
+
+func GetGlobalDefaultResourceGroup() string {
+	return v.GetString("GlobalDefaultResourceGroup")
+}
+func SetGlobalDefaultResourceGroup(t string) {
+	v.Set("GlobalDefaultResourceGroup", t)
+}
+
+// --------------------------------------------
 
 var Verbose bool
 var Debug bool
 var WhatIf bool
 
 func DebugString() string {
-	if Debug {
-		return " --debug"
-	}
-	return ""
+	return If(Debug, " --debug")
 }
 
 func KubeDebugString() string {
-	if Debug {
-		return " --v=4"
-	}
-	return ""
+	return If(Debug, " --v=4")
 }
+
+//---------------------------------------------
+
+// TODO: Change to hold Cobra Cmd, then use it for flag func's and to print help in func
+// var GlobalCurrentUsage string
+var GlobalCurrentCmd *c.Command

@@ -15,7 +15,8 @@ var disableCmd = &c.Command{
 
 		h.WriteInfo("Disable node autoscaler")
 
-		h.PrintAzAksCurrentCommand("update --disable-cluster-autoscaler")
+		// MaybeDo: Change to string array.
+		h.Write(h.AzAksCurrentCommand("update --disable-cluster-autoscaler"))
 	},
 }
 

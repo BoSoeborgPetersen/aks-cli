@@ -17,22 +17,22 @@ var removeCmd = &c.Command{
 	),
 	Run: func(cmd *c.Command, args []string) {
 		environment := args[0]
-		
+
 		h.CheckCurrentCluster()
 		namespace := h.NamespaceArgCheck(args, 1)
-		
+
 		environmentId := h.AzDevOpsEnvironmentId(environment)
 		resourceId := h.AzDevOpsResourceId(namespace)
-		
-		h.AzDevOpsInvokeCommandF(h.AzDevOpsCommandFlags{ Area: "environments", Resource: "kubernetes", Parameters: h.Format("environmentId=%s resourceId=%s", environmentId, resourceId), MethodHttp: "DELETE" })
-		
+
+		h.AzDevOpsInvokeCommandF(h.AzDevOpsCommandFlags{Area: "environments", Resource: "kubernetes", Parameters: h.Format("environmentId=%s resourceId=%s", environmentId, resourceId), MethodHttp: "DELETE"})
+
 		var serviceEndpointId string
 		for serviceEndpointId == "" {
-			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzQueryFlags{ Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv" })
+			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
 		}
-		
+
 		serviceConnection.DeleteCmd.Run(cmd, []string{environment, namespace})
-		
+
 		// DELETE:
 		// DELETE https://dev.azure.com/3Shape/Identity/_apis/pipelines/environments/234/providers/kubernetes/{id}
 	},

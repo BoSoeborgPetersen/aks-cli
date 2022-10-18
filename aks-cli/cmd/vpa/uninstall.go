@@ -20,7 +20,7 @@ var uninstallCmd = &c.Command{
 		h.WriteInfo("Uninstalling Vertical Pod Autoscaler")
 
 		if yes || h.AreYouSure() {
-			h.HelmCommandF(h.Format("uninstall %s", deployment), deployment)
+			h.HelmCommandP("uninstall", h.HelmFlags{ Name: deployment, Namespace: deployment})
 
 			if !skipNamespace {
 				h.KubectlCommand(h.Format("delete namespace %s", deployment))

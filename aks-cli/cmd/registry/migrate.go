@@ -21,7 +21,7 @@ var migrateCmd = &c.Command{
 		oldRegistry := args[0]
 		oldRegistryRepo := args[1]
 		newRegistryRepo := args[2]
-		newRegistry := h.StringFlag(cmd, "destRegistry")
+		newRegistry := h.StringFlag("destRegistry")
 
 		if newRegistry == "" {
 			newRegistry = oldRegistry

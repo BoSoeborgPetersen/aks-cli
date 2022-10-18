@@ -12,8 +12,8 @@ var deleteCmd = &c.Command{
 	Long:  h.Description(`Delete deployment pods`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagCheck(cmd)
-		deployment := h.DeploymentFlag(cmd, namespace)
+		namespace := h.NamespaceFlagCheck()
+		deployment := h.DeploymentFlagCheck(namespace)
 
 		pods := h.KubectlGetPods(deployment, namespace)
 

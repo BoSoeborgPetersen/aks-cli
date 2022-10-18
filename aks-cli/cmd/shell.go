@@ -20,13 +20,13 @@ var shellCmd = &c.Command{
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
 		regex := args[0]
-		shell := h.StringFlag(cmd, "shell")
-		index := h.IntFlag(cmd, "index")
+		shell := h.StringFlag("shell")
+		index := h.IntFlag("index")
 
 		// NOWDO: Fix
 		// h.ShowSubMenu(shellCommands)
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		namespace, name := h.KubectlGetRegex("pod", regex, index, namespace)
 

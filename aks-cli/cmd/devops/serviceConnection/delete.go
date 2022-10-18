@@ -13,17 +13,17 @@ var DeleteCmd = &c.Command{
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		namespace := h.NamespaceFlagCheck(cmd)
-		
+		namespace := h.NamespaceFlagCheck()
+
 		h.WriteInfo("Deleting Service Connection")
-		
+
 		serviceAccount := h.DevOpsServiceAccountName(name)
 		roleBinding := h.DevOpsRoleBindingName(name)
-		
-		h.KubectlCommandF(h.Format("delete serviceaccount %s", serviceAccount), h.KubectlFlags{ Namespace: namespace })
-		h.KubectlCommandF(h.Format("delete rolebinding %s", roleBinding), h.KubectlFlags{ Namespace: namespace })
-		
-		id := h.AzDevOpsQuery("service-endpoint list", h.AzQueryFlags{ Query: h.Format("[?name=='%s'].id", name), Output: "tsv" })
+
+		h.KubectlCommandF(h.Format("delete serviceaccount %s", serviceAccount), h.KubectlFlags{Namespace: namespace})
+		h.KubectlCommandF(h.Format("delete rolebinding %s", roleBinding), h.KubectlFlags{Namespace: namespace})
+
+		id := h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s'].id", name), Output: "tsv"})
 		h.AzDevOpsCommand(h.Format("service-endpoint delete --id %s -y", id))
 	},
 }

@@ -15,7 +15,7 @@ var getCmd = &c.Command{
 
 		h.WriteInfo("Get current AKS cluster service principal")
 
-		h.AzAksCurrentCommandF("show", h.AzAksCommandFlags{ Query: "servicePrincipalProfile", Output: "tsv" })
+		h.AzAksCurrentCommandP("show", h.AzAksFlags{Query: "servicePrincipalProfile", Output: "tsv"})
 	},
 }
 

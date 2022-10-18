@@ -13,7 +13,7 @@ var replaceCmd = &c.Command{
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		replaceDefaultKubernetesResources := h.BoolFlag(cmd, "replaceDefaultKubernetesResources")
+		replaceDefaultKubernetesResources := h.BoolFlag("replaceDefaultKubernetesResources")
 
 		h.WriteInfo("Replacing Environment")
 

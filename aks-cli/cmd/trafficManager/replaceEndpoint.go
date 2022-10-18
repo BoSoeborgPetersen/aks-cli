@@ -14,7 +14,7 @@ var replaceEndpointCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		// TODO: Rewrite
 		new := args[0]
-		old := h.StringFlag(cmd, "old")
+		old := h.StringFlag("old")
 
 		AzureServiceResourceGroup := ""
 		AzureTrafficManager := ""

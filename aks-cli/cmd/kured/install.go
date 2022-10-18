@@ -11,20 +11,19 @@ var installCmd = &c.Command{
 	Short: "Install Kured (KUbernetes REboot Daemon) (Helm chart)",
 	Long:  h.Description(`Install Kured (KUbernetes REboot Daemon) (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
-		skipNamespace := h.BoolFlag(cmd, "skip-namespace")
-		upgrade := h.BoolFlag(cmd, "upgrade")
+		skipNamespace := h.BoolFlag("skip-namespace")
+		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
 		deployment := h.KuredDeploymentName()
 
-		operationName := h.ConditionalOperatorOr(upgrade, "Upgrading", "Installing")
+		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Kured (KUbernetes REboot Daemon)", operationName))
 
 		if !skipNamespace {
 			h.KubectlCommand(h.Format("create ns %s", deployment))
 		}
-		operation := h.ConditionalOperatorOr(upgrade, "upgrade", "install")
-		h.HelmCommandF(h.Format("%s %s kured/kured --set nodeSelector.\"kubernetes\\.io/os\"=linux", operation, deployment), deployment)
+		h.HelmCommandP(h.IfElse(upgrade, "upgrade", "install"), h.HelmFlags{Name: deployment, Repo: "kured/kured", Namespace: deployment, SetArgs: []string{"nodeSelector.\"kubernetes\\.io/os\"=linux"}})
 	},
 }
 

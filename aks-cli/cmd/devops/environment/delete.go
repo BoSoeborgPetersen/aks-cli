@@ -14,7 +14,7 @@ var deleteCmd = &c.Command{
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		removeDefaultKubernetesResources := h.BoolFlag(cmd, "removeDefaultKubernetesResources")
+		removeDefaultKubernetesResources := h.BoolFlag("removeDefaultKubernetesResources")
 
 		h.WriteInfo("Deleting Environment")
 

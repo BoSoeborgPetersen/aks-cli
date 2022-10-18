@@ -15,7 +15,7 @@ var createCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		// LaterDo: Add Approval/Check (e.g. '[Identity]\Contributors')
 		name := args[0]
-		addDefaultKubernetesResources := h.BoolFlag(cmd, "addDefaultKubernetesResources")
+		addDefaultKubernetesResources := h.BoolFlag("addDefaultKubernetesResources")
 
 		h.WriteInfo("Creating Environment")
 
@@ -26,11 +26,11 @@ var createCmd = &c.Command{
 
 		if addDefaultKubernetesResources {
 			h.WriteInfo(h.Format("Adding Kubernetes resource to DevOps Environment '%s, Namespace: default'", name))
-			environmentKubernetes.AddCmd.Run(cmd, []string{name,"default"})
+			environmentKubernetes.AddCmd.Run(cmd, []string{name, "default"})
 			h.WriteInfo(h.Format("Adding Kubernetes resource to DevOps Environment '%s, Namespace: ingress'", name))
-			environmentKubernetes.AddCmd.Run(cmd, []string{name,"ingress"})
+			environmentKubernetes.AddCmd.Run(cmd, []string{name, "ingress"})
 			h.WriteInfo(h.Format("Adding Kubernetes resource to DevOps Environment '%s, Namespace: cert-manager'", name))
-			environmentKubernetes.AddCmd.Run(cmd, []string{name,"cert-manager"})
+			environmentKubernetes.AddCmd.Run(cmd, []string{name, "cert-manager"})
 		}
 
 		// CREATE:

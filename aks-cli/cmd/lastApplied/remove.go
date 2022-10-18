@@ -11,10 +11,10 @@ var removeCmd = &c.Command{
 	Short: "Remove workload",
 	Long:  h.Description(`Remove workload`),
 	Run: func(cmd *c.Command, args []string) {
-		regex := h.StringFlag(cmd, "regex")
+		regex := h.StringFlag("regex")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		h.WriteInfoF("Removing workload", h.WriteFlags{Regex: regex, Namespace: namespace})
 

@@ -22,29 +22,30 @@ func SetDefaultIfEmpty(variable string, defaulttt string) string {
 }
 
 func PrependWithDash(prefix string, str string) string {
-	return ConditionalOperatorOr(prefix, Format("%s-%s", prefix, str), str)
+	return IfElse(prefix, Format("%s-%s", prefix, str), str)
 }
 
-func ConditionalOperatorOr[T string | int | bool, K any](test T, value1 K, value2 K) K {
-	if testCondition(test) {
-		return value1
-	}
-	return value2
+func IfF(test string, formatString string) string {
+	return If(test, Format(formatString, test))
 }
 
-func ConditionalOperatorFormat(test string, formatString string) string {
-	return ConditionalOperator(test, Format(" --query \"%s\"", test))
-}
-
-func ConditionalOperator[T string | int | bool, K any](test T, value1 K) K {
-	if testCondition(test) {
-		return value1
-	}
+func If[T string | int | bool, K any](test T, value1 K) K {
 	var value2 K
+	return IfElse(test, value1, value2)
+}
+
+func IfElseF(test string, formatString string, value2 string) string {
+	return IfElse(test, Format(formatString, test), value2)
+}
+
+func IfElse[T string | int | bool, K any](test T, value1 K, value2 K) K {
+	if IsSet(test) {
+		return value1
+	}
 	return value2
 }
 
-func testCondition[T string | int | bool](test T) bool {
+func IsSet[T string | int | bool](test T) bool {
 	switch p := any(test).(type) {
 	case string:
 		return p != ""

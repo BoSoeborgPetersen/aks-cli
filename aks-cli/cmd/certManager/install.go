@@ -11,24 +11,23 @@ var installCmd = &c.Command{
 	Short: "Install Certificate Manager (Helm chart)",
 	Long:  h.Description(`Install Certificate Manager (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
-		skipNamespace := h.BoolFlag(cmd, "skip-namespace")
-		upgrade := h.BoolFlag(cmd, "upgrade")
+		skipNamespace := h.BoolFlag("skip-namespace")
+		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
 		deployment := h.CertManagerDeploymentName()
-
 		latestVersion := h.HelmLatestChartVersion("jetstack/cert-manager")
-		version := h.VersionFlag(cmd, latestVersion)
+		version := h.VersionFlag(latestVersion)
 
-		operationName := h.ConditionalOperatorOr(upgrade, "Upgrading", "Installing")
-		h.WriteInfo(h.Format("%s Certificate Manager", operationName))
+		// TODO: Try to create conditional operator as operator ("??"), like "+"
+		h.WriteInfo(h.Format("%s Certificate Manager", h.IfElse(upgrade, "Upgrading", "Installing")))
 
 		if !skipNamespace {
 			h.KubectlCommand(h.Format("create ns %s", deployment))
 		}
+		// TODO: Put URL config file, try to use Viper for it.
 		h.KubectlCommand(h.Format("apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v%s/cert-manager.crds.yaml", version))
-		operation := h.ConditionalOperatorOr(upgrade, "upgrade", "install")
-		h.HelmCommandF(h.Format("%s %s jetstack/cert-manager --version v%s -f %s/data/cert-manager/cert-manager-config.yaml", operation, deployment, version, h.ExeLocation()), deployment)
+		h.HelmCommandP(h.IfElse(upgrade, "upgrade", "install"), h.HelmFlags{Name: deployment, Repo: "jetstack/cert-manager", Namespace: deployment, Version: version, File: "/data/cert-manager/cert-manager-config.yaml"})
 	},
 }
 

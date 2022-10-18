@@ -8,13 +8,13 @@ import (
 
 var checkCmd = &c.Command{
 	Use:   "check",
-	Short: "Check Certificate Manager",
+	Short: "Check cert-manager",
 	Long:  h.Description(`Check Certificate Manager`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
 		deployment := h.CertManagerDeploymentName()
 		latestVersion := h.HelmLatestChartVersion("jetstack/cert-manager")
-		version := h.VersionFlag(cmd, latestVersion)
+		version := h.VersionFlag(latestVersion)
 
 		h.WriteInfo("Checking Cert-Manager")
 

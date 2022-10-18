@@ -13,7 +13,7 @@ var resourceGroupCmd = &c.Command{
 	Long:  h.Description(`Change default Resource Group`),
 	Run: func(cmd *c.Command, args []string) {
 		// MaybeDo: Use this default resource group in all aks functions that require a resource group.
-		resourceGroup := h.StringFlag(cmd, "resourceGroup")
+		resourceGroup := h.StringFlag("resourceGroup")
 
 		if resourceGroup != "" {
 			h.WriteInfo(h.Format("Setting global state to use default resource group '%s'", resourceGroup))
@@ -21,7 +21,7 @@ var resourceGroupCmd = &c.Command{
 			h.WriteInfo("Setting global state to not use a default resource group")
 		}
 
-		h.SetDefaultResourceGroup(resourceGroup)
+		h.SetGlobalDefaultResourceGroup(resourceGroup)
 	},
 }
 

@@ -11,11 +11,11 @@ var listCmd = &c.Command{
 	Short: "List Azure DevOps Service-Connections",
 	Long:  h.Description(`List Azure DevOps Service-Connections`),
 	Run: func(cmd *c.Command, args []string) {
-		query := h.StringFlag(cmd, "query")
-		
+		query := h.StringFlag("query")
+
 		h.WriteInfo("List Service Connections")
-		
-		h.AzDevOpsCommandF("service-endpoint list", h.AzCommandFlags{ Query: query })
+
+		h.AzDevOpsCommandF("service-endpoint list", h.AzFlags{Query: query})
 	},
 }
 

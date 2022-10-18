@@ -13,10 +13,10 @@ var sizeCmd = &c.Command{
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
 		regex := args[0]
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		namespace, name := h.KubectlGetRegex("pod", regex, index, namespace)
 

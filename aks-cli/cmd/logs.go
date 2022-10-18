@@ -12,10 +12,10 @@ var logsCmd = &c.Command{
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
 		regex := args[0]
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		if index != -1 {
 			namespace, name := h.KubectlGetRegex("pod", regex, index, namespace)
@@ -26,7 +26,7 @@ var logsCmd = &c.Command{
 		} else {
 			h.WriteInfoF("Show pod logs with Stern", h.WriteFlags{Regex: regex, Namespace: namespace})
 
-			h.SternCommand(regex, namespace)
+			h.SternCommand(regex, h.SternFlags{Namespace: namespace})
 		}
 	},
 }

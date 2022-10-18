@@ -13,7 +13,7 @@ var replaceCmd = &c.Command{
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		namespace := h.StringFlag(cmd, "namespace")
+		namespace := h.StringFlag("namespace")
 
 		h.WriteInfo("Replacing (delete, then create) Service Connection")
 

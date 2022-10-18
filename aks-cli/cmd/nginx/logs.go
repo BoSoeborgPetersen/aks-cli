@@ -11,11 +11,11 @@ var logsCmd = &c.Command{
 	Short: "Get Nginx Deployment logs",
 	Long:  h.Description(`Get Nginx Deployment logs`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		namespace := "ingress"
 		h.CheckCurrentCluster()
-		deployment := h.NginxDeploymentNamePrefixFlag(cmd)
+		deployment := h.NginxDeploymentNamePrefixFlag()
 		// TODO: Could be part of NginxDeploymentNamePrefixFlagCheck func (but shoudl probably be called NginxDaemonSetNamePrefixFlagCheck)
 		h.KubectlCheckDaemonSet(deployment, namespace)
 
@@ -27,7 +27,7 @@ var logsCmd = &c.Command{
 		} else {
 			h.WriteInfo("Show Nginx logs with Stern")
 
-			h.SternCommand(deployment, namespace)
+			h.SternCommand(deployment, h.SternFlags{Namespace: namespace})
 		}
 	},
 }

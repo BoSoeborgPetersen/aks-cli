@@ -16,10 +16,10 @@ var describeCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		resourceType := args[0]
 		regex := args[1]
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		namespace, name := h.KubectlGetRegex(resourceType, regex, index, namespace)
 

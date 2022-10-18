@@ -11,20 +11,20 @@ var logsCmd = &c.Command{
 	Short: "Get Kured (KUbernetes REboot Daemon) logs",
 	Long:  h.Description(`Get Kured (KUbernetes REboot Daemon) logs`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
-		
+		index := h.IntFlag("index")
+
 		h.CheckCurrentCluster()
 		deployment := h.KuredDeploymentName()
-		
+
 		if index != -1 {
 			h.WriteInfo(h.Format("Show Kured (KUbernetes REboot Daemon) logs from pod (index: %d)", index))
-			
+
 			pod := h.KubectlGetPod(deployment, deployment, index)
 			h.KubectlCommand(h.Format("logs %s -n %s", pod, deployment))
 		} else {
 			h.WriteInfo("Show Kured (KUbernetes REboot Daemon) logs with Stern")
-		
-			h.SternCommand(deployment, deployment)
+
+			h.SternCommand(deployment, h.SternFlags{Namespace: deployment})
 		}
 	},
 }

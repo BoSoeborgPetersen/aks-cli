@@ -4,6 +4,7 @@ import (
 	"github.com/BoSoeborgPetersen/aks-cli/cmd"
 	h "github.com/BoSoeborgPetersen/aks-cli/helpers"
 	c "github.com/spf13/cobra"
+	v "github.com/spf13/viper"
 )
 
 var importCmd = &c.Command{
@@ -11,14 +12,15 @@ var importCmd = &c.Command{
 	Short: "Import Last-Applied-Config from file",
 	Long:  h.Description(`Import Last-Applied-Config from file`),
 	Run: func(cmd *c.Command, args []string) {
-		regex := h.StringFlag(cmd, "regex")
+		regex := h.StringFlag("regex")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		h.WriteInfoF("Loading Last-Applied-Config", h.WriteFlags{Regex: regex, Namespace: namespace})
 
-		files := h.ReadDir("/app/temp/last-applied/")
+		// TODO: Put in helper
+		files := h.ReadDir(v.GetString("KubectlLastAppliedPath"))
 
 		h.WriteVerbose(h.Format("Files: %s", h.JoinF(files, ",")))
 

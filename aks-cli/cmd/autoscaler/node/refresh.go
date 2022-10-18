@@ -11,13 +11,16 @@ var refreshCmd = &c.Command{
 	Short: "Refresh node autoscaler",
 	Long:  h.Description(`Refresh node autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		min := h.IntFlag(cmd, "min")
-		max := h.IntFlag(cmd, "max")
+		min := h.IntFlag("min")
+		max := h.IntFlag("max")
 
 		h.WriteInfo("Refresh (disable, then enable) node autoscaler")
 
 		disableCmd.Run(cmd, []string{})
-		enableCmd.Run(cmd, []string{h.Format("--min %d --max %d", min, max)})
+		// TODO: Debug
+		// enableCmd.Run(cmd, []string{h.Format("--min %d --max %d", min, max)})
+		enableCmd.Run(cmd, []string{h.Format("--min %d", min), h.Format("--max %d", max)})
+		// enableCmd.Run(cmd, []string{"--min", min, "--max", max})
 	},
 }
 

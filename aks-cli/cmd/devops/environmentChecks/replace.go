@@ -12,10 +12,10 @@ var replaceCmd = &c.Command{
 	Long:  h.Description(`Replace Azure DevOps environment Check`),
 	Args:  h.RequiredArg("Environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := h.StringFlag(cmd, "name")
-		
+		name := h.StringFlag("name")
+
 		h.WriteInfo("Replacing Environment Check")
-		
+
 		removeCmd.Run(cmd, []string{name})
 		AddCmd.Run(cmd, []string{name})
 	},

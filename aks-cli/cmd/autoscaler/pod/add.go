@@ -11,18 +11,24 @@ var addCmd = &c.Command{
 	Short: "Add pod autoscaler",
 	Long:  h.Description(`Add pod autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		min := h.IntFlagRange(cmd, "min", 1, 1000)
-		max := h.IntFlagRange(cmd, "max", 1, 1000)
-		limit := h.IntFlagRange(cmd, "limit", 40, 80)
+		// TODO: Deployment is not optional, either show menu (maybe), or change to required arg
+		min := h.IntFlagRange("min", 1, 1000)
+		max := h.IntFlagRange("max", 1, 1000)
+		limit := h.IntFlagRange("limit", 40, 80)
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagCheck(cmd)
-		deployment := h.DeploymentFlag(cmd, namespace)
+		namespace := h.NamespaceFlagCheck()
+		deployment := h.DeploymentFlagCheck(namespace)
 
 		h.WriteInfoF(h.Format("Add pod autoscaler (min: %d, max: %d, cpu limit: %d) to deployment '%s'", min, max, limit, deployment), h.WriteFlags{Namespace: namespace})
 
-		h.KubectlCommandF(h.Format("autoscale deploy %s --min=%d --max=%d --cpu-percent=%d", deployment, min, max, limit), h.KubectlFlags{Namespace: namespace})
+		// TODO: Test
+		AddFunc(deployment, min, max, limit, namespace)
 	},
+}
+
+func AddFunc(deployment string, min int, max int, limit int, namespace string) {
+	h.Write(h.KubectlCommandF(h.Format("autoscale deploy %s --min=%d --max=%d --cpu-percent=%d", deployment, min, max, limit), h.KubectlFlags{Namespace: namespace}))
 }
 
 func init() {

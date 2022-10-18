@@ -11,12 +11,21 @@ var replaceCmd = &c.Command{
 	Short: "Replace pod autoscaler",
 	Long:  h.Description(`Replace pod autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		deployment := h.StringFlag(cmd, "deployment")
+		// TODO: Deployment is not optional, either show menu (maybe), or change to required arg
+		min := h.IntFlagRange("min", 1, 1000)
+		max := h.IntFlagRange("max", 1, 1000)
+		limit := h.IntFlagRange("limit", 40, 80)
 
-		h.WriteInfo(h.Format("Replace pod autoscaler for deployment '%s'", deployment))
+		h.CheckCurrentCluster()
+		namespace := h.NamespaceFlagCheck()
+		deployment := h.DeploymentFlagCheck(namespace)
 
-        removeCmd.Run(cmd, []string{})
-        addCmd.Run(cmd, []string{})
+		h.WriteInfoF(h.Format("Replace pod autoscaler for deployment '%s'", deployment), h.WriteFlags{Namespace: namespace})
+
+		RemoveFunc(deployment, namespace)
+		AddFunc(deployment, min, max, limit, namespace)
+		// removeCmd.Run(cmd, []string{})
+		// addCmd.Run(cmd, []string{})
 	},
 }
 

@@ -8,26 +8,26 @@ import (
 var upgradeCmd = &c.Command{
 	Use:   "upgrade",
 	Short: "Upgrade AKS cluster",
-	Long: h.Description(`Upgrade AKS cluster`),
+	Long:  h.Description(`Upgrade AKS cluster`),
 	Args:  c.NoArgs,
 	Run: func(cmd *c.Command, args []string) {
-		version := h.StringFlag(cmd, "version")
-		preview := h.BoolFlag(cmd, "preview")
+		version := h.StringFlag("version")
+		preview := h.BoolFlag("preview")
 
 		h.CheckCurrentCluster()
 
 		if version != "" {
-			currentVersion := h.AzAksCurrentQueryF("show", h.AzAksQueryFlags{Query: "kubernetesVersion", Output: "tsv"})
+			currentVersion := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "kubernetesVersion", Output: "tsv"})
 			h.AzCheckUpgradableVersion(version, preview)
 			h.WriteInfo(h.Format("Upgrading current cluster from '%s' to version '%s'", currentVersion, version))
 		} else {
-			previewString := h.ConditionalOperator(!preview, "?!isPreview")
-			version = h.AzAksCurrentQueryF("get-upgrades", h.AzAksQueryFlags{Query: h.Format("controlPlaneProfile.upgrades[%s].kubernetesVersion | sort(@) | [-1]", previewString), Output: "tsv"})
+			previewString := h.If(!preview, "?!isPreview")
+			version = h.AzAksCurrentQueryP("get-upgrades", h.AzAksFlags{Query: h.Format("controlPlaneProfile.upgrades[%s].kubernetesVersion | sort(@) | [-1]", previewString), Output: "tsv"})
 
 			if version != "" {
-				currentVersion := h.AzAksCurrentQueryF("show", h.AzAksQueryFlags{Query: "kubernetesVersion", Output: "tsv"})
+				currentVersion := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "kubernetesVersion", Output: "tsv"})
 
-				previewString = h.ConditionalOperator(preview, "(allow previews)")
+				previewString = h.If(preview, "(allow previews)")
 				h.WriteInfo(h.Format("Upgrading current cluster from '%s' to version '%s', which is the newest upgradable version %s", currentVersion, version, previewString))
 			} else {
 				h.WriteInfoF("Cluster has the newest available version", h.WriteFlags{Exit: true})
@@ -35,7 +35,7 @@ var upgradeCmd = &c.Command{
 		}
 
 		if h.AreYouSure() {
-			h.AzAksCurrentCommandF("upgrade -y", h.AzAksCommandFlags{Version: version})
+			h.AzAksCurrentCommandP("upgrade -y", h.AzAksFlags{Version: version})
 		}
 	},
 }

@@ -11,11 +11,11 @@ var printCmd = &c.Command{
 	Short: "Prints the contents of the nginx.conf file inside the Nginx pod",
 	Long:  h.Description(`Prints the contents of the nginx.conf file inside the Nginx pod`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		namespace := "ingress"
 		h.CheckCurrentCluster()
-		deployment := h.NginxDeploymentNamePrefixFlag(cmd)
+		deployment := h.NginxDeploymentNamePrefixFlag()
 		h.KubectlCheckDaemonSet(deployment, namespace)
 
 		h.WriteInfo("Print Nginx config file from inside the container")

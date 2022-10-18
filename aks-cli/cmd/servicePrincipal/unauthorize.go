@@ -19,15 +19,15 @@ var unauthorizeCmd = &c.Command{
 		resourceGroup := h.CurrentClusterResourceGroup()
 		subscriptionId := h.CurrentSubscription()
 
-		registry := h.AzQueryF("acr list", h.AzQueryFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
+		registry := h.AzQueryP("acr list", h.AzFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckContainerRegistry(registry, globalSubscription)
-		globalSubscriptionId := h.AzQueryF("account list", h.AzQueryFlags{Query: h.Format("[?name=='%s'].id", globalSubscription), Output: "tsv"})
-		globalResourceGroup := h.AzQueryF("acr list", h.AzQueryFlags{Query: h.Format("[?name=='%s'].resourceGroup", registry), Output: "tsv", Subscription: globalSubscription})
+		globalSubscriptionId := h.AzQueryP("account list", h.AzFlags{Query: h.Format("[?name=='%s'].id", globalSubscription), Output: "tsv"})
+		globalResourceGroup := h.AzQueryP("acr list", h.AzFlags{Query: h.Format("[?name=='%s'].resourceGroup", registry), Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckResourceGroup(globalResourceGroup, globalSubscription)
 
 		h.WriteInfo("Unauthorize AKS cluster Service Principal from accessing global resources (cluster Resource Group & Azure Container Registry)")
 
-		id := h.AzAksCurrentQueryF("show", h.AzAksQueryFlags{Query: "servicePrincipalProfile", Output: "tsv"})
+		id := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "servicePrincipalProfile", Output: "tsv"})
 
 		h.AzCommand(h.Format("role assignment delete --assignee %s --role contributor --scope /subscriptions/%s/resourceGroups/%s", id, subscriptionId, resourceGroup))
 		h.AzCommand(h.Format("role assignment delete --assignee %s --role contributor --scope /subscriptions/%s/resourceGroups/%s", id, globalSubscriptionId, globalResourceGroup))

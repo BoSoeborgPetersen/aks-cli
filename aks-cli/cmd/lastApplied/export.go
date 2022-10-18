@@ -11,10 +11,10 @@ var exportCmd = &c.Command{
 	Short: "Export Last-Applied-Config to file",
 	Long:  h.Description(`Export Last-Applied-Config to file`),
 	Run: func(cmd *c.Command, args []string) {
-		regex := h.StringFlag(cmd, "regex")
+		regex := h.StringFlag("regex")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		h.WriteInfoF("Saving Last-Applied-Config", h.WriteFlags{Regex: regex, Namespace: namespace})
 

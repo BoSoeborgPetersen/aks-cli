@@ -13,7 +13,7 @@ var checkCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		namespace := "ingress"
 		h.CheckCurrentCluster()
-		deployment := h.NginxDeploymentNamePrefixFlag(cmd)
+		deployment := h.NginxDeploymentNamePrefixFlag()
 
 		h.WriteInfo("Checking Nginx")
 

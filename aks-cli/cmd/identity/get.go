@@ -14,10 +14,10 @@ var getCmd = &c.Command{
 		h.CheckCurrentCluster()
 
 		h.WriteInfo("Get current AKS cluster managed identity (system assigned)")
-		h.AzAksCurrentCommandF("show", h.AzAksCommandFlags{ Query: "identity.principalId", Output: "tsv" })
+		h.AzAksCurrentCommandP("show", h.AzAksFlags{Query: "identity.principalId", Output: "tsv"})
 
 		h.WriteInfo("Get current AKS cluster managed identity (user assigned)")
-		h.AzAksCurrentCommandF("show", h.AzAksCommandFlags{ Query: "identityProfile.kubeletidentity.clientId", Output: "tsv" })
+		h.AzAksCurrentCommandP("show", h.AzAksFlags{Query: "identityProfile.kubeletidentity.clientId", Output: "tsv"})
 	},
 }
 

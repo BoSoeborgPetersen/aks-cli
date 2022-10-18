@@ -17,21 +17,21 @@ var checkCmd = &c.Command{
 		resourceGroup := h.CurrentClusterResourceGroup()
 		subscriptionId := h.CurrentSubscription()
 
-		registry := h.AzQueryF("acr list", h.AzQueryFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
+		registry := h.AzQueryP("acr list", h.AzFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckContainerRegistry(registry, globalSubscription)
-		globalSubscriptionId := h.AzQueryF("account list", h.AzQueryFlags{Query: h.Format("[?name=='%s'].id", globalSubscription), Output: "tsv"})
-		globalResourceGroup := h.AzQueryF("acr list", h.AzQueryFlags{Query: h.Format("[?name=='%s'].resourceGroup", registry), Output: "tsv", Subscription: globalSubscription})
+		globalSubscriptionId := h.AzQueryP("account list", h.AzFlags{Query: h.Format("[?name=='%s'].id", globalSubscription), Output: "tsv"})
+		globalResourceGroup := h.AzQueryP("acr list", h.AzFlags{Query: h.Format("[?name=='%s'].resourceGroup", registry), Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckResourceGroup(globalResourceGroup, globalSubscription)
 
 		h.WriteInfo("Checking Managed Identity")
 
 		h.WriteInfo("Checking current AKS cluster managed identity (system assigned)")
-		systemId := h.AzAksCurrentQueryF("show", h.AzAksQueryFlags{Query: "identity.principalId", Output: "tsv"})
+		systemId := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "identity.principalId", Output: "tsv"})
 		h.AzCheckRoleAssignment(systemId, subscriptionId, resourceGroup)
 		h.WriteInfo("Current AKS cluster managed identity (system assigned) exists")
 
 		h.WriteInfo("Checking current AKS cluster managed identity (user assigned)")
-		userId := h.AzAksCurrentQueryF("show", h.AzAksQueryFlags{Query: "identityProfile.kubeletidentity.clientId", Output: "tsv"})
+		userId := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "identityProfile.kubeletidentity.clientId", Output: "tsv"})
 		h.AzCheckRoleAssignment(userId, globalSubscriptionId, globalResourceGroup)
 		h.WriteInfo("Current AKS cluster managed identity (user assigned) exists")
 

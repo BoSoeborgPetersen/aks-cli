@@ -13,10 +13,10 @@ var showCmd = &c.Command{
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		
+
 		h.WriteInfo("Showing Service Connection")
-		
-		h.AzDevOpsCommandF("service-endpoint list", h.AzCommandFlags{ Query: h.Format("[?name=='%s']", name) })
+
+		h.AzDevOpsCommandF("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s']", name)})
 	},
 }
 

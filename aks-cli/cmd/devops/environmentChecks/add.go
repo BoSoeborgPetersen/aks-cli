@@ -13,18 +13,18 @@ var AddCmd = &c.Command{
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		name := args[0]
-		approver := h.StringFlag(cmd, "approver")
+		approver := h.StringFlag("approver")
 
 		h.WriteInfo("Creating Environment")
 
 		id := h.AzDevOpsEnvironmentId(name)
-		approverId := h.AzDevOpsCommandF("security group list", h.AzCommandFlags{Query: h.Format("graphGroups[?principalName=='%s'].originId", approver), Output: "tsv"})
+		approverId := h.AzDevOpsCommandF("security group list", h.AzFlags{Query: h.Format("graphGroups[?principalName=='%s'].originId", approver), Output: "tsv"})
 
 		arguments := map[string]interface{}{
-			"type": map[string]interface{} {
+			"type": map[string]interface{}{
 				"name": "Approval",
 			},
-			"settings": map[string]interface{} {
+			"settings": map[string]interface{}{
 				"approvers": []interface{}{
 					map[string]interface{}{
 						"id": approverId,
@@ -32,7 +32,7 @@ var AddCmd = &c.Command{
 				},
 				"requesterCannotBeApprover": false,
 			},
-			"resource": map[string]interface{} {
+			"resource": map[string]interface{}{
 				"type": "environment",
 				"id":   id,
 				"name": name,

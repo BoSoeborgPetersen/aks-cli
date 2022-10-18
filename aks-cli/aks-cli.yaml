@@ -1,0 +1,42 @@
+globalcurrentcluster:
+    fqdn: eu-3shape-backstage-3113b254.hcp.westeurope.azmk8s.io
+    location: westeurope
+    name: eu-3shape-backstage
+    noderesourcegroup: MC_eu-3shape-backstage
+    resourcegroup: eu-3shape-backstage
+
+AzureLocationDescription: Azure Location (e.g. 'northeurope')
+AzureVmMinNodeCountDescription: Minimum node (VM) count
+AzureVmMaxNodeCountDescription: Maximum node (VM) count
+KubernetesDeploymentDescription: Kubernetes deployment
+KubernetesMinPodCountDescription: Minimum pod count
+KubernetesMaxPodCountDescription: Maximum pod count
+KubernetesCpuScalingLimitDescription: Kubernetes CPU scaling limit
+kubernetesnamespacedescription: Kubernetes namespace
+KubernetesAllNamespacesDescription: All Kubernetes namespaces
+AksVersionDescription: AKS cluster Version (e.g. '1.16.9')
+
+ClusterNameConvention: '%s-aks'
+InsightsNameConvention: '%s-aks-insights'
+RegistryNameConvention: gl-%s-acr
+KeyVaultNameConvention: 'gl-%s-aks-vault'
+GlobalResourceGroupNameConvention: 'gl-%s'
+PublicIpNameConvention: '%s%s-ip'
+ServicePrincipalNameConvention: 'http://%s-principal'
+ServicePrincipalIdNameConvention: '%s-principal-id'
+ServicePrincipalPasswordNameConvention: '%s-principal-password'
+CertManagerDeploymentNameConvention: cert-manager
+NginxDeploymentNameConvention: '%snginx-ingress'
+KedaDeploymentNameConvention: keda
+KuredDeploymentNameConvention: kured
+VpaDeploymentName: vpa
+DevOpsOrganizationName: NetsMS
+DevOpsProjectName: PaymentServices
+DevOpsServiceAccountName: '%s-devops-sa'
+DevOpsRoleBindingName: '%s-devops-rb'
+
+KubectlLastAppliedPath: '/app/temp/last-applied'
+KubectlHelmSecretPath: '/app/temp/helm-secret'
+AksCliDevelopmentPath: '/app/new-dev-aks-cli'
+
+AzureDevOpsApiVersion: 7.1-preview

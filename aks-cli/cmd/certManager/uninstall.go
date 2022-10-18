@@ -11,21 +11,22 @@ var uninstallCmd = &c.Command{
 	Short: "Uninstall & possibly remove all Kubernetes Certificate Manager resources (Issuer, Cert, Secret, Ingress, Order, Challenge)",
 	Long:  h.Description(`Uninstall & possibly remove all Kubernetes Certificate Manager resources (Issuer, Cert, Secret, Ingress, Order, Challenge)`),
 	Run: func(cmd *c.Command, args []string) {
-		purge := h.BoolFlag(cmd, "purge")
-		yes := h.BoolFlag(cmd, "yes")
+		purge := h.BoolFlag("purge")
+		yes := h.BoolFlag("yes")
 
 		h.CheckCurrentCluster()
 		deployment := h.CertManagerDeploymentName()
 		latestVersion := h.HelmLatestChartVersion("jetstack/cert-manager")
-		version := h.VersionFlag(cmd, latestVersion)
+		version := h.VersionFlag(latestVersion)
 
 		h.WriteInfo("Uninstalling Cert-Manager")
 		if purge {
 			h.WriteInfo("Purging Cert-Manager namespace, and Custom Resource Definitions, which will remove resources (certificaterequests, certificates, challenges, clusterissuers, healthstates, issuers, orders)")
 		}
 
+		// Make the "yes" flag part of the AreYouSure func as an overwrite
 		if yes || h.AreYouSure() {
-			h.HelmCommandF(h.Format("uninstall %s", deployment), "cert-manager")
+			h.HelmCommandP("uninstall", h.HelmFlags{Name: deployment, Namespace: "cert-manager"})
 
 			if purge {
 				h.KubectlCommand(h.Format("delete ns %s", deployment))

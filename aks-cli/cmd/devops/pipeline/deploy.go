@@ -14,7 +14,7 @@ var DeployCmd = &c.Command{
 		// TODO: Rewrite
 		h.AzCommand("az devops configure --defaults organization=https://dev.azure.com/3Shape/")
 		// h.AzCommand("az pipelines run --name 'MasterData - PreRelease' --project Communicate")
-		id := h.AzCommand("az pipelines show --name 'MasterData - PreRelease' --query id --project Communicate")
+		id := h.AzCommandP("az pipelines show --name 'MasterData - PreRelease' --project Communicate", h.AzFlags{ Query: "id"})
 		h.AzCommand("az pipelines runs list --project Communicate")
 		h.AzCommand(h.Format("az pipelines runs show --id %s --project Communicate", id))
 		

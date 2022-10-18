@@ -8,7 +8,7 @@ import (
 
 var NodeCmd = &c.Command{
 	Use:   "node",
-	Short: "Setup automatic Azure VM Scale Set scaling (Node scaling)",
+	Short: "Setup Autoscaler",
 	Long:  h.Description(`Setup automatic Azure VM Scale Set scaling (Node scaling)`),
 }
 

@@ -11,13 +11,13 @@ var showCmd = &c.Command{
 	Long:  h.Description(`Show AKS information`),
 	Args:  c.NoArgs,
 	Run: func(cmd *c.Command, args []string) {
-		query := h.StringFlag(cmd, "query")
+		query := h.StringFlag("query")
 
 		h.CheckCurrentCluster()
 
 		h.WriteInfo("Show AKS cluster information")
 
-		h.PrintAzAksCurrentCommandF("show", h.AzAksCommandFlags{Query: query})
+		h.Write(h.AzAksCurrentCommandP("show", h.AzAksFlags{Query: query}))
 	},
 }
 

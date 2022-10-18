@@ -11,7 +11,7 @@ var debugCmd = &c.Command{
 	Short: "Change default Debug state",
 	Long:  h.Description(`Change default Debug state`),
 	Run: func(cmd *c.Command, args []string) {
-		disable := h.BoolFlag(cmd, "disable")
+		disable := h.BoolFlag("disable")
 
 		if !disable {
 			h.WriteInfo("Setting global state to debug output")
@@ -19,7 +19,7 @@ var debugCmd = &c.Command{
 			h.WriteInfo("Setting global state to non-debug output")
 		}
 
-		h.SetDebuggingState(disable)
+		h.SetGlobalDebuggingState(disable)
 	},
 }
 

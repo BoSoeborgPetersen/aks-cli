@@ -11,20 +11,20 @@ var installCmd = &c.Command{
 	Short: "Install Vertical Pod Autoscaler (Helm chart)",
 	Long:  h.Description(`Install Vertical Pod Autoscaler (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
-		skipNamespace := h.BoolFlag(cmd, "skip-namespace")
-		upgrade := h.BoolFlag(cmd, "upgrade")
+		skipNamespace := h.BoolFlag("skip-namespace")
+		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
 		deployment := h.VpaDeploymentName()
 
-		operationName := h.ConditionalOperatorOr(upgrade, "Upgrading", "Installing")
+		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Vertical Pod Autoscaler", operationName))
 
 		if !skipNamespace {
 			h.KubectlCommand(h.Format("create ns %s", deployment))
 		}
-		operation := h.ConditionalOperatorOr(upgrade, "upgrade", "install")
-		h.HelmCommandF(h.Format("%s %s cowboysysop/vertical-pod-autoscaler --set nodeSelector.\"kubernetes\\.io/os\"=linux", operation, deployment), deployment)
+		operation := h.IfElse(upgrade, "upgrade", "install")
+		h.HelmCommandP(operation, h.HelmFlags{Name: deployment, Repo: "cowboysysop/vertical-pod-autoscaler", Namespace: deployment, SetArgs: []string{`nodeSelector."kubernetes\.io/os"=linux`}})
 	},
 }
 

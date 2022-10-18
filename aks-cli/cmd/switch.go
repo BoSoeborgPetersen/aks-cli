@@ -8,13 +8,13 @@ import (
 var switchCmd = &c.Command{
 	Use:   "switch",
 	Short: "Switch Azure subscription / AKS cluster",
-	Long: h.Description(`Switch Azure subscription / AKS cluster`),
+	Long:  h.Description(`Switch Azure subscription / AKS cluster`),
 	Args:  c.NoArgs,
 	Run: func(cmd *c.Command, args []string) {
 		// TODO: Add message reading something like "ACCESS DENIED !!!", when unauthorized.
-		cluster := h.BoolFlag(cmd, "cluster")
-		resourceGroup := h.StringFlag(cmd, "resourceGroup")
-		clean := h.BoolFlag(cmd, "clean")
+		cluster := h.BoolFlag("cluster")
+		resourceGroup := h.StringFlag("resourceGroup")
+		clean := h.BoolFlag("clean")
 
 		if clean {
 			h.WriteInfo("Clearing AKS cluster credentials")

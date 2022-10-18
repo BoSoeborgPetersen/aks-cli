@@ -12,10 +12,10 @@ var getCmd = &c.Command{
 	Args:  h.ValidKubectlResourceType("Kubernetess resource <type>", true),
 	Run: func(cmd *c.Command, args []string) {
 		resourceType := args[0]
-		regex := h.StringFlag(cmd, "regex")
+		regex := h.StringFlag("regex")
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagAllCheck(cmd)
+		namespace := h.NamespaceFlagAllCheck()
 
 		h.WriteInfoF(h.Format("Get '%s'", resourceType), h.WriteFlags{Regex: regex, Namespace: namespace})
 

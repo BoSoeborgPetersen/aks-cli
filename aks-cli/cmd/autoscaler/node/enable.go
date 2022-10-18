@@ -11,14 +11,14 @@ var enableCmd = &c.Command{
 	Short: "Disable node autoscaler",
 	Long:  h.Description(`Disable node autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		min := h.IntFlagRange(cmd, "min", 2, 100)
-		max := h.IntFlagRange(cmd, "max", 2, 100)
+		min := h.IntFlagRange("min", 2, 100)
+		max := h.IntFlagRange("max", 2, 100)
 
 		h.CheckCurrentCluster()
 
 		h.WriteInfo("Enable node autoscaler")
 
-		h.PrintAzAksCurrentCommand(h.Format("update --enable-cluster-autoscaler --min-count %d --max-count %d", min, max))
+		h.Write(h.AzAksCurrentCommand(h.Format("update --enable-cluster-autoscaler --min-count %d --max-count %d", min, max)))
 	},
 }
 

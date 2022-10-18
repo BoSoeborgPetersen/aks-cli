@@ -28,14 +28,14 @@ var redirectAllCmd = &c.Command{
 		subscriptionId := h.CurrentSubscription()
 		sourceResourceGroup := sourceCluster.ResourceGroup
 		sourceNodeResourceGroup := sourceCluster.NodeResourceGroup
-		sourceIpAddresses := h.Fields(h.AzQueryF("network public-ip list", h.AzQueryFlags{Query: h.Format("[?resourceGroup=='%s' && starts_with(ipConfiguration.resourceGroup,'%s')].id", sourceResourceGroup, sourceNodeResourceGroup), Output: "tsv"}))
+		sourceIpAddresses := h.Fields(h.AzQueryP("network public-ip list", h.AzFlags{Query: h.Format("[?resourceGroup=='%s' && starts_with(ipConfiguration.resourceGroup,'%s')].id", sourceResourceGroup, sourceNodeResourceGroup), Output: "tsv"}))
 		// sourcePublicIp := h.PublicIpName(sourceCluster.name)
 		// sourcePublicIpId := h.Format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/publicIPAddresses/%s", subscriptionId, sourceResourceGroup, sourcePublicIp)
 
 		if h.AreYouSure() {
 			for _, sourceIpAddress := range sourceIpAddresses {
 				trafficManagers := make([]TrafficManager, 0)
-				h.Deserialize(h.AzQueryF("network traffic-manager profile list", h.AzQueryFlags{Query: h.Format("[?endpoints[].targetResourceId==%s]", sourceIpAddress)}), &trafficManagers)
+				h.Deserialize(h.AzQueryP("network traffic-manager profile list", h.AzFlags{Query: h.Format("[?endpoints[].targetResourceId==%s]", sourceIpAddress)}), &trafficManagers)
 
 				// Step 4: Update Traffic Managers to point to the Public IP resource of the target cluster.
 				targetResourceGroup := targetCluster.ResourceGroup

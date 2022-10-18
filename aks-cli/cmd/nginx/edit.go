@@ -12,7 +12,7 @@ var editCmd = &c.Command{
 	Long:  h.Description(`Opens the Nginx configmap for editing in notepad`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		deployment := h.NginxDeploymentNamePrefixFlag(cmd)
+		deployment := h.NginxDeploymentNamePrefixFlag()
 		configMap := h.Format("%s-controller", deployment)
 
 		h.WriteInfo("Edit Nginx configmap")

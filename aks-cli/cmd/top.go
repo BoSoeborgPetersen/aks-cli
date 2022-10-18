@@ -24,7 +24,7 @@ var topCmd = &c.Command{
 
 		h.CheckCurrentCluster()
 		match := h.MatchString("po|pod|pods", resourceType)
-		namespace := h.NamespaceFlagAllCheckIf(cmd, match)
+		namespace := h.NamespaceFlagAllCheckIf(match)
 
 		h.WriteInfoF(h.Format("Show resource utilization of '%s'", resourceType), h.WriteFlags{Regex: regex, Namespace: namespace})
 

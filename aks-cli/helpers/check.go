@@ -8,17 +8,15 @@ import (
 // LaterDo: Text could be reused
 // Check(check, Format("Subscription '%s' does not exist", name)) // The text "<var_name> '"+name+"' does not exist" is used often
 func Check[T string | int | bool](check T, errorMessage string) {
-	if !testCondition(check) {
-		// TODO: Print Cobra usage string
-		// WriteUsage()
+	if !IsSet(check) {
+		GlobalCurrentCmd.Help()
 		WriteErrorF(errorMessage, WriteFlags{Exit: true})
 	}
 }
 
 func CheckNot[T string | int | bool](check T, errorMessage string) {
-	if testCondition(check) {
-		// TODO: Print Cobra usage string
-		// WriteUsage()
+	if IsSet(check) {
+		GlobalCurrentCmd.Help()
 		WriteErrorF(errorMessage, WriteFlags{Exit: true})
 	}
 }

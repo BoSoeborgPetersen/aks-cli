@@ -24,7 +24,7 @@ var installCmd = &c.Command{
 
 		h.WriteInfo("Installing Prometheus")
 
-		h.HelmCommandF("upgrade --install prometheus prometheus/prometheus", "monitoring")
+		h.HelmCommandP("upgrade --install", h.HelmFlags{ Name: "prometheus", Repo: "prometheus/prometheus", Namespace: "monitoring" })
 		// Add Prometheus traffic manager with an endpoint for the cluster primary ip
 		h.AzCommand(h.Format("network traffic-manager profile create -n %s-prometheus -g %s --routing-method Performance --unique-dns-name %s-prometheus", resourceGroup, resourceGroup, resourceGroup))
 		h.AzCommand(h.Format("network traffic-manager endpoint create -n AKS -g %s --profile-name %s-prometheus --type azureEndpoints --target-resource-id %s", resourceGroup, resourceGroup, publicIpId))
@@ -42,7 +42,7 @@ var installCmd = &c.Command{
 		h.KubectlCommand(h.Format("apply -n monitoring -f '%s/data/monitoring/configmaps/K8s Cluster Summary.yaml'", path))
 		h.KubectlCommand(h.Format("apply -n monitoring -f '%s/data/monitoring/configmaps/NGINX Ingress Controller.yaml'", path))
 
-		h.HelmCommandF("upgrade --install grafana grafana/grafana --set sidecar.datasources.enabled=true --set sidecar.dashboards.enabled=true --set persistence.enabled=true", "monitoring")
+		h.HelmCommandP("upgrade --install", h.HelmFlags{ Name: "grafana", Repo: "grafana/grafana", Namespace: "monitoring", SetArgs: []string{ "sidecar.datasources.enabled=true", "sidecar.dashboards.enabled=true", "persistence.enabled=true" } })
 
 		// Add Grafana traffic manager with an endpoint for the cluster primary ip
 		h.AzCommand(h.Format("network traffic-manager profile create -n %s-grafana -g %s --routing-method Performance --unique-dns-name %s-grafana", resourceGroup, resourceGroup, resourceGroup))

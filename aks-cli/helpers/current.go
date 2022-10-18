@@ -7,19 +7,20 @@ import (
 )
 
 func SubscriptionMenu() Subscription {
-	if GlobalSubscriptions == nil {
-		jsonString := AzQuery("account list --all --query \"sort_by([], &name)[*].{Id:id, Name:name, TenantId:tenantId}\"")
+	// subscriptions := make([]Subscription, 0)
+	subscriptions := GetGlobalSubscriptions()
+	if subscriptions == nil || len(subscriptions) == 0 {
+		jsonString := AzQueryP("account list --all", AzFlags{Query: "sort_by([], &name)[*].{Id:id, Name:name, TenantId:tenantId}"})
 
-		subscriptions := make([]Subscription, 0)
 		Deserialize(jsonString, &subscriptions)
-		GlobalSubscriptions = subscriptions
+		SetGlobalSubscriptions(subscriptions)
 	}
 
-	if len(GlobalSubscriptions) == 1 {
-		return GlobalSubscriptions[0]
+	if len(subscriptions) == 1 {
+		return subscriptions[0]
 	}
 
-	Check(len(GlobalSubscriptions) > 0, "No Azure subscriptions")
+	Check(len(subscriptions) > 0, "No Azure subscriptions")
 
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Name }}?",
@@ -30,13 +31,13 @@ func SubscriptionMenu() Subscription {
 
 	prompt := promptui.Select{
 		Label:     "Select subscription",
-		Items:     GlobalSubscriptions,
+		Items:     subscriptions,
 		Templates: templates,
 	}
 
 	i, _, _ := prompt.Run()
 
-	return GlobalSubscriptions[i]
+	return subscriptions[i]
 }
 
 func SwitchCurrentSubscription(clear bool) {
@@ -46,49 +47,54 @@ func SwitchCurrentSubscription(clear bool) {
 
 	WriteInfo("Choose Azure Subscription: ")
 
-	GlobalCurrentSubscription = SubscriptionMenu()
+	var currentSubscription = SubscriptionMenu()
+	SetGlobalCurrentSubscription(currentSubscription)
 
-	AzCommand(Format("account set -s %s", GlobalCurrentSubscription.Id))
+	AzCommand(Format("account set -s %s", currentSubscription.Id))
 }
 
 // NOWDO: Call before any command except switch
 func CheckCurrentSubscription() {
-	check := GlobalCurrentSubscription != (Subscription{}) //|| params[0] == "switch"
+	check := GetGlobalCurrentSubscription() != (Subscription{}) //|| params[0] == "switch"
 	Check(check, "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription")
 }
 
 func CurrentSubscription() string {
-	return GlobalCurrentSubscription.Id
+	return GetGlobalCurrentSubscription().Id
 }
 
 func CurrentSubscriptionName() string {
-	return GlobalCurrentSubscription.Name
+	return GetGlobalCurrentSubscription().Name
 }
 
 func CurrentSubscriptionTenantId() string {
-	return GlobalCurrentSubscription.TenantId
+	return GetGlobalCurrentSubscription().TenantId
 }
 
 func ClusterMenu(refresh bool) Cluster {
-	Check(GlobalCurrentSubscription != Subscription{}, "No Azure subscriptions")
+	currentSubscription := GetGlobalCurrentSubscription()
+	Check(currentSubscription != Subscription{}, "No Azure subscriptions")
 
-	test := GlobalSubscriptionUsedForClusters != Subscription{}
-	if refresh || test || GlobalClusters != nil || (GlobalCurrentSubscription != GlobalSubscriptionUsedForClusters) {
-		GlobalSubscriptionUsedForClusters = GlobalCurrentSubscription
-		jsonString := AzQuery("aks list --query \"sort_by([], &name)[*].{ResourceGroup:resourceGroup, NodeResourceGroup:nodeResourceGroup, Name:name, Location:location, Fqdn:fqdn}\"")
+	// clusters := make([]Cluster, 0)
+	clusters := GetGlobalClusters()
+	test1 := clusters == nil || len(clusters) == 0
+	test2 := GetGlobalSubscriptionUsedForClusters() == Subscription{}
+	test3 := GetGlobalCurrentSubscription() != GetGlobalSubscriptionUsedForClusters()
+	if refresh || test1 || test2 || test3 {
+		SetGlobalSubscriptionUsedForClusters(GetGlobalCurrentSubscription())
+		jsonString := AzQueryP("aks list", AzFlags{Query: "sort_by([], &name)[*].{ResourceGroup:resourceGroup, NodeResourceGroup:nodeResourceGroup, Name:name, Location:location, Fqdn:fqdn}"})
 
-		clusters := make([]Cluster, 0)
 		Deserialize(jsonString, &clusters)
 
-		GlobalClusters = clusters
+		SetGlobalClusters(clusters)
 	}
 
-	if len(GlobalClusters) == 1 {
-		fmt.Println(Format("Only 1 cluster: '%s', it was choosen", GlobalClusters[0].Name))
-		return GlobalClusters[0]
+	if len(clusters) == 1 {
+		fmt.Println(Format("Only 1 cluster: '%s', it was choosen", clusters[0].Name))
+		return clusters[0]
 	}
 
-	Check(len(GlobalClusters) > 0, "No AKS clusters in Azure subscription")
+	Check(len(clusters) > 0, "No AKS clusters in Azure subscription")
 
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Name }}?",
@@ -99,13 +105,13 @@ func ClusterMenu(refresh bool) Cluster {
 
 	prompt := promptui.Select{
 		Label:     "Select cluster",
-		Items:     GlobalClusters,
+		Items:     clusters,
 		Templates: templates,
 	}
 
 	i, _, _ := prompt.Run()
 
-	return GlobalClusters[i]
+	return clusters[i]
 }
 
 func SwitchCurrentCluster(clear bool, refresh bool) {
@@ -130,9 +136,9 @@ func SwitchCurrentCluster(clear bool, refresh bool) {
 
 func SwitchCurrentClusterTo(resourceGroup string) {
 	clusterName := ClusterName(resourceGroup)
-	GlobalSubscriptionUsedForClusters = GlobalCurrentSubscription
-	GlobalClusters = DeserializeT[[]Cluster](AzAksQuery("list"))
-	SetGlobalCurrentCluster(First(GlobalClusters, func(c Cluster) bool { return c.Name == clusterName }))
+	SetGlobalSubscriptionUsedForClusters(GetGlobalCurrentSubscription())
+	SetGlobalClusters(DeserializeT[[]Cluster](AzAksQuery("list")))
+	SetGlobalCurrentCluster(First(GetGlobalClusters(), func(c Cluster) bool { return c.Name == clusterName }))
 
 	AzAksCommand(Format("get-credentials -g %s -n %s -a", resourceGroup, clusterName))
 
@@ -144,7 +150,7 @@ func CheckCurrentCluster() {
 }
 
 func CheckCurrentClusterOrVariable(variable string, variableName string) {
-	check := testCondition(GetGlobalCurrentCluster() != (Cluster{})) || testCondition(variable)
+	check := IsSet(GetGlobalCurrentCluster() != (Cluster{})) || IsSet(variable)
 	Check(check, Format("The following argument is required: %s\nAlternatively run 'aks switch' to select a current AKS cluster, then the current cluster '%s' will be used", variableName, variableName))
 }
 
@@ -170,44 +176,44 @@ func SetCurrentCluster(cluster Cluster) {
 	SetGlobalCurrentCluster(cluster)
 }
 
-func DeploymentMenu(namespace string) string {
-	CheckCurrentSubscription()
-	CheckCurrentCluster()
+// func DeploymentMenu(namespace string) string {
+// 	CheckCurrentSubscription()
+// 	CheckCurrentCluster()
 
-	if GlobalSubscriptionUsedForDeployments == (Subscription{}) || GlobalClusterUsedForDeployments == (Cluster{}) || GlobalDeployments == nil || (GlobalCurrentSubscription != GlobalSubscriptionUsedForDeployments) || (GetGlobalCurrentCluster() != GlobalClusterUsedForDeployments) {
-	    GlobalSubscriptionUsedForDeployments = GlobalCurrentSubscription
-	    GlobalClusterUsedForDeployments = GetGlobalCurrentCluster()
-	    GlobalDeployments = Fields(KubectlQueryF("get deploy", KubectlFlags{ Namespace: namespace, JsonPath: "{.items[*].metadata.name}" }))
-	}
+// 	if GlobalSubscriptionUsedForDeployments == (Subscription{}) || GlobalClusterUsedForDeployments == (Cluster{}) || GlobalDeployments == nil || (GlobalCurrentSubscription != GlobalSubscriptionUsedForDeployments) || (GetGlobalCurrentCluster() != GlobalClusterUsedForDeployments) {
+// 		GlobalSubscriptionUsedForDeployments = GlobalCurrentSubscription
+// 		GlobalClusterUsedForDeployments = GetGlobalCurrentCluster()
+// 		GlobalDeployments = Fields(KubectlQueryF("get deploy", KubectlFlags{Namespace: namespace, JsonPath: "{.items[*].metadata.name}"}))
+// 	}
 
-	if len(GlobalDeployments) == 1 {
-	    return GlobalDeployments[0]
-	}
+// 	if len(GlobalDeployments) == 1 {
+// 		return GlobalDeployments[0]
+// 	}
 
-	Check(len(GlobalDeployments) > 0, "No Kubernetes deployments in AKS cluster")
+// 	Check(len(GlobalDeployments) > 0, "No Kubernetes deployments in AKS cluster")
 
-	templates := &promptui.SelectTemplates{
-		Label:    "{{ .Name }}?",
-		Active:   "\U0001F336 {{ .Name | cyan }}",
-		Inactive: "  {{ .Name | cyan }}",
-		Selected: "\U0001F336 {{ .Name | red | cyan }}",
-	}
+// 	templates := &promptui.SelectTemplates{
+// 		Label:    "{{ .Name }}?",
+// 		Active:   "\U0001F336 {{ .Name | cyan }}",
+// 		Inactive: "  {{ .Name | cyan }}",
+// 		Selected: "\U0001F336 {{ .Name | red | cyan }}",
+// 	}
 
-	prompt := promptui.Select{
-		Label:     "Select deployment",
-		Items:     GlobalDeployments,
-		Templates: templates,
-	}
+// 	prompt := promptui.Select{
+// 		Label:     "Select deployment",
+// 		Items:     GlobalDeployments,
+// 		Templates: templates,
+// 	}
 
-	i, _, _ := prompt.Run()
+// 	i, _, _ := prompt.Run()
 
-	return GlobalDeployments[i]
-}
+// 	return GlobalDeployments[i]
+// }
 
-func ChooseDeployment(deployment string, namespace string) string {
-	if deployment == "" {
-		WriteInfo("Choose AKS Deployment: ")
-		return DeploymentMenu(namespace)
-	}
-	return ""
-}
+// func ChooseDeployment(deployment string, namespace string) string {
+// 	if deployment == "" {
+// 		WriteInfo("Choose AKS Deployment: ")
+// 		return DeploymentMenu(namespace)
+// 	}
+// 	return ""
+// }

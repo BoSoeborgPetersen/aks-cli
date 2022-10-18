@@ -11,7 +11,7 @@ var verboseCmd = &c.Command{
 	Short: "Change default Verbose state",
 	Long:  h.Description(`Change default Verbose state`),
 	Run: func(cmd *c.Command, args []string) {
-		disable := h.BoolFlag(cmd, "disable")
+		disable := h.BoolFlag("disable")
 
 		if !disable {
 			h.WriteInfo("Setting global state to verbose output")
@@ -19,7 +19,7 @@ var verboseCmd = &c.Command{
 			h.WriteInfo("Setting global state to non-verbose output")
 		}
 
-		h.SetVerboseState(disable)
+		h.SetGlobalVerboseState(disable)
 	},
 }
 

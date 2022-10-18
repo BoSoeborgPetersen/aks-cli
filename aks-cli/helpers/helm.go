@@ -1,43 +1,74 @@
 package helpers
 
-func HelmNamespaceString(namespace string) string {
-	return ConditionalOperator(namespace, Format(" -n %s", namespace))
+const ( // WiP
+	HelmCommandInstall   = "Install"
+	HelmCommandUninstall = "Uninstall"
+	HelmCommandUpgrade   = "Upgrade"
+)
+
+type HelmFlags struct {
+	Name      string
+	Repo      string
+	Namespace string
+	Version   string
+	SetArgs   []string
+	File      string
+}
+
+func (f HelmFlags) RepoString() string {
+	return IfF(f.Repo, " %s")
+}
+
+func (f HelmFlags) NamespaceString() string {
+	return IfF(f.Namespace, " -n %s")
+}
+
+func (f HelmFlags) VersionString() string {
+	return IfF(f.Version, " --version v%s")
+}
+
+func (f HelmFlags) FileString() string {
+	return If(f.File, Format("%s%s", ExeLocation(), f.File))
+}
+
+func (f HelmFlags) SetArgsString() string {
+	var s string
+	for _, e := range f.SetArgs {
+		s += Format(" --set %s", e)
+	}
+	return s
 }
 
 func HelmCommand(command string) {
-	HelmCommandF(command, "")
+	HelmCommandP(command, HelmFlags{})
 }
 
-func HelmCommandF(command string, namespace string) {
-	namespaceString := HelmNamespaceString(namespace)
-
-	ExecuteCommand(Format("helm %s%s%s", command, namespaceString, DebugString()))
+func HelmCommandP(command string, f HelmFlags) {
+	ExecuteCommand(Format("helm %s %s%s%s%s%s%s%s", command, f.Name, f.RepoString(), f.NamespaceString(), f.VersionString(), f.SetArgsString(), f.FileString(), DebugString()))
 }
 
 func HelmQuery(command string) string {
-	return HelmQueryF(command, "")
+	return HelmQueryP(command, HelmFlags{})
 }
 
-func HelmQueryF(command string, namespace string) string {
-	namespaceString := HelmNamespaceString(namespace)
-
-	return ExecuteQuery(Format("helm %s%s%s", command, namespaceString, DebugString()))
+func HelmQueryP(command string, f HelmFlags) string {
+	return ExecuteQuery(Format("helm %s %s%s%s%s%s%s%s", command, f.Name, f.RepoString(), f.NamespaceString(), f.VersionString(), f.SetArgsString(), f.FileString(), DebugString()))
 }
 
 func HelmCheck(chart string, namespace string) {
-	namespaceString := HelmNamespaceString(namespace)
-
 	// NOWDO: Be quiet!!!
 	// check := ExecuteQuery("helm status "+chart+namespaceString+" 2>null")
-	check := ExecuteQuery(Format("helm status %s%s", chart, namespaceString))
+	check := HelmQueryP("status", HelmFlags{ Repo: chart, Namespace: namespace})
 
 	if check == "" {
 		WriteErrorF(Format("Chart '%s' does not exist", chart), WriteFlags{Namespace: namespace})
 	}
 }
 
+// TODO: Split query string into commands
 func HelmLatestChartVersion(chart string) string {
-	return HelmQuery("search repo "+chart+" -o json | jq -r ' .[] | select(.name==\""+chart+"\") | .version' | % TrimStart v")
+	return HelmQuery("search repo " + chart + " -o json | jq -r ' .[] | select(.name==\"" + chart + "\") | .version' | % TrimStart v")
+	// return Jq()
 }
 
 func HelmAddRepo(name string, url string) {

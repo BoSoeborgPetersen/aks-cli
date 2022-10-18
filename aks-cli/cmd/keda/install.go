@@ -11,20 +11,19 @@ var installCmd = &c.Command{
 	Short: "Install Keda (Kubernetes Event-driven Autoscaling) (Helm chart)",
 	Long:  h.Description(`Install Keda (Kubernetes Event-driven Autoscaling) (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
-		skipNamespace := h.BoolFlag(cmd, "skip-namespace")
-		upgrade := h.BoolFlag(cmd, "upgrade")
+		skipNamespace := h.BoolFlag("skip-namespace")
+		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
 		deployment := h.KedaDeploymentName()
 
-		operationName := h.ConditionalOperatorOr(upgrade, "Upgrading", "Installing")
+		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Keda (Kubernetes Event-driven Autoscaling)", operationName))
 
 		if !skipNamespace {
 			h.KubectlCommand(h.Format("create ns %s", deployment))
 		}
-		operation := h.ConditionalOperatorOr(upgrade, "upgrade", "install")
-		h.HelmCommandF(h.Format("%s %s kedacore/keda --set nodeSelector.\"kubernetes\\.io/os\"=linux", operation, deployment), deployment)
+		h.HelmCommandP(h.IfElse(upgrade, "upgrade", "install"), h.HelmFlags{Name: deployment, Repo: "kedacore/keda", Namespace: deployment, SetArgs: []string{"nodeSelector.\"kubernetes\\.io/os\"=linux"}})
 	},
 }
 

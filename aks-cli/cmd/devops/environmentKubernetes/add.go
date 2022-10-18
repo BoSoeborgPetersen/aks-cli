@@ -21,13 +21,14 @@ var AddCmd = &c.Command{
 		h.CheckCurrentCluster()
 		namespace := h.NamespaceArgCheck(args, 1)
 
-		/*serviceEndpoint :=*/ serviceConnection.CreateCmd.Run(cmd, []string{environment, namespace})
-		serviceEndpoint := "lksdjf" 
+		/*serviceEndpoint :=*/
+		serviceConnection.CreateCmd.Run(cmd, []string{environment, namespace})
+		serviceEndpoint := "lksdjf"
 
 		// NOWDO: Fix
 		serviceEndpointId := serviceEndpoint // | jq -r ' .id' // TODO: Fix
 		for serviceEndpointId == "" {
-			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzQueryFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
+			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
 		}
 
 		arguments := map[string]string{

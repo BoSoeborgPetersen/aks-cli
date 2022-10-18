@@ -11,7 +11,7 @@ var manifestCmd = &c.Command{
 	Short: "Edit nginx-config.yaml file, with Kubernetes Config Map",
 	Long:  h.Description(`Edit nginx-config.yaml file, with Kubernetes Config Map`),
 	Run: func(cmd *c.Command, args []string) {
-		configFile := h.StringFlagPrependWithDash(cmd, "configPrefix", "nginx-config.yaml")
+		configFile := h.StringFlagPrependWithDash("configPrefix", "nginx-config.yaml")
 
 		h.CheckCurrentCluster()
 

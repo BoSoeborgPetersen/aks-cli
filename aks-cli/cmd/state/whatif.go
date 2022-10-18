@@ -11,7 +11,7 @@ var whatifCmd = &c.Command{
 	Short: "Change default WhatIf state",
 	Long:  h.Description(`Change default WhatIf state`),
 	Run: func(cmd *c.Command, args []string) {
-		disable := h.BoolFlag(cmd, "disable")
+		disable := h.BoolFlag("disable")
 
 		if !disable {
 			h.WriteInfo("Setting global state to WhatIf (Dry Run) execution")
@@ -19,7 +19,7 @@ var whatifCmd = &c.Command{
 			h.WriteInfo("Setting global state to normal execution")
 		}
 
-		h.SetWhatIfState(disable)
+		h.SetGlobalWhatIfState(disable)
 	},
 }
 

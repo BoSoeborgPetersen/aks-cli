@@ -21,7 +21,7 @@ var uninstallCmd = &c.Command{
 			h.AzAksCurrentCommand("disable-addons -a monitoring")
 			h.AzCommand(h.Format("monitor log-analytics workspace delete -g %s -n %s", resourceGroup, insights))
 		}
-	},
+ 	},
 }
 
 func init() {

@@ -11,15 +11,15 @@ var cleanCmd = &c.Command{
 	Short: "Delete pre-release images that are older than 1 month",
 	Long:  h.Description(`Delete pre-release images that are older than 1 month`),
 	Run: func(cmd *c.Command, args []string) {
-		registry := h.StringFlag(cmd, "registry")
+		registry := h.StringFlag("registry")
 
 		h.WriteInfo(h.Format("Delete pre-release images that are older than 1 month in registry '%s'", registry))
 
 		if h.AreYouSure() {
-			repositoriesString := h.AzQueryF(h.Format("acr repository list -n %s", registry), h.AzQueryFlags{Output: "tsv"})
+			repositoriesString := h.AzQueryP(h.Format("acr repository list -n %s", registry), h.AzFlags{Output: "tsv"})
 
 			for _, repository := range h.Fields(repositoriesString) {
-				tagsString := h.AzQueryF(h.Format("acr repository show-tags -n %s --repository %s", registry, repository), h.AzQueryFlags{Output: "tsv"})
+				tagsString := h.AzQueryP(h.Format("acr repository show-tags -n %s --repository %s", registry, repository), h.AzFlags{Output: "tsv"})
 
 				for _, tag := range h.Fields(tagsString) {
 					currentMonthString := h.TimeNow().Format("200602")

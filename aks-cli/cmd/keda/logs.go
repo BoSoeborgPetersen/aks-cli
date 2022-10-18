@@ -11,7 +11,7 @@ var logsCmd = &c.Command{
 	Short: "Get Keda (Kubernetes Event-driven Autoscaling) logs",
 	Long:  h.Description(`Get Keda (Kubernetes Event-driven Autoscaling) logs`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
 		deployment := h.KedaDeploymentName()
@@ -24,7 +24,7 @@ var logsCmd = &c.Command{
 		} else {
 			h.WriteInfo("Show Keda (Kubernetes Event-driven Autoscaling) logs with Stern")
 
-			h.SternCommand(deployment, deployment)
+			h.SternCommand(deployment, h.SternFlags{Namespace: deployment})
 		}
 	},
 }

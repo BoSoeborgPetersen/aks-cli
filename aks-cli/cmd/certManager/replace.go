@@ -8,13 +8,13 @@ import (
 
 var replaceCmd = &c.Command{
 	Use:   "replace",
-	Short: "Uninstall & install Certificate Manager (Helm chart)",
+	Short: "Replace cert-manager",
 	Long:  h.Description(`Uninstall & install Certificate Manager (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
 		h.WriteInfo("Replacing Cert-Manager")
 
 		if h.AreYouSure() {
-			uninstallCmd.Run(cmd, []string{"-y"})
+			uninstallCmd.Run(cmd, []string{"--yes"})
 			installCmd.Run(cmd, []string{"--skip-namespace"})
 		}
 	},

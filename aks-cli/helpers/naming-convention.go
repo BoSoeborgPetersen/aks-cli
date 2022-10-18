@@ -2,75 +2,76 @@ package helpers
 
 import (
 	s "strings"
+	v "github.com/spf13/viper"
 )
 
 func ClusterName(resourceGroup string) string {
-	return Format("%s-aks", resourceGroup)
+	return Format(v.GetString("ClusterNameConvention"), resourceGroup)
 }
 
 func InsightsName(resourceGroup string) string {
-	return Format("%s-aks-insights", resourceGroup)
+	return Format(v.GetString("InsightsNameConvention"), resourceGroup)
 }
 
 func RegistryName(resourceGroup string) string {
 	middle := s.Split(resourceGroup, "-")[1]
-	return Format("gl-%s-acr", middle)
+	return Format(v.GetString("RegistryNameConvention"), middle)
 }
 
 func KeyVaultName(resourceGroup string) string {
 	middle := s.Split(resourceGroup, "-")[1]
-	return Format("gl-%s-aks-vault", middle)
+	return Format(v.GetString("KeyVaultNameConvention"), middle)
 }
 
 func GlobalResourceGroupName(resourceGroup string) string {
 	middle := s.Split(resourceGroup, "-")[1]
-	return Format("gl-%s" , middle)
+	return Format(v.GetString("GlobalResourceGroupNameConvention"), middle)
 }
 
 func PublicIpName(prefix string, cluster string) string {
-	return PrependWithDash(prefix, Format("%s-ip", cluster))
+	return PrependWithDash(prefix, Format(v.GetString("PublicIpNameConvention"), cluster))
 }
 
 func ServicePrincipalName(cluster string) string {
-	return Format("http://%s-principal", cluster)
+	return Format(v.GetString("ServicePrincipalNameConvention"), cluster)
 }
 
 func ServicePrincipalIdName(cluster string) string {
-	return Format("%s-principal-id", cluster)
+	return Format(v.GetString("ServicePrincipalIdNameConvention"), cluster)
 }
 
 func ServicePrincipalPasswordName(cluster string) string {
-	return Format("%s-principal-password", cluster)
+	return Format(v.GetString("ServicePrincipalPasswordNameConvention"), cluster)
 }
 
 func CertManagerDeploymentName() string {
-	return "cert-manager"
+	return v.GetString("CertManagerDeploymentNameConvention")
 }
 
 func NginxDeploymentName(prefix string) string {
-	return PrependWithDash(prefix, "nginx-ingress")
+	return PrependWithDash(prefix, v.GetString("NginxDeploymentNameConvention"))
 }
 
 func KedaDeploymentName() string {
-	return "keda"
+	return v.GetString("KedaDeploymentNameConvention")
 }
 
 func KuredDeploymentName() string {
-	return "kured"
+	return v.GetString("KuredDeploymentNameConvention")
 }
 
 func VpaDeploymentName() string {
-	return "vpa"
+	return v.GetString("VpaDeploymentNameConvention")
 }
 
 // LaterDo: Is there any way to determine this.
 func DevOpsOrganizationName() string {
-	return "NetsMS"
+	return v.GetString("DevOpsOrganizationNameConvention")
 }
 
 // LaterDo: Is there any way to determine this.
 func DevOpsProjectName() string {
-	return "PaymentServices"
+	return v.GetString("DevOpsProjectNameConvention")
 }
 
 func DevOpsUnixName(name string) string {
@@ -79,10 +80,10 @@ func DevOpsUnixName(name string) string {
 
 func DevOpsServiceAccountName(name string) string {
 	unixName := DevOpsUnixName(name)
-	return Format("-devops-sa", unixName)
+	return Format(v.GetString("DevOpsServiceAccountNameConvention"), unixName)
 }
 
 func DevOpsRoleBindingName(name string) string {
 	unixName := DevOpsUnixName(name)
-	return Format("-devops-rb", unixName)
+	return Format(v.GetString("DevOpsRoleBindingNameConvention"), unixName)
 }

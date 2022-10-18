@@ -8,12 +8,15 @@ import (
 
 var logsCmd = &c.Command{
 	Use:   "logs",
-	Short: "Get Certificate Manager logs",
+	Short: "Get cert-manager logs",
 	Long:  h.Description(`Get Certificate Manager logs`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
+		// TODO: Add regex for choosing pod, as alternative to index
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
+		// TODO: Put in config file with Viper
+		// TODO: Put cert-manager namespace name in config file
 		deployment := h.CertManagerDeploymentName()
 
 		if index != -1 {
@@ -24,7 +27,7 @@ var logsCmd = &c.Command{
 		} else {
 			h.WriteInfo("Show Cert-Manager logs with Stern")
 
-			h.SternCommand(deployment, "cert-manager")
+			h.SternCommand(deployment, h.SternFlags{Namespace: "cert-manager"})
 		}
 	},
 }

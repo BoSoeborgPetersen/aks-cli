@@ -14,8 +14,8 @@ var podsCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
 		count := h.IntArgRange(args, 0, "count", 0, 100)
-		namespace := h.NamespaceFlagCheck(cmd)
-		deployment := h.DeploymentFlag(cmd, namespace)
+		namespace := h.NamespaceFlagCheck()
+		deployment := h.DeploymentFlagCheck(namespace)
 
 		h.WriteInfo(h.Format("Scaling number of pods to '%d', for deployment '%s' in namespace '%s'", count, deployment, namespace))
 

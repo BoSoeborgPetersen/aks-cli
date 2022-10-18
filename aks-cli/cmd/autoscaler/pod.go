@@ -8,7 +8,7 @@ import (
 
 var PodCmd = &c.Command{
 	Use:   "pod",
-	Short: "Setup automatic Kubernetes deployment scaling (Pod scaling)",
+	Short: "Setup VPA (Vertical Pod Autoscaling)",
 	Long:  h.Description(`Setup automatic Kubernetes deployment scaling (Pod scaling)`),
 }
 

@@ -16,8 +16,8 @@ var uninstallCmd = &c.Command{
 		h.WriteInfo("Uninstalling Monitoring (Prometheus & Grafana)")
 
 		if h.AreYouSure() {
-			h.HelmCommandF("uninstall grafana", "monitoring")
-			h.HelmCommandF("uninstall prometheus", "monitoring")
+			h.HelmCommandP("uninstall grafana", h.HelmFlags{ Namespace: "monitoring" })
+			h.HelmCommandP("uninstall prometheus", h.HelmFlags{ Namespace: "monitoring" })
 		}
 	},
 }

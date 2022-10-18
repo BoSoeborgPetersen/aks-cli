@@ -1,34 +1,31 @@
 package helpers
 
-import (
-	c "github.com/spf13/cobra"
-)
-
-func StringFlag(cmd *c.Command, name string) string {
-	return HandleError(cmd.Flags().GetString(name))
+func StringFlag(name string) string {
+	// return HandleError(cmd.Flags().GetString(name))
+	return HandleError(GlobalCurrentCmd.Flags().GetString(name))
 }
 
-func StringFlagPrependWithDash(cmd *c.Command, prefixName string, name string) string {
-	configPrefix := StringFlag(cmd, prefixName)
+func StringFlagPrependWithDash(prefixName string, name string) string {
+	configPrefix := StringFlag(prefixName)
 	return PrependWithDash(configPrefix, name)
 }
 
-func IntFlagRange(cmd *c.Command, name string, min int, max int) int {
-	i := IntFlag(cmd, name)
+func IntFlagRange(name string, min int, max int) int {
+	i := IntFlag(name)
 	CheckNumberRange(i, name, min, max)
 	return i
 }
 
-func IntFlag(cmd *c.Command, name string) int {
-	return HandleError(cmd.Flags().GetInt(name))
+func IntFlag(name string) int {
+	return HandleError(GlobalCurrentCmd.Flags().GetInt(name))
 }
 
-func BoolFlag(cmd *c.Command, name string) bool {
-	return HandleError(cmd.Flags().GetBool(name))
+func BoolFlag(name string) bool {
+	return HandleError(GlobalCurrentCmd.Flags().GetBool(name))
 }
 
-func NginxDeploymentNamePrefixFlag(cmd *c.Command) string {
-	prefix := StringFlag(cmd, "prefix")
+func NginxDeploymentNamePrefixFlag() string {
+	prefix := StringFlag("prefix")
 	return NginxDeploymentName(prefix)
 }
 
@@ -44,8 +41,8 @@ func SubscriptionArgCheck(args []string, index int) string {
 	return globalSubscription
 }
 
-func DeploymentFlag(cmd *c.Command, namespace string) string {
-	deployment := StringFlag(cmd, "deployment")
+func DeploymentFlagCheck(namespace string) string {
+	deployment := StringFlag("deployment")
 	return KubectlCheckDeployment(deployment, namespace)
 }
 
@@ -55,33 +52,33 @@ func NamespaceArgCheck(args []string, index int) string {
 	return namespace
 }
 
-func NamespaceFlagAll(cmd *c.Command) string {
-	namespace := StringFlag(cmd, "namespace")
-	allNamespaces := BoolFlag(cmd, "all-namespaces")
-	return ConditionalOperatorOr(allNamespaces, "all", namespace)
+func NamespaceFlagAll() string {
+	namespace := StringFlag("namespace")
+	allNamespaces := BoolFlag("all-namespaces")
+	return IfElse(allNamespaces, "all", namespace)
 }
 
-func NamespaceFlagCheck(cmd *c.Command) string {
-	namespace := StringFlag(cmd, "namespace")
+func NamespaceFlagCheck() string {
+	namespace := StringFlag("namespace")
 	KubectlCheckNamespace(namespace)
 	return namespace
 }
 
-func NamespaceFlagAllCheck(cmd *c.Command) string {
-	namespace := NamespaceFlagAll(cmd)
+func NamespaceFlagAllCheck() string {
+	namespace := NamespaceFlagAll()
 	KubectlCheckNamespace(namespace)
 	return namespace
 }
 
-func NamespaceFlagAllCheckIf(cmd *c.Command, match bool) string {
-	namespace := NamespaceFlagAll(cmd)
-	namespace = ConditionalOperator(match, namespace)
+func NamespaceFlagAllCheckIf(match bool) string {
+	namespace := NamespaceFlagAll()
+	namespace = If(match, namespace)
 	KubectlCheckNamespace(namespace)
 	return namespace
 }
 
-func VersionFlag(cmd *c.Command, latestVersion string) string {
-	version := StringFlag(cmd, "version")
+func VersionFlag(latestVersion string) string {
+	version := StringFlag("version")
 	version = CheckVersion(version, latestVersion)
 	return version
 }

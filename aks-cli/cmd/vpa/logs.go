@@ -11,7 +11,7 @@ var logsCmd = &c.Command{
 	Short: "Get Vertical Pod Autoscaler logs",
 	Long:  h.Description(`Get Vertical Pod Autoscaler logs`),
 	Run: func(cmd *c.Command, args []string) {
-		index := h.IntFlag(cmd, "index")
+		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
 		deployment := h.VpaDeploymentName()
@@ -24,7 +24,7 @@ var logsCmd = &c.Command{
 		} else {
 			h.WriteInfo("Show Vertical Pod Autoscaler logs with Stern")
 
-			h.SternCommand(deployment, deployment)
+			h.SternCommand(deployment, h.SternFlags{Namespace: deployment})
 		}
 	},
 }
