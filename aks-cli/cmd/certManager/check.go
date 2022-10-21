@@ -12,7 +12,7 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Certificate Manager`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		deployment := h.CertManagerDeploymentName()
+		deployment := h.GetConfigString(h.CertManagerDeploymentName)
 		latestVersion := h.HelmLatestChartVersion("jetstack/cert-manager")
 		version := h.VersionFlag(latestVersion)
 
@@ -23,7 +23,7 @@ var checkCmd = &c.Command{
 		h.WriteInfo("Namespace exists")
 
 		h.WriteInfo("Checking Custom Resource Definitions")
-		h.KubectlCheckYaml(h.Format("https://github.com/jetstack/cert-manager/releases/download/v%s/cert-manager.crds.yaml", version))
+		h.KubectlCheckYaml(h.GetConfigStringF(h.CertManagerUrl, version))
 		h.WriteInfo("Custom Resource Definitions exists")
 
 		h.WriteInfo("Checking Helm Chart")

@@ -25,7 +25,7 @@ var redirectAllCmd = &c.Command{
 		h.WriteInfo(h.Format("Redirect all Traffic Managers from '%s' to '%s'", sourceCluster.Name, targetCluster.Name))
 
 		// Step 3: Find all traffic managers pointing to the Public IP resource of the source cluster.
-		subscriptionId := h.CurrentSubscription()
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
 		sourceResourceGroup := sourceCluster.ResourceGroup
 		sourceNodeResourceGroup := sourceCluster.NodeResourceGroup
 		sourceIpAddresses := h.Fields(h.AzQueryP("network public-ip list", h.AzFlags{Query: h.Format("[?resourceGroup=='%s' && starts_with(ipConfiguration.resourceGroup,'%s')].id", sourceResourceGroup, sourceNodeResourceGroup), Output: "tsv"}))
@@ -40,7 +40,7 @@ var redirectAllCmd = &c.Command{
 				// Step 4: Update Traffic Managers to point to the Public IP resource of the target cluster.
 				targetResourceGroup := targetCluster.ResourceGroup
 
-				targetPublicIp := h.PublicIpName("", targetCluster.Name)
+				targetPublicIp := h.GetConfigStringF(h.PublicIpName, targetCluster.Name)
 				targetPublicIpId := h.Format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/publicIPAddresses/%s", subscriptionId, targetResourceGroup, targetPublicIp)
 
 				for _, trafficManager := range trafficManagers {

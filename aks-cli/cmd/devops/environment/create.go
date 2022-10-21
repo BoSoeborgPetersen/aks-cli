@@ -14,7 +14,7 @@ var createCmd = &c.Command{
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
 		// LaterDo: Add Approval/Check (e.g. '[Identity]\Contributors')
-		name := args[0]
+		name := h.StringArg(0)
 		addDefaultKubernetesResources := h.BoolFlag("addDefaultKubernetesResources")
 
 		h.WriteInfo("Creating Environment")

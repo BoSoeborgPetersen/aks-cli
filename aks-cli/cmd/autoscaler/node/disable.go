@@ -8,16 +8,17 @@ import (
 
 var disableCmd = &c.Command{
 	Use:   "disable",
-	Short: "Enable node autoscaler",
-	Long:  h.Description(`Enable node autoscaler`),
-	Run: func(cmd *c.Command, args []string) {
-		h.CheckCurrentCluster()
+	Short: "Disable node autoscaler",
+	Long:  h.Description(`Disable node autoscaler`),
+	Run: h.RunFunctionConvert(DisableFunc),
+}
 
-		h.WriteInfo("Disable node autoscaler")
+func DisableFunc() {
+	h.CheckCurrentCluster()
 
-		// MaybeDo: Change to string array.
-		h.Write(h.AzAksCurrentCommand("update --disable-cluster-autoscaler"))
-	},
+	h.WriteInfo("Disabling node autoscaler")
+	
+	h.Write(h.AzAksCurrentCommand("update --disable-cluster-autoscaler"))
 }
 
 func init() {

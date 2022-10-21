@@ -12,7 +12,6 @@ var uninstallCmd = &c.Command{
 	Long:  h.Description(`Uninstall Nginx (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
 		purge := h.BoolFlag("purge")
-		yes := h.BoolFlag("yes")
 
 		namespace := "ingress"
 		h.CheckCurrentCluster()
@@ -20,7 +19,7 @@ var uninstallCmd = &c.Command{
 
 		h.WriteInfo("Uninstalling Nginx")
 
-		if yes || h.AreYouSure() {
+		if h.AreYouSure() {
 			h.HelmCommandP("uninstall", h.HelmFlags{Name: deployment, Namespace: namespace})
 
 			if purge {

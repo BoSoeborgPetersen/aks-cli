@@ -14,7 +14,7 @@ var logsCmd = &c.Command{
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		deployment := h.VpaDeploymentName()
+		deployment := h.GetConfigString(h.VpaDeploymentName)
 
 		if index != -1 {
 			h.WriteInfo(h.Format("Show Vertical Pod Autoscaler logs from pod (index: %d)", index))

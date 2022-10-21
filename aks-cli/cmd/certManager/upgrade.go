@@ -11,9 +11,7 @@ var upgradeCmd = &c.Command{
 	Short: "Upgrade Certificate Manager",
 	Long:  h.Description(`Upgrade Certificate Manager`),
 	Run: func(cmd *c.Command, args []string) {
-		// TODO: Debug
-		// installCmd.Run(cmd, []string{"--skip-namespace --upgrade"})
-		installCmd.Run(cmd, []string{"--skip-namespace", "--upgrade"})
+		InstallFunc(true, true)
 	},
 }
 

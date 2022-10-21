@@ -53,7 +53,8 @@ func MakeDir(name string) {
 }
 
 func ExeLocation() string {
-	return HandleError(os.Executable())
+	return HandleError(os.Getwd())
+	// return HandleError(os.Executable())
 }
 
 func ReadDir(path string) []string {

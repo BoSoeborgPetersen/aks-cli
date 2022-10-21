@@ -12,8 +12,8 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Azure Operational Insights`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		resourceGroup := h.CurrentClusterResourceGroup()
-		insights := h.InsightsName(resourceGroup)
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		insights := h.GetConfigStringF(h.InsightsName, resourceGroup)
 
 		h.WriteInfo(h.Format("Checking Operational Insights '%s'", insights))
 

@@ -2,8 +2,6 @@ package helpers
 
 import (
 	"os"
-
-	v "github.com/spf13/viper"
 )
 
 type KubectlFlags struct {
@@ -19,12 +17,11 @@ func KubectlCommand(command string) string {
 }
 
 func KubectlCommandF(command string, f KubectlFlags) string {
-	regexString := IfF(f.Regex, " | sed -n '/%s/p' ")
 	namespaceString := KubectlNamespaceString(f.Namespace)
 	outputString := IfF(f.Output, " -o %s")
-	outputString = IfF(f.JsonPath, " -o jsonpath=\"%s\"")
+	outputString = IfElseF(f.JsonPath, " -o jsonpath=\"%s\"", outputString)
 
-	return ExecuteCommand(Format("kubectl %s%s%s%s%s%s", command, namespaceString, outputString, KubeDebugString(), regexString, f.PostFix))
+	return GrepIf(f.Regex, ExecuteCommand(Format("kubectl %s%s%s%s%s", command, namespaceString, outputString, KubeDebugString(), f.PostFix)))
 }
 
 func KubectlQuery(query string) string {
@@ -32,12 +29,11 @@ func KubectlQuery(query string) string {
 }
 
 func KubectlQueryF(query string, f KubectlFlags) string {
-	regexString := IfF(f.Regex, " | grep -E %s -i")
 	namespaceString := KubectlNamespaceString(f.Namespace)
 	outputString := IfF(f.Output, " -o %s")
-	outputString = IfElse(f.JsonPath, Format(" -o jsonpath=\"%s\"", f.JsonPath), outputString)
+	outputString = IfElseF(f.JsonPath, " -o jsonpath=\"%s\"", outputString)
 
-	return ExecuteQuery(Format("kubectl %s%s%s%s%s%s", query, namespaceString, outputString, KubeDebugString(), regexString, f.PostFix))
+	return GrepIf(f.Regex, ExecuteQuery(Format("kubectl %s%s%s%s%s", query, namespaceString, outputString, KubeDebugString(), f.PostFix)))
 }
 
 func KubectlCheck(resourceType string, name string) {
@@ -68,7 +64,7 @@ func KubectlCheckYaml(file string) {
 }
 
 func KubectlClearConfig(resourceGroup string) {
-	cluster := ClusterName(resourceGroup)
+	cluster := GetConfigStringF(ClusterName, resourceGroup)
 	contexts := Fields(KubectlQueryF("config get-contexts", KubectlFlags{Output: "name"}))
 
 	if Any(contexts, func(s string) bool { return s == cluster }) {
@@ -109,19 +105,23 @@ func KubectlCheckDaemonSet(name string, namespace string) {
 }
 
 func KubectlGetRegex(resourceType string, regex string, index int, namespace string) (string, string) {
-	index = IfElse(index, index, 0)
-	json := KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: Format("json | jq '[ .items[] | .metadata | select(.name|test(\"%s\")) | \"\\(.namespace) \\(.name)\" ]'", regex)})
-	resourceCount := Atoi(JqCommand(json, "jq. 'length'"))
+	index = If(index, index)
+	// resources := JqQuery(KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata | select(.name|test(\"kured.\")) | \"\\(.namespace) \\(.name)\"")
+	resources := JqQuery(KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata | select(.name|test(\"" + regex + ".\")) | \"\\(.namespace) \\(.name)\"")
+	resourceCount := len(resources)
 
 	Check(resourceCount > 0, Format("No type '%s' matching '%s' in namespace '%s'", resourceType, regex, namespace))
 	CheckOptionalNumberRange(index, "index", 0, resourceCount-1)
 
-	results := Fields(JqCommand(json, Format("jq -r \".[%d]\"", index)))
+	results := Fields(resources[index])
 	return results[0], results[1]
 }
 
 func KubectlGetPods(deployment string, namespace string) []string {
-	return Fields(KubectlQueryF(Format("get po -l app=%s", deployment), KubectlFlags{Namespace: namespace, Output: "json | jq '[ .items[] | .metadata.name ]'"}))
+	// return Fields(KubectlQueryF(Format("get po -l app=%s", deployment), KubectlFlags{Namespace: namespace, Output: "json | jq '[ .items[] | .metadata.name ]'"}))
+	Write("DEBUGGING (try with multiple pods returned): ")
+	return Fields(KubectlQueryF(Format("get po -l app=%s", deployment), KubectlFlags{Namespace: namespace, JsonPath: "{.items[*].metadata.name}"}))
+	// return Fields(JqCommand(KubectlQueryF(Format("get po -l app=%s", deployment), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata.name"))
 }
 
 func KubectlGetPod(deployment string, namespace string, index int) string {
@@ -131,18 +131,20 @@ func KubectlGetPod(deployment string, namespace string, index int) string {
 	return pods[index]
 }
 
+// TODO: Move to usage place
+// TODO: Only show namespace when set
 func KubectlCheckPodAutoscaler(name string, namespace string) {
 	check := KubectlQueryF("get hpa", KubectlFlags{Namespace: namespace, JsonPath: Format("{$.items[?(@.metadata.name=='%s')].metadata.name}", name)})
 	Check(check, Format("Horizontal Pod Autoscaler '%s' in namespace '%s' does not exist!", name, namespace))
 }
 
 func KubectlSaveLastApplied(resourceType string, name string, namespace string) {
-	KubectlSaveLastAppliedF(resourceType, name, namespace, "yaml", v.GetString("KubectlLastAppliedPath"))
+	KubectlSaveLastAppliedF(resourceType, name, namespace, "yaml", GetConfigString("KubectlLastAppliedPath"))
 }
 
 func KubectlSaveLastAppliedF(resourceType string, name string, namespace string, output string, filePath string) {
 	var fullFilePath string
-	if namespace != "" {
+	if IsSet(namespace) {
 		fullFilePath = Format("%s/%s-%s-%s.%s", filePath, namespace, name, resourceType, output)
 	} else {
 		fullFilePath = Format("%s/default-%s-%s.%s", filePath, name, resourceType, output)
@@ -158,8 +160,8 @@ func KubectlSaveLastAppliedF(resourceType string, name string, namespace string,
 	SaveFile(lastApplied, fullFilePath)
 }
 
-func KubectlSaveHelmSecret(name string, version string, namespace string, output string, filePath string) {
-	KubectlSaveHelmSecretF(name, version, namespace, "json", v.GetString("KubectlHelmSecretPath"))
+func KubectlSaveHelmSecret(name string, version string, namespace string) {
+	KubectlSaveHelmSecretF(name, version, namespace, "json", GetConfigString("KubectlHelmSecretPath"))
 }
 
 func KubectlSaveHelmSecretF(name string, version string, namespace string, output string, filePath string) {

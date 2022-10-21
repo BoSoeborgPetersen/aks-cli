@@ -19,7 +19,7 @@ var debugCmd = &c.Command{
 			h.WriteInfo("Setting global state to non-debug output")
 		}
 
-		h.SetGlobalDebuggingState(disable)
+		h.SetConfigBool(h.GlobalDebuggingState, disable)
 	},
 }
 

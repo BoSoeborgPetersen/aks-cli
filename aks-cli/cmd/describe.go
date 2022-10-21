@@ -14,8 +14,8 @@ var describeCmd = &c.Command{
 		h.RequiredArgAt("expression (<regex>) to match against name", 1),
 	),
 	Run: func(cmd *c.Command, args []string) {
-		resourceType := args[0]
-		regex := args[1]
+		resourceType := h.StringArg(0)
+		regex := h.StringArg(1)
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
@@ -25,13 +25,13 @@ var describeCmd = &c.Command{
 
 		h.WriteInfoF(h.Format("Describe resource '%s' of type '%s'", name, resourceType), h.WriteFlags{Regex: regex, Index: index, Namespace: namespace})
 
-		h.KubectlCommandF(h.Format("describe %s %s", resourceType, name), h.KubectlFlags{Namespace: namespace})
+		h.Write(h.KubectlCommandF(h.Format("describe %s %s", resourceType, name), h.KubectlFlags{Namespace: namespace}))
 	},
 }
 
 func init() {
 	describeCmd.Flags().IntP("index", "i", 0, "Index of the pod to open shell in")
-	describeCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	describeCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	describeCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	describeCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	rootCmd.AddCommand(describeCmd)
 }

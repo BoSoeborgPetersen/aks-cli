@@ -14,8 +14,8 @@ var replaceCmd = &c.Command{
 		h.WriteInfo("Replacing Cert-Manager")
 
 		if h.AreYouSure() {
-			uninstallCmd.Run(cmd, []string{"--yes"})
-			installCmd.Run(cmd, []string{"--skip-namespace"})
+			UninstallFunc(false)
+			InstallFunc(true, false)
 		}
 	},
 }

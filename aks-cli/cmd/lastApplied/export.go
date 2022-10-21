@@ -41,7 +41,7 @@ var exportCmd = &c.Command{
 
 func init() {
 	exportCmd.Flags().String("regex", "", "Expression to match against name")
-	exportCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
-	exportCmd.Flags().String("all-namespaces", "", h.KubernetesAllNamespacesDescription())
+	exportCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	exportCmd.Flags().String("all-namespaces", "", h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	cmd.LastAppliedCmd.AddCommand(exportCmd)
 }

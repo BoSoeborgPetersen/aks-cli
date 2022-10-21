@@ -11,11 +11,11 @@ var azCmd = &c.Command{
 	Long:  h.Description(`Execute az command with -g and -n filled out`),
 	Args:  h.RequiredArg("parameters (<params>)"),
 	Run: func(cmd *c.Command, args []string) {
-		params := args[0]
+		params := h.StringArg(0)
 
 		h.CheckCurrentCluster()
 
-		h.WriteInfo(h.Format("az aks -g %s -n %s %s", h.CurrentClusterResourceGroup(), h.CurrentClusterName(), args))
+		h.WriteInfo(h.Format("az aks -g %s -n %s %s", h.GetGlobalCurrentCluster().ResourceGroup, h.GetGlobalCurrentCluster().Name, args))
 
 		h.AzAksCurrentCommand(params)
 	},

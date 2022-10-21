@@ -15,7 +15,7 @@ var upgradesCmd = &c.Command{
 		
 		h.WriteInfo("Show Keda upgradable versions")
 		
-		h.HelmQuery("search repo kedacore/keda")
+		h.HelmSearchRepoW("kedacore/keda")
 	},
 }
 

@@ -30,6 +30,6 @@ var deleteCmd = &c.Command{
 
 func init() {
 	deleteCmd.Flags().StringP("deployment", "d", "", "Kubernetes deployment")
-	deleteCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
+	deleteCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
 	cmd.PodCmd.AddCommand(deleteCmd)
 }

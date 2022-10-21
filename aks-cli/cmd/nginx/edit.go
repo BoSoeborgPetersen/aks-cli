@@ -18,7 +18,7 @@ var editCmd = &c.Command{
 		h.WriteInfo("Edit Nginx configmap")
 
 		configMapExists := h.KubectlQueryF("get configmap", h.KubectlFlags{Namespace: "ingress", JsonPath: h.Format("{$.items[?(@.metadata.name=='%s')].metadata.name}", configMap)})
-		if configMapExists == "" {
+		if !h.IsSet(configMapExists) {
 			h.KubectlCommandF(h.Format("create configmap ", configMap), h.KubectlFlags{Namespace: "ingress"})
 		}
 

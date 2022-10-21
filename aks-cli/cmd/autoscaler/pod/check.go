@@ -11,7 +11,6 @@ var checkCmd = &c.Command{
 	Short: "Check pod autoscaler",
 	Long:  h.Description(`Check pod autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		// TODO: Deployment is not optional, either show menu (maybe), or change to required arg
 		h.CheckCurrentCluster()
 		namespace := h.NamespaceFlagCheck()
 		deployment := h.DeploymentFlagCheck(namespace)
@@ -23,7 +22,8 @@ var checkCmd = &c.Command{
 }
 
 func init() {
-	checkCmd.Flags().String("deployment", "", h.KubernetesDeploymentDescription())
-	checkCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
+	checkCmd.Flags().String("deployment", "", h.GetConfigString(h.KubernetesDeploymentDescription))
+	checkCmd.MarkFlagRequired("deployment")
+	checkCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
 	autoscaler.PodCmd.AddCommand(checkCmd)
 }

@@ -12,8 +12,8 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Azure DevOps environment`),
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
-		
+		name := h.StringArg(0)
+
 		h.WriteInfo("Checking DevOps Environment")
 		h.AzDevOpsInvokeCheck("environments", "environments", h.Format("value[?name=='%s'].name", name), "", true)
 		h.WriteInfo("DevOps Environment exists")

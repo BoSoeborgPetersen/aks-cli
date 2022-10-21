@@ -12,8 +12,8 @@ var replaceEndpointCmd = &c.Command{
 	Long:  h.Description(`Replace Traffic Manager Endpoint pointing to AKS cluster`),
 	Args:  h.RequiredArg("<new> endpoint name"),
 	Run: func(cmd *c.Command, args []string) {
-		// TODO: Rewrite
-		new := args[0]
+		// LaterDO: Rewrite
+		new := h.StringArg(0)
 		old := h.StringFlag("old")
 
 		AzureServiceResourceGroup := ""

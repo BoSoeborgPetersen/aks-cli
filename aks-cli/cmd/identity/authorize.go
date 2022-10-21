@@ -15,9 +15,9 @@ var authorizeCmd = &c.Command{
 		// LaterDo: Check if Managed Identity is already authorized.
 		// LaterDo: With more than 1 registry in the global subscription, show menu to choose.
 		h.CheckCurrentCluster()
-		globalSubscription := h.SubscriptionArgCheck(args, 0)
-		resourceGroup := h.CurrentClusterResourceGroup()
-		subscriptionId := h.CurrentSubscription()
+		globalSubscription := h.SubscriptionArgCheck(0)
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
 
 		registry := h.AzQueryP("acr list", h.AzFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckContainerRegistry(registry, globalSubscription)

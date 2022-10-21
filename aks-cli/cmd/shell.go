@@ -5,7 +5,7 @@ import (
 	c "github.com/spf13/cobra"
 )
 
-// NOWDO: Fix
+// TODO: Fix
 // shellCommands := map[string]string{
 // 	"ash":        "Ash (Alpine)",
 // 	"bash":       "Bash (Debian)",
@@ -19,11 +19,11 @@ var shellCmd = &c.Command{
 	Long:  h.Description(`Open shell inside container`),
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
-		regex := args[0]
+		regex := h.StringArg(0)
 		shell := h.StringFlag("shell")
 		index := h.IntFlag("index")
 
-		// NOWDO: Fix
+		// TODO: Fix
 		// h.ShowSubMenu(shellCommands)
 		h.CheckCurrentCluster()
 		namespace := h.NamespaceFlagAllCheck()
@@ -41,7 +41,7 @@ var shellCmd = &c.Command{
 
 		shell = testShell(shell, name, namespace, shell)
 
-		if shell == "" {
+		if !h.IsSet(shell) {
 			h.WriteError("Could not open shell inside pod")
 			h.Exit(1)
 		}
@@ -63,7 +63,7 @@ func testShell(shell string, name string, namespace string, tryShell string) str
 func init() {
 	shellCmd.Flags().StringP("shell", "s", "", "Shell type (ash, bash, cmd, powershell)")
 	shellCmd.Flags().IntP("index", "i", 0, "Index of the pod to open shell in")
-	shellCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	shellCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	shellCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	shellCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	rootCmd.AddCommand(shellCmd)
 }

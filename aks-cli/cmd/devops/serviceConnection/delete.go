@@ -12,13 +12,13 @@ var DeleteCmd = &c.Command{
 	Long:  h.Description(`Delete Azure DevOps Service-Connection`),
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 		namespace := h.NamespaceFlagCheck()
 
 		h.WriteInfo("Deleting Service Connection")
 
-		serviceAccount := h.DevOpsServiceAccountName(name)
-		roleBinding := h.DevOpsRoleBindingName(name)
+		serviceAccount := h.GetConfigStringF(h.DevOpsServiceAccountName, h.StringUnixName(name))
+		roleBinding := h.GetConfigStringF(h.DevOpsRoleBindingName, h.StringUnixName(name))
 
 		h.KubectlCommandF(h.Format("delete serviceaccount %s", serviceAccount), h.KubectlFlags{Namespace: namespace})
 		h.KubectlCommandF(h.Format("delete rolebinding %s", roleBinding), h.KubectlFlags{Namespace: namespace})

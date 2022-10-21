@@ -3,7 +3,6 @@ package cmd
 import (
 	h "github.com/BoSoeborgPetersen/aks-cli/helpers"
 	c "github.com/spf13/cobra"
-	v "github.com/spf13/viper"
 )
 
 var appVersion = "2.0.0"
@@ -19,6 +18,7 @@ var rootCmd = &c.Command{
 	Example: "aks version",
 	PersistentPreRun: func(cmd *c.Command, args []string) {
 		h.GlobalCurrentCmd = cmd
+		h.GlobalCurrentArgs = args
 	},
 }
 
@@ -28,7 +28,7 @@ func Execute() {
 		h.WriteError(err.Error())
 		h.Exit(1)
 	}
-	v.WriteConfig()
+	h.SaveConfig()
 }
 
 func init() {
@@ -36,6 +36,5 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&h.Debug, "debug", false, "Debug output")
 	rootCmd.PersistentFlags().BoolVar(&h.WhatIf, "whatif", false, "Dry run")
 
-	v.SetConfigFile("aks-cli.yaml")
-	v.ReadInConfig()
+	h.LoadConfig()
 }

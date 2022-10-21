@@ -12,7 +12,7 @@ var showCmd = &c.Command{
 	Long:  h.Description(`Show Azure DevOps Service-Connection`),
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 
 		h.WriteInfo("Showing Service Connection")
 

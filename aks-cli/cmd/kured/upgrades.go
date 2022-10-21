@@ -15,7 +15,7 @@ var upgradesCmd = &c.Command{
 
 		h.WriteInfo("Show Kured upgradable versions")
 
-		h.HelmQuery("search repo kured/kured")
+		h.HelmSearchRepo("kured/kured")
 	},
 }
 

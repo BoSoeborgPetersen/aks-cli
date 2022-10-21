@@ -14,8 +14,8 @@ var editCmd = &c.Command{
 		h.RequiredArgAt("expression (<regex>) to match against name", 1),
 	),
 	Run: func(cmd *c.Command, args []string) {
-		resourceType := args[0]
-		regex := args[1]
+		resourceType := h.StringArg(0)
+		regex := h.StringArg(1)
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
@@ -31,8 +31,8 @@ var editCmd = &c.Command{
 
 func init() {
 	editCmd.Flags().IntP("index", "i", 0, "Index of the pod to open shell in")
-	editCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	editCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	editCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	editCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 
 	rootCmd.AddCommand(editCmd)
 }

@@ -11,16 +11,15 @@ var uninstallCmd = &c.Command{
 	Short: "Uninstall Vertical Pod Autoscaler (Helm chart)",
 	Long:  h.Description(`Uninstall Vertical Pod Autoscaler (Helm chart)`),
 	Run: func(cmd *c.Command, args []string) {
-		yes, _ := cmd.Flags().GetBool("yes")
-		skipNamespace, _ := cmd.Flags().GetBool("skip-namespace")
+		skipNamespace := h.BoolFlag("skip-namespace")
 
 		h.CheckCurrentCluster()
-		deployment := h.VpaDeploymentName()
+		deployment := h.GetConfigString(h.VpaDeploymentName)
 
 		h.WriteInfo("Uninstalling Vertical Pod Autoscaler")
 
-		if yes || h.AreYouSure() {
-			h.HelmCommandP("uninstall", h.HelmFlags{ Name: deployment, Namespace: deployment})
+		if h.AreYouSure() {
+			h.HelmCommandP("uninstall", h.HelmFlags{Name: deployment, Namespace: deployment})
 
 			if !skipNamespace {
 				h.KubectlCommand(h.Format("delete namespace %s", deployment))

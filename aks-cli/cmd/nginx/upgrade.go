@@ -18,7 +18,7 @@ var upgradeCmd = &c.Command{
 		// oldDnsNamingConvention, _ := cmd.Flags().GetBool("oldDnsNamingConvention")
 		// skip, _ := cmd.Flags().GetBool("skip")
 
-		// if ip != "" {
+		// if IsSet(ip) {
 		// 	svc := "nginx-ingress-ingress-nginx-controller"
 		// 	svc = h.ConditionalOperatorOr(prefix, prefix+"-"+svc, svc)
 		// 	ip = h.KubectlQueryF("get svc "+svc, h.KubectlFlags{Namespace: "ingress", JsonPath: "'{.spec.loadBalancerIP}'"})

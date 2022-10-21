@@ -13,7 +13,7 @@ var deleteCmd = &c.Command{
 	Long:  h.Description(`Delete Azure DevOps environment, possibly with default Kubernetes resources`),
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 		removeDefaultKubernetesResources := h.BoolFlag("removeDefaultKubernetesResources")
 
 		h.WriteInfo("Deleting Environment")

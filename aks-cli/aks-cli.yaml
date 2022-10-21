@@ -1,42 +1,112 @@
+aksclidevelopmentpath: /app/new-dev-aks-cli
+aksversiondescription: AKS cluster Version (e.g. '1.16.9')
+azuredevopsapiversion: 7.1-preview
+azurelocationdescription: Azure Location (e.g. 'northeurope')
+azurevmmaxnodecountdescription: Maximum node (VM) count
+azurevmminnodecountdescription: Minimum node (VM) count
+certmanagerdeploymentnameconvention: cert-manager
+certmanagerurl: https://github.com/jetstack/cert-manager/releases/download/v%s/cert-manager.crds.yaml
+clusternameconvention: '%s-aks'
+devopsorganizationname: 3shape
+devopsprojectname: cicd
+devopsrolebindingname: '%s-devops-rb'
+devopsserviceaccountname: '%s-devops-sa'
+globalclusters:
+    - fqdn: eu-3shape-backstage-3113b254.hcp.westeurope.azmk8s.io
+      location: westeurope
+      name: eu-3shape-backstage
+      noderesourcegroup: MC_eu-3shape-backstage
+      resourcegroup: eu-3shape-backstage
+    - fqdn: observability-dns-33d7cdff.hcp.eastus.azmk8s.io
+      location: eastus
+      name: observability
+      noderesourcegroup: MC_Observability_observability_eastus
+      resourcegroup: Observability
+    - fqdn: temptest-bo-dns-d0d260c3.hcp.westeurope.azmk8s.io
+      location: westeurope
+      name: temptest-bo
+      noderesourcegroup: MC_temptest-bo_temptest-bo_westeurope
+      resourcegroup: temptest-bo
 globalcurrentcluster:
-    fqdn: eu-3shape-backstage-3113b254.hcp.westeurope.azmk8s.io
+    fqdn: temptest-bo-dns-d0d260c3.hcp.westeurope.azmk8s.io
     location: westeurope
-    name: eu-3shape-backstage
-    noderesourcegroup: MC_eu-3shape-backstage
-    resourcegroup: eu-3shape-backstage
-
-AzureLocationDescription: Azure Location (e.g. 'northeurope')
-AzureVmMinNodeCountDescription: Minimum node (VM) count
-AzureVmMaxNodeCountDescription: Maximum node (VM) count
-KubernetesDeploymentDescription: Kubernetes deployment
-KubernetesMinPodCountDescription: Minimum pod count
-KubernetesMaxPodCountDescription: Maximum pod count
-KubernetesCpuScalingLimitDescription: Kubernetes CPU scaling limit
+    name: temptest-bo
+    noderesourcegroup: MC_temptest-bo_temptest-bo_westeurope
+    resourcegroup: temptest-bo
+globalcurrentsubscription:
+    id: 1b9a13c6-3b56-4604-af50-e6c0947262f3
+    name: CICD.Development
+    tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+globalresourcegroupnameconvention: gl-%s
+globalsubscriptions:
+    - id: 730a0437-8a11-4cd4-a8d9-6f0e0c0eba70
+      name: AX.Production
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 1b9a13c6-3b56-4604-af50-e6c0947262f3
+      name: CICD.Development
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: aa688daa-5c79-43bb-aea1-37545454d27b
+      name: CICD.Production
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 90b2e824-5d36-4511-bba7-63f9c0b91ff9
+      name: CloudServices.Development
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 8ab9aa4a-f6d3-4346-861c-753d91d6d675
+      name: CloudServices.Production
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 3fc0e197-ed76-4ec0-b6fc-ca8d279a6c13
+      name: Communicate.Backup
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: b44534f7-fcfc-4fcf-bd1a-ebeb7af2c5c4
+      name: Communicate.Staging
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: cbbc0061-3fe6-4736-953e-510aa1138eea
+      name: Communicate.Test
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 576e5563-b89b-430e-a3de-9c3a5c3b4238
+      name: Identity.Development
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 7a91ea49-0bdf-40f5-823e-1acc193af361
+      name: Identity.Production
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: a7415693-ee44-4efc-8fe8-5790f06dc521
+      name: MobileApps
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 1232b017-5556-4700-a4e7-097018ae2e38
+      name: Pay-As-You-Go(Converted to EA)
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 7381b535-3bca-42ac-b09c-fe56f21f61ba
+      name: Playground
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 48c3a191-0104-425a-83b9-3b99e696099c
+      name: RegulatoryFramework
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 21a42f15-b37d-42d4-9835-f57ceef8208a
+      name: TreatmentReview
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+    - id: 5e52f783-8526-4f1b-bc10-add9af31d548
+      name: TreatmentReview.Production
+      tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+globalsubscriptionusedforclusters:
+    id: 1b9a13c6-3b56-4604-af50-e6c0947262f3
+    name: CICD.Development
+    tenantid: c3b232d6-15a2-46e1-8879-7ec7a9e5c4a9
+insightsnameconvention: '%s-aks-insights'
+kedadeploymentnameconvention: keda
+keyvaultnameconvention: gl-%s-aks-vault
+kubectlhelmsecretpath: /app/temp/helm-secret
+kubectllastappliedpath: /app/temp/last-applied
+kubernetesallnamespacesdescription: All Kubernetes namespaces
+kubernetescpuscalinglimitdescription: Kubernetes CPU scaling limit
+kubernetesdeploymentdescription: Kubernetes deployment
+kubernetesmaxpodcountdescription: Maximum pod count
+kubernetesminpodcountdescription: Minimum pod count
 kubernetesnamespacedescription: Kubernetes namespace
-KubernetesAllNamespacesDescription: All Kubernetes namespaces
-AksVersionDescription: AKS cluster Version (e.g. '1.16.9')
-
-ClusterNameConvention: '%s-aks'
-InsightsNameConvention: '%s-aks-insights'
-RegistryNameConvention: gl-%s-acr
-KeyVaultNameConvention: 'gl-%s-aks-vault'
-GlobalResourceGroupNameConvention: 'gl-%s'
-PublicIpNameConvention: '%s%s-ip'
-ServicePrincipalNameConvention: 'http://%s-principal'
-ServicePrincipalIdNameConvention: '%s-principal-id'
-ServicePrincipalPasswordNameConvention: '%s-principal-password'
-CertManagerDeploymentNameConvention: cert-manager
-NginxDeploymentNameConvention: '%snginx-ingress'
-KedaDeploymentNameConvention: keda
-KuredDeploymentNameConvention: kured
-VpaDeploymentName: vpa
-DevOpsOrganizationName: NetsMS
-DevOpsProjectName: PaymentServices
-DevOpsServiceAccountName: '%s-devops-sa'
-DevOpsRoleBindingName: '%s-devops-rb'
-
-KubectlLastAppliedPath: '/app/temp/last-applied'
-KubectlHelmSecretPath: '/app/temp/helm-secret'
-AksCliDevelopmentPath: '/app/new-dev-aks-cli'
-
-AzureDevOpsApiVersion: 7.1-preview
+kureddeploymentnameconvention: kured
+nginxdeploymentnameconvention: '%snginx-ingress'
+publicipnameconvention: '%s%s-ip'
+registrynameconvention: gl-%s-acr
+serviceprincipalidnameconvention: '%s-principal-id'
+serviceprincipalnameconvention: http://%s-principal
+serviceprincipalpasswordnameconvention: '%s-principal-password'
+vpadeploymentname: vpa

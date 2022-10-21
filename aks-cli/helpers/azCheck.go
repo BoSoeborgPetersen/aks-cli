@@ -42,7 +42,7 @@ func AzCheckServicePrincipal(name string) {
 }
 
 func AzCheckVirtualMachineSize(location string, name string) {
-	check := name == "" || AzQueryP(Format("vm list-sizes -l %s", location), AzFlags{Query: Format("[?name=='%s'].name", name), Output: "tsv"}) != ""
+	check := !IsSet(name) || AzQueryP(Format("vm list-sizes -l %s", location), AzFlags{Query: Format("[?name=='%s'].name", name), Output: "tsv"}) != ""
 	Check(check, Format("Virtual Machine Size '%s' does not exist", name))
 }
 

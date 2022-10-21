@@ -12,8 +12,8 @@ var installCmd = &c.Command{
 	Long:  h.Description(`Create Azure Operational Insights Workspace and attach it to the AKS cluster`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		resourceGroup := h.CurrentClusterResourceGroup()
-		insights := h.InsightsName(resourceGroup)
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		insights := h.GetConfigStringF(h.InsightsName, resourceGroup)
 
 		h.WriteInfo(h.Format("Installing Operational Insights '%s'", insights))
 

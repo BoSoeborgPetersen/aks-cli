@@ -16,10 +16,10 @@ var removeCmd = &c.Command{
 		h.RequiredArgAt("Kubernetes <namespace>", 1),
 	),
 	Run: func(cmd *c.Command, args []string) {
-		environment := args[0]
+		environment := h.StringArg(0)
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceArgCheck(args, 1)
+		namespace := h.NamespaceArgCheck(1)
 
 		environmentId := h.AzDevOpsEnvironmentId(environment)
 		resourceId := h.AzDevOpsResourceId(namespace)
@@ -27,7 +27,7 @@ var removeCmd = &c.Command{
 		h.AzDevOpsInvokeCommandF(h.AzDevOpsCommandFlags{Area: "environments", Resource: "kubernetes", Parameters: h.Format("environmentId=%s resourceId=%s", environmentId, resourceId), MethodHttp: "DELETE"})
 
 		var serviceEndpointId string
-		for serviceEndpointId == "" {
+		for !h.IsSet(serviceEndpointId) {
 			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
 		}
 

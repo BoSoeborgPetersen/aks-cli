@@ -15,7 +15,7 @@ var upgradesCmd = &c.Command{
 
 		h.WriteInfo("Show Vertical Pod Autoscaler upgradable versions")
 
-		h.WriteInfo(h.HelmQuery("search repo cowboysysop/vertical-pod-autoscaler"))
+		h.HelmSearchRepoW("cowboysysop/vertical-pod-autoscaler")
 	},
 }
 

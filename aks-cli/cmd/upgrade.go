@@ -16,7 +16,7 @@ var upgradeCmd = &c.Command{
 
 		h.CheckCurrentCluster()
 
-		if version != "" {
+		if h.IsSet(version) {
 			currentVersion := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "kubernetesVersion", Output: "tsv"})
 			h.AzCheckUpgradableVersion(version, preview)
 			h.WriteInfo(h.Format("Upgrading current cluster from '%s' to version '%s'", currentVersion, version))
@@ -24,7 +24,7 @@ var upgradeCmd = &c.Command{
 			previewString := h.If(!preview, "?!isPreview")
 			version = h.AzAksCurrentQueryP("get-upgrades", h.AzAksFlags{Query: h.Format("controlPlaneProfile.upgrades[%s].kubernetesVersion | sort(@) | [-1]", previewString), Output: "tsv"})
 
-			if version != "" {
+			if h.IsSet(version) {
 				currentVersion := h.AzAksCurrentQueryP("show", h.AzAksFlags{Query: "kubernetesVersion", Output: "tsv"})
 
 				previewString = h.If(preview, "(allow previews)")

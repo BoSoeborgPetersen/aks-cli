@@ -28,7 +28,7 @@ func AzAksCurrentCommand(command string) string {
 }
 
 func AzAksCurrentCommandP(command string, f AzAksFlags) string {
-	return AzAksCommandP(Format("%s -g %s -n %s", command, CurrentClusterResourceGroup(), CurrentClusterName()), f)
+	return AzAksCommandP(Format("%s -g %s -n %s", command, GetGlobalCurrentCluster().ResourceGroup, GetGlobalCurrentCluster().Name), f)
 }
 
 func AzAksQuery(command string) string {
@@ -44,5 +44,5 @@ func AzAksCurrentQuery(command string) string {
 }
 
 func AzAksCurrentQueryP(command string, f AzAksFlags) string {
-	return AzAksQueryP(Format("%s -g %s -n %s", command, CurrentClusterResourceGroup(), CurrentClusterName()), f)
+	return AzAksQueryP(Format("%s -g %s -n %s", command, GetGlobalCurrentCluster().ResourceGroup, GetGlobalCurrentCluster().Name), f)
 }

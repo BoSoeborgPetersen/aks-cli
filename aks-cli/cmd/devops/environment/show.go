@@ -12,13 +12,13 @@ var showCmd = &c.Command{
 	Long:  h.Description(`Show Azure DevOps environment`),
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
-		
+		name := h.StringArg(0)
+
 		h.WriteInfo("Showing Environment")
-		
+
 		// h.AzDevOpsInvokeQuery(h.AzDevOpsQueryFlags{ Area: "environments", Resource: "environments", Query: h.Format("value[?name=='%s']", name) })
 		id := name
-		h.AzDevOpsInvokeQueryF(h.AzDevOpsQueryFlags{ Area: "environments", Resource: "environments", Parameters: h.Format("environmentId=%s", id) })
+		h.AzDevOpsInvokeQueryF(h.AzDevOpsQueryFlags{Area: "environments", Resource: "environments", Parameters: h.Format("environmentId=%s", id)})
 	},
 }
 

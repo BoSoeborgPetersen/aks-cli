@@ -11,7 +11,7 @@ var DevOpsCmd = &c.Command{
 	Long:  h.Description(`Azure DevOps operations`),
 	// TODO: Check that this func is not overwridden by PersistentPreRun on RootCmd
 	PersistentPreRun: func(cmd *c.Command, args []string) {
-		h.AzDevOpsCommand(h.Format("configure --defaults organization=https://dev.azure.com/%s/ project=%s", h.DevOpsOrganizationName(), h.DevOpsProjectName()))
+		h.AzDevOpsCommand(h.Format("configure --defaults organization=https://dev.azure.com/%s/ project=%s", h.GetConfigString(h.DevOpsOrganizationName), h.GetConfigString(h.DevOpsProjectName)))
 	},
 }
 

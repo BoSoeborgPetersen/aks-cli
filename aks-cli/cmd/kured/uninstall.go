@@ -11,15 +11,14 @@ var uninstallCmd = &c.Command{
 	Short: "Uninstall Kured (KUbernetes REboot Daemon)",
 	Long:  h.Description(`Uninstall Kured (KUbernetes REboot Daemon)`),
 	Run: func(cmd *c.Command, args []string) {
-		yes := h.BoolFlag("yes")
 		skipNamespace := h.BoolFlag("skip-namespace")
 
 		h.CheckCurrentCluster()
-		deployment := h.KuredDeploymentName()
+		deployment := h.GetConfigString(h.KuredDeploymentName)
 
 		h.WriteInfo("Uninstalling Kured (KUbernetes REboot Daemon)")
 
-		if yes || h.AreYouSure() {
+		if h.AreYouSure() {
 			h.HelmCommandP("uninstall", h.HelmFlags{Name: deployment, Namespace: deployment})
 
 			if !skipNamespace {

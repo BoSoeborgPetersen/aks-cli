@@ -11,7 +11,7 @@ var invokeCmd = &c.Command{
 	Long:  h.Description(`Execute command in the current cluster`),
 	Args:  h.RequiredArg("<command>"),
 	Run: func(cmd *c.Command, args []string) {
-		command := args[0]
+		command := h.StringArg(0)
 
 		h.CheckCurrentCluster()
 

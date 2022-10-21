@@ -19,7 +19,7 @@ var verboseCmd = &c.Command{
 			h.WriteInfo("Setting global state to non-verbose output")
 		}
 
-		h.SetGlobalVerboseState(disable)
+		h.SetConfigBool(h.GlobalVerboseState, disable)
 	},
 }
 

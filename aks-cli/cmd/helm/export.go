@@ -17,23 +17,23 @@ var exportCmd = &c.Command{
 		namespace := h.NamespaceFlagAllCheck()
 
 		h.WriteInfoF("Saving Helm releases", h.WriteFlags{Regex: regex, Namespace: namespace})
-		// TODO: Add flags struct for HelmQuery and probably also HelmCommand
 		names := h.HelmQueryP(h.Format("list -q -r %s", regex), h.HelmFlags{Namespace: namespace})
 		h.WriteVerbose(h.Format("Names: %s", names))
 
 		for _, name := range h.Fields(names) {
 			h.WriteVerbose(h.Format("Name: %s", name))
-			version := h.HelmQuery(h.Format("status %s -o json | jq .version", name))
-			// Add flags struct
-			h.KubectlSaveHelmSecret(name, version, namespace, "", "")
+			// version := h.HelmQuery(h.Format("status %s -o json | jq .version", name))
+			json := h.HelmQuery(h.Format("status %s -o json", name))
+			version := h.JqQuery(json, ".version")[0]
+			h.KubectlSaveHelmSecret(name, version, namespace)
 		}
 	},
 }
 
 func init() {
 	exportCmd.Flags().StringP("regex", "r", "", "Expression to match against name")
-	exportCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	exportCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	exportCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	exportCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 
 	cmd.HelmCmd.AddCommand(exportCmd)
 }

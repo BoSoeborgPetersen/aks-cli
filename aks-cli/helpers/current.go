@@ -7,13 +7,12 @@ import (
 )
 
 func SubscriptionMenu() Subscription {
-	// subscriptions := make([]Subscription, 0)
-	subscriptions := GetGlobalSubscriptions()
+	subscriptions := GetEnv(GlobalSubscriptions, []Subscription{})
 	if subscriptions == nil || len(subscriptions) == 0 {
 		jsonString := AzQueryP("account list --all", AzFlags{Query: "sort_by([], &name)[*].{Id:id, Name:name, TenantId:tenantId}"})
 
 		Deserialize(jsonString, &subscriptions)
-		SetGlobalSubscriptions(subscriptions)
+		SetEnv(GlobalSubscriptions, subscriptions)
 	}
 
 	if len(subscriptions) == 1 {
@@ -48,7 +47,7 @@ func SwitchCurrentSubscription(clear bool) {
 	WriteInfo("Choose Azure Subscription: ")
 
 	var currentSubscription = SubscriptionMenu()
-	SetGlobalCurrentSubscription(currentSubscription)
+	SetEnv(GlobalCurrentSubscription, currentSubscription)
 
 	AzCommand(Format("account set -s %s", currentSubscription.Id))
 }
@@ -59,34 +58,23 @@ func CheckCurrentSubscription() {
 	Check(check, "No current Azure subscription, run 'aks switch subscription' to select a current Azure subscription")
 }
 
-func CurrentSubscription() string {
-	return GetGlobalCurrentSubscription().Id
-}
-
-func CurrentSubscriptionName() string {
-	return GetGlobalCurrentSubscription().Name
-}
-
-func CurrentSubscriptionTenantId() string {
-	return GetGlobalCurrentSubscription().TenantId
-}
-
 func ClusterMenu(refresh bool) Cluster {
 	currentSubscription := GetGlobalCurrentSubscription()
 	Check(currentSubscription != Subscription{}, "No Azure subscriptions")
 
 	// clusters := make([]Cluster, 0)
-	clusters := GetGlobalClusters()
+	clusters := GetEnv(GlobalClusters, []Cluster{})
+	subscription := GetEnv(GlobalSubscriptionUsedForClusters, Subscription{})
 	test1 := clusters == nil || len(clusters) == 0
-	test2 := GetGlobalSubscriptionUsedForClusters() == Subscription{}
-	test3 := GetGlobalCurrentSubscription() != GetGlobalSubscriptionUsedForClusters()
+	test2 := subscription == Subscription{}
+	test3 := GetGlobalCurrentSubscription() != subscription
 	if refresh || test1 || test2 || test3 {
-		SetGlobalSubscriptionUsedForClusters(GetGlobalCurrentSubscription())
+		SetEnv(GlobalCurrentSubscription, GetGlobalCurrentSubscription())
 		jsonString := AzQueryP("aks list", AzFlags{Query: "sort_by([], &name)[*].{ResourceGroup:resourceGroup, NodeResourceGroup:nodeResourceGroup, Name:name, Location:location, Fqdn:fqdn}"})
 
 		Deserialize(jsonString, &clusters)
 
-		SetGlobalClusters(clusters)
+		SetEnv(GlobalClusters, clusters)
 	}
 
 	if len(clusters) == 1 {
@@ -121,7 +109,7 @@ func SwitchCurrentCluster(clear bool, refresh bool) {
 
 	WriteInfo("Choose Kubernetes Cluster: ")
 
-	SetGlobalCurrentCluster(ClusterMenu(refresh))
+	SetEnv(GlobalCurrentCluster, ClusterMenu(refresh))
 
 	// NOWDO: Be quiet!!!
 	// AzAksCurrentCommand("get-credentials -a --overwrite-existing > $1")
@@ -135,10 +123,10 @@ func SwitchCurrentCluster(clear bool, refresh bool) {
 }
 
 func SwitchCurrentClusterTo(resourceGroup string) {
-	clusterName := ClusterName(resourceGroup)
-	SetGlobalSubscriptionUsedForClusters(GetGlobalCurrentSubscription())
-	SetGlobalClusters(DeserializeT[[]Cluster](AzAksQuery("list")))
-	SetGlobalCurrentCluster(First(GetGlobalClusters(), func(c Cluster) bool { return c.Name == clusterName }))
+	clusterName := GetConfigStringF(ClusterName, resourceGroup)
+	SetEnv(GlobalCurrentSubscription, GetGlobalCurrentSubscription())
+	SetEnv(GlobalClusters, DeserializeT[[]Cluster](AzAksQuery("list")))
+	SetEnv(GlobalCurrentCluster, First(GetEnv(GlobalClusters, []Cluster{}), func(c Cluster) bool { return c.Name == clusterName }))
 
 	AzAksCommand(Format("get-credentials -g %s -n %s -a", resourceGroup, clusterName))
 
@@ -152,28 +140,6 @@ func CheckCurrentCluster() {
 func CheckCurrentClusterOrVariable(variable string, variableName string) {
 	check := IsSet(GetGlobalCurrentCluster() != (Cluster{})) || IsSet(variable)
 	Check(check, Format("The following argument is required: %s\nAlternatively run 'aks switch' to select a current AKS cluster, then the current cluster '%s' will be used", variableName, variableName))
-}
-
-// CONTINUE
-
-func CurrentClusterResourceGroup() string {
-	return GetGlobalCurrentCluster().ResourceGroup
-}
-
-func CurrentClusterName() string {
-	return GetGlobalCurrentCluster().Name
-}
-
-func CurrentClusterLocation() string {
-	return GetGlobalCurrentCluster().Location
-}
-
-func CurrentClusterFqdn() string {
-	return GetGlobalCurrentCluster().Fqdn
-}
-
-func SetCurrentCluster(cluster Cluster) {
-	SetGlobalCurrentCluster(cluster)
 }
 
 // func DeploymentMenu(namespace string) string {

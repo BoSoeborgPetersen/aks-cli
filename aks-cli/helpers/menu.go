@@ -51,22 +51,26 @@ func Tools() {
 	fmt.Println("")
 }
 
-// TODO: Maybe make text red
 func AreYouSure() bool {
+
+	if BoolFlag("yes") {
+		return true
+	}
+
+	// TODO: Maybe make text red
+	templates := &promptui.PromptTemplates{
+		Confirm: "{{ . | red }}",
+	}
+
 	prompt := promptui.Prompt{
 		Label:     "Are you sure you want to proceed?",
 		IsConfirm: true,
+		// HideEntered: true,
+		Templates: templates,
 	}
+	_, err := prompt.Run()
 
-	result, err := prompt.Run()
-
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return false
-	}
-
-	fmt.Printf("You choose %q\n", result)
-	return true
+	return err == nil
 }
 
 // TODO: Maybe make text red

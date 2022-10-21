@@ -4,7 +4,6 @@ import (
 	"github.com/BoSoeborgPetersen/aks-cli/cmd"
 	h "github.com/BoSoeborgPetersen/aks-cli/helpers"
 	c "github.com/spf13/cobra"
-	v "github.com/spf13/viper"
 )
 
 var importCmd = &c.Command{
@@ -20,7 +19,7 @@ var importCmd = &c.Command{
 		h.WriteInfoF("Loading Last-Applied-Config", h.WriteFlags{Regex: regex, Namespace: namespace})
 
 		// TODO: Put in helper
-		files := h.ReadDir(v.GetString("KubectlLastAppliedPath"))
+		files := h.ReadDir(h.GetConfigString("KubectlLastAppliedPath"))
 
 		h.WriteVerbose(h.Format("Files: %s", h.JoinF(files, ",")))
 
@@ -34,7 +33,7 @@ var importCmd = &c.Command{
 
 func init() {
 	importCmd.Flags().String("regex", "", "Expression to match against name")
-	importCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
-	importCmd.Flags().Bool("all-namespaces", false, h.KubernetesAllNamespacesDescription())
+	importCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	importCmd.Flags().Bool("all-namespaces", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	cmd.LastAppliedCmd.AddCommand(importCmd)
 }

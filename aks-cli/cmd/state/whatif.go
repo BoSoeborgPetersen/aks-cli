@@ -19,7 +19,7 @@ var whatifCmd = &c.Command{
 			h.WriteInfo("Setting global state to normal execution")
 		}
 
-		h.SetGlobalWhatIfState(disable)
+		h.SetConfigBool(h.GlobalWhatIfState, disable)
 	},
 }
 

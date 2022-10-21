@@ -12,20 +12,20 @@ var CreateCmd = &c.Command{
 	Long:  h.Description(`Create Azure DevOps Service-Connection`),
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 
 		h.CheckCurrentCluster()
 		namespace := h.NamespaceFlagCheck()
 
 		h.WriteInfo("Creating Service Connection")
 
-		project := h.DevOpsProjectName()
-		subscription := h.CurrentSubscriptionName()
-		subscriptionId := h.CurrentSubscription()
-		subscriptionTenantId := h.CurrentSubscriptionTenantId()
-		cluster := h.CurrentClusterName()
-		clusterFqdn := h.CurrentClusterFqdn()
-		resourceGroup := h.CurrentClusterResourceGroup()
+		project := h.GetConfigString(h.DevOpsProjectName)
+		subscription := h.GetGlobalCurrentSubscription().Name
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
+		subscriptionTenantId := h.GetGlobalCurrentSubscription().TenantId
+		cluster := h.GetGlobalCurrentCluster().Name
+		clusterFqdn := h.GetGlobalCurrentCluster().Fqdn
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
 
 		// $serviceAccount = DevOpsServiceAccountName() $name
 		// $roleBinding = DevOpsRoleBindingName() $name

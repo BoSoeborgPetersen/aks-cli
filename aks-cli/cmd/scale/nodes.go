@@ -13,7 +13,7 @@ var nodesCmd = &c.Command{
 	Args:  h.RequiredArg("Number (<count>) of nodes (VMs)"),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		count := h.IntArgRange(args, 0, "count", 2, 100)
+		count := h.IntArgRange(0, "count", 2, 100)
 
 		h.WriteInfo(h.Format("Scaling cluster to '%d' nodes", count))
 

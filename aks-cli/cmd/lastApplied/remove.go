@@ -42,7 +42,7 @@ var removeCmd = &c.Command{
 
 func init() {
 	removeCmd.Flags().String("regex", "", "Expression to match against name")
-	removeCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
-	removeCmd.Flags().Bool("all-namespaces", false, h.KubernetesAllNamespacesDescription())
+	removeCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	removeCmd.Flags().Bool("all-namespaces", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	cmd.LastAppliedCmd.AddCommand(removeCmd)
 }

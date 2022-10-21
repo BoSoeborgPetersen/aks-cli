@@ -10,24 +10,22 @@ var removeCmd = &c.Command{
 	Use:   "remove",
 	Short: "Remove pod autoscaler",
 	Long:  h.Description(`Remove pod autoscaler`),
-	Run: func(cmd *c.Command, args []string) {
-		// TODO: Deployment is not optional, either show menu (maybe), or change to required arg
-		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagCheck()
-		deployment := h.DeploymentFlagCheck(namespace)
-
-		h.WriteInfoF(h.Format("Remove pod autoscaler for deployment '%s'", deployment), h.WriteFlags{Namespace: namespace})
-
-		RemoveFunc(deployment, namespace)
-	},
+	Run:   h.RunFunctionConvert(RemoveFunc),
 }
 
-func RemoveFunc(deployment string, namespace string) {
+func RemoveFunc() {
+	h.CheckCurrentCluster()
+	namespace := h.NamespaceFlagCheck()
+	deployment := h.DeploymentFlagCheck(namespace)
+
+	h.WriteInfoF(h.Format("Remove pod autoscaler for deployment '%s'", deployment), h.WriteFlags{Namespace: namespace})
+
 	h.KubectlCommandF(h.Format("delete hpa %s", deployment), h.KubectlFlags{Namespace: namespace})
 }
 
 func init() {
-	removeCmd.Flags().String("deployment", "", h.KubernetesDeploymentDescription())
-	removeCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
+	removeCmd.Flags().String("deployment", "", h.GetConfigString(h.KubernetesDeploymentDescription))
+	removeCmd.MarkFlagRequired("deployment")
+	removeCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
 	autoscaler.PodCmd.AddCommand(removeCmd)
 }

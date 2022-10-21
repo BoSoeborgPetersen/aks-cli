@@ -14,7 +14,7 @@ var logsCmd = &c.Command{
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		deployment := h.KuredDeploymentName()
+		deployment := h.GetConfigString(h.KuredDeploymentName)
 
 		if index != -1 {
 			h.WriteInfo(h.Format("Show Kured (KUbernetes REboot Daemon) logs from pod (index: %d)", index))

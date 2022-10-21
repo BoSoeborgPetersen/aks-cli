@@ -2,8 +2,6 @@ package helpers
 
 import (
 	"os"
-
-	v "github.com/spf13/viper"
 )
 
 func AzDevOpsCommand(command string) string {
@@ -21,7 +19,7 @@ func AzDevOpsQuery(command string, f AzFlags) string {
 func AzDevOpsCheck(resourceType string, name string, namespace string, exit bool) {
 	check := AzDevOpsCommandF(Format("%s list", resourceType), AzFlags{Query: Format("[?name=='%s-%s'].name", name, namespace), Output: "tsv"})
 
-	if check == "" {
+	if !IsSet(check) {
 		WriteErrorF(Format("Resource '%s' of type '%s' does not exist", name, resourceType), WriteFlags{Namespace: namespace})
 	}
 
@@ -44,7 +42,7 @@ func AzDevOpsInvokeCommandF(f AzDevOpsCommandFlags) {
 	// filepathString := ConditionalOperator(f.Filepath, Format(" --in-file %s", f.Filepath))
 	filepathString := IfF(f.Filepath, " --in-file %s")
 	apiVersion := AzDevOpsApiVersion()
-	project := DevOpsProjectName()
+	project := GetConfigString(DevOpsProjectName)
 	AzCommandP(Format("devops invoke --area %s --resource %s --route-parameters project=%s %s --http-method %s --api-version %s%s", f.Area, f.Resource, project, f.Parameters, f.MethodHttp, apiVersion, filepathString), AzFlags{Query: f.Query, Output: f.Output})
 }
 
@@ -58,14 +56,14 @@ type AzDevOpsQueryFlags struct {
 
 func AzDevOpsInvokeQueryF(f AzDevOpsQueryFlags) string {
 	apiVersion := AzDevOpsApiVersion()
-	project := DevOpsProjectName()
+	project := GetConfigString(DevOpsProjectName)
 	return AzQueryP(Format("devops invoke --area %s --resource %s --route-parameters project=%s --query-parameters %s --http-method GET --api-version %s", f.Area, f.Resource, project, f.Parameters, apiVersion), AzFlags{Query: f.Query, Output: f.Output})
 }
 
 func AzDevOpsInvokeCheck(area string, resource string, parameters string, query string, exit bool) {
 	check := AzDevOpsInvokeQueryF(AzDevOpsQueryFlags{Area: area, Resource: resource, Parameters: parameters, Query: query, Output: "tsv"})
 
-	if check == "" {
+	if !IsSet(check) {
 		WriteError("Resource does not exist")
 	}
 
@@ -75,7 +73,7 @@ func AzDevOpsInvokeCheck(area string, resource string, parameters string, query 
 }
 
 func AzDevOpsApiVersion() string {
-	return v.GetString("AzureDevOpsApiVersion")
+	return GetConfigString("AzureDevOpsApiVersion")
 }
 
 func AzDevOpsEnvironmentId(name string) string {

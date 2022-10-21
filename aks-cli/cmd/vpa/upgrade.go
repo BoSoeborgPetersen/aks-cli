@@ -11,7 +11,7 @@ var upgradeCmd = &c.Command{
 	Short: "Upgrade Vertical Pod Autoscaler",
 	Long:  h.Description(`Upgrade Vertical Pod Autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		installCmd.Run(cmd, []string{"--skipNamespace --upgrade"})
+		InstallFunc(h.BoolFlag("skip-namespace"), h.BoolFlag("upgrade"))
 	},
 }
 

@@ -14,7 +14,7 @@ import (
 )
 
 func SetDefaultIfEmpty(variable string, defaulttt string) string {
-	if variable != "" {
+	if IsSet(variable) {
 		return variable
 	}
 
@@ -81,6 +81,19 @@ func JoinF(input []string, sep string) string {
 
 func Join(input []string) string {
 	return strings.Join(input, " ")
+}
+
+func GrepIf(regex string, input string) string {
+	if IsSet(regex) {
+		return Grep(regex, input)
+	}
+	return input
+}
+
+func Grep(regex string, input string) string {
+	r, _ := regexp.Compile("\n[^\n]*" + regex + "[^\n]*")
+	matches := r.FindAllString(input, -1)
+	return strings.Trim(JoinF(matches, ""), "\n\r")
 }
 
 func ReplaceAllString(input string, pattern string, replace string) string {
@@ -260,15 +273,6 @@ done:
 	return buf.String(), input, nil
 }
 
-func JqCommand(json string, command string) string {
-	// q,err := gojq.Parse(json)
-	// if err != nil {
-	// 	fmt.Println("Error: " + err.Error())<
-	// }
-	// return q.Run(command)
-	return ""
-}
-
 func DeserializeB[T any](jsonBytes []byte, t T) T {
 	WriteErrorIf(json.Unmarshal(jsonBytes, &t))
 	return t
@@ -285,6 +289,18 @@ func Deserialize[T any](jsonString string, t T) T {
 	return t
 }
 
+func DeserializeL(jsonStr string) []interface{} {
+	var x []interface{}
+	json.Unmarshal([]byte(jsonStr), &x)
+	return x
+}
+
+func DeserializeG(jsonStr string) map[string]interface{} {
+	var x map[string]interface{}
+	json.Unmarshal([]byte(jsonStr), &x)
+	return x
+}
+
 func Serialize[T any](t T) string {
 	return string(HandleError(json.Marshal(t)))
 }
@@ -299,6 +315,14 @@ func GuidFormat(format string) string {
 
 func TimeNow() time.Time {
 	return time.Now()
+}
+
+func TakeS(str string, length int) string {
+	if len(str) > length {
+		return str[0:length]
+	} else {
+		return str
+	}
 }
 
 func Where[T any](list []T, predicate func(T) bool) []T {

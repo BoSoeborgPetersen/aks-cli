@@ -15,7 +15,7 @@ var installCmd = &c.Command{
 		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
-		deployment := h.KedaDeploymentName()
+		deployment := h.GetConfigString(h.KedaDeploymentName)
 
 		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Keda (Kubernetes Event-driven Autoscaling)", operationName))

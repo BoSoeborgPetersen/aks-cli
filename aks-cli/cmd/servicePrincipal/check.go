@@ -12,17 +12,17 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check AKS cluster Service Principal`),
 	Args:  h.RequiredArg("Azure <Global Subscription> for global resources (cluster Resource Group & Azure Container Registry)"),
 	Run: func(cmd *c.Command, args []string) {
-		globalSubscription := args[0]
+		globalSubscription := h.StringArg(0)
 
-		if globalSubscription == "" {
+		if !h.IsSet(globalSubscription) {
 			globalSubscription = h.SubscriptionMenu().Name
 		}
 
 		h.CheckCurrentCluster()
 		h.CheckVariable(globalSubscription, "global subscription")
-		resourceGroup := h.CurrentClusterResourceGroup()
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
 		h.AzCheckSubscription(globalSubscription)
-		subscriptionId := h.CurrentSubscription()
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
 
 		registry := h.AzQueryP("acr list", h.AzFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckContainerRegistry(registry, globalSubscription)

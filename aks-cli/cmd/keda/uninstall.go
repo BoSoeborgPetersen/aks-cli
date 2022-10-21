@@ -11,15 +11,14 @@ var uninstallCmd = &c.Command{
 	Short: "Uninstall Keda (Kubernetes Event-driven Autoscaling)",
 	Long:  h.Description(`Uninstall Keda (Kubernetes Event-driven Autoscaling)`),
 	Run: func(cmd *c.Command, args []string) {
-		yes := h.BoolFlag("yes")
 		skipNamespace := h.BoolFlag("skip-namespace")
 
 		h.CheckCurrentCluster()
-		deployment := h.KedaDeploymentName()
+		deployment := h.GetConfigString(h.KedaDeploymentName)
 
 		h.WriteInfo("Uninstalling Keda (Kubernetes Event-driven Autoscaling)")
 
-		if yes || h.AreYouSure() {
+		if h.AreYouSure() {
 			h.HelmCommandP("uninstall", h.HelmFlags{Name: deployment, Namespace: deployment})
 
 			if !skipNamespace {

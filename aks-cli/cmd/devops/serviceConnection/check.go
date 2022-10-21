@@ -12,11 +12,11 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Azure DevOps Service-Connection`),
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 		namespace := h.NamespaceFlagCheck()
 
-		serviceAccount := h.DevOpsServiceAccountName(name)
-		roleBinding := h.DevOpsRoleBindingName(name)
+		serviceAccount := h.GetConfigStringF(h.DevOpsServiceAccountName, h.StringUnixName(name))
+		roleBinding := h.GetConfigStringF(h.DevOpsRoleBindingName, h.StringUnixName(name))
 
 		h.WriteInfo("Checking DevOps Service Connection")
 

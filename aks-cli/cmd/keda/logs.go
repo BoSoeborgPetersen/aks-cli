@@ -14,7 +14,7 @@ var logsCmd = &c.Command{
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
-		deployment := h.KedaDeploymentName()
+		deployment := h.GetConfigString(h.KedaDeploymentName)
 
 		if index != -1 {
 			h.WriteInfo(h.Format("Show Keda (Kubernetes Event-driven Autoscaling) logs from pod (index: %d)", index))

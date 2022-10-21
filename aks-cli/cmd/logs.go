@@ -11,7 +11,7 @@ var logsCmd = &c.Command{
 	Long:  h.Description(`Get container logs`),
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
-		regex := args[0]
+		regex := h.StringArg(0)
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
@@ -33,7 +33,7 @@ var logsCmd = &c.Command{
 
 func init() {
 	logsCmd.Flags().IntP("index", "i", -1, "Index of the pod to open shell in")
-	logsCmd.Flags().StringP("namespace", "n", "default", h.KubernetesNamespaceDescription())
-	logsCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	logsCmd.Flags().StringP("namespace", "n", "default", h.GetConfigString(h.KubernetesNamespaceDescription))
+	logsCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	rootCmd.AddCommand(logsCmd)
 }

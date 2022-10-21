@@ -8,22 +8,24 @@ import (
 
 var enableCmd = &c.Command{
 	Use:   "enable",
-	Short: "Disable node autoscaler",
-	Long:  h.Description(`Disable node autoscaler`),
-	Run: func(cmd *c.Command, args []string) {
-		min := h.IntFlagRange("min", 2, 100)
-		max := h.IntFlagRange("max", 2, 100)
+	Short: "Enable node autoscaler",
+	Long:  h.Description(`Enable node autoscaler`),
+	Run: h.RunFunctionConvert(EnableFunc),
+}
 
-		h.CheckCurrentCluster()
+func EnableFunc() {
+	min := h.IntFlagRange("min", 2, 100)
+	max := h.IntFlagRange("max", 2, 100)
 
-		h.WriteInfo("Enable node autoscaler")
+	h.CheckCurrentCluster()
 
-		h.Write(h.AzAksCurrentCommand(h.Format("update --enable-cluster-autoscaler --min-count %d --max-count %d", min, max)))
-	},
+	h.WriteInfo("Enabling node autoscaler")
+
+	h.Write(h.AzAksCurrentCommand(h.Format("update --enable-cluster-autoscaler --min-count %d --max-count %d", min, max)))
 }
 
 func init() {
-	enableCmd.Flags().Int("min", 2, h.AzureVmMinNodeCountDescription())
-	enableCmd.Flags().Int("max", 4, h.AzureVmMaxNodeCountDescription())
+	enableCmd.Flags().Int("min", 2, h.GetConfigString(h.AzureVmMinNodeCountDescription))
+	enableCmd.Flags().Int("max", 4, h.GetConfigString(h.AzureVmMaxNodeCountDescription))
 	autoscaler.NodeCmd.AddCommand(enableCmd)
 }

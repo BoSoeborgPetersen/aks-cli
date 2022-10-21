@@ -11,29 +11,19 @@ var replaceCmd = &c.Command{
 	Short: "Replace pod autoscaler",
 	Long:  h.Description(`Replace pod autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
-		// TODO: Deployment is not optional, either show menu (maybe), or change to required arg
-		min := h.IntFlagRange("min", 1, 1000)
-		max := h.IntFlagRange("max", 1, 1000)
-		limit := h.IntFlagRange("limit", 40, 80)
+		h.WriteInfo("Replace pod autoscaler")
 
-		h.CheckCurrentCluster()
-		namespace := h.NamespaceFlagCheck()
-		deployment := h.DeploymentFlagCheck(namespace)
-
-		h.WriteInfoF(h.Format("Replace pod autoscaler for deployment '%s'", deployment), h.WriteFlags{Namespace: namespace})
-
-		RemoveFunc(deployment, namespace)
-		AddFunc(deployment, min, max, limit, namespace)
-		// removeCmd.Run(cmd, []string{})
-		// addCmd.Run(cmd, []string{})
+		RemoveFunc()
+		AddFunc()
 	},
 }
 
 func init() {
-	replaceCmd.Flags().String("deployment", "", h.KubernetesDeploymentDescription())
-	replaceCmd.Flags().Int("min", 3, h.KubernetesMinPodCountDescription())
-	replaceCmd.Flags().Int("max", 6, h.KubernetesMaxPodCountDescription())
-	replaceCmd.Flags().Int("limit", 60, h.KubernetesCpuScalingLimitDescription())
-	replaceCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
+	replaceCmd.Flags().String("deployment", "", h.GetConfigString(h.KubernetesDeploymentDescription))
+	replaceCmd.MarkFlagRequired("deployment")
+	replaceCmd.Flags().Int("min", 3, h.GetConfigString(h.KubernetesMinPodCountDescription))
+	replaceCmd.Flags().Int("max", 6, h.GetConfigString(h.KubernetesMaxPodCountDescription))
+	replaceCmd.Flags().Int("limit", 60, h.GetConfigString(h.KubernetesCpuScalingLimitDescription))
+	replaceCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
 	autoscaler.PodCmd.AddCommand(replaceCmd)
 }

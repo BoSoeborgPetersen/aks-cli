@@ -15,13 +15,13 @@ var resourceGroupCmd = &c.Command{
 		// MaybeDo: Use this default resource group in all aks functions that require a resource group.
 		resourceGroup := h.StringFlag("resourceGroup")
 
-		if resourceGroup != "" {
+		if h.IsSet(resourceGroup) {
 			h.WriteInfo(h.Format("Setting global state to use default resource group '%s'", resourceGroup))
 		} else {
 			h.WriteInfo("Setting global state to not use a default resource group")
 		}
 
-		h.SetGlobalDefaultResourceGroup(resourceGroup)
+		h.SetConfigString(h.GlobalDefaultResourceGroup, resourceGroup)
 	},
 }
 

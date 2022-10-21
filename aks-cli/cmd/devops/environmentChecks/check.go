@@ -12,8 +12,8 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Add Check to Azure DevOps environment`),
 	Args:  h.RequiredArg("Environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
-		
+		name := h.StringArg(0)
+
 		environmentId := h.AzDevOpsEnvironmentId(name)
 		h.WriteInfo("Checking DevOps Environment Check")
 		h.AzDevOpsInvokeCheck("PipelinesChecks", "configurations", h.Format("resourceType=environment resourceId=%s", environmentId), h.Format("value[?resource.name=='%s'].resource.name", name), true)

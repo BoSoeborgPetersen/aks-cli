@@ -12,7 +12,7 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Kured (KUbernetes REboot Daemon)`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		deployment := h.KuredDeploymentName()
+		deployment := h.GetConfigString(h.KuredDeploymentName)
 
 		h.WriteInfo("Checking Kured (KUbernetes REboot Daemon)")
 

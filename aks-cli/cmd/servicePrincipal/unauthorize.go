@@ -15,9 +15,9 @@ var unauthorizeCmd = &c.Command{
 		// TODO: Check if Service Principal is authorized.
 
 		h.CheckCurrentCluster()
-		globalSubscription := h.SubscriptionArgCheck(args, 0)
-		resourceGroup := h.CurrentClusterResourceGroup()
-		subscriptionId := h.CurrentSubscription()
+		globalSubscription := h.SubscriptionArgCheck(0)
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
 
 		registry := h.AzQueryP("acr list", h.AzFlags{Query: "[].name", Output: "tsv", Subscription: globalSubscription})
 		h.AzCheckContainerRegistry(registry, globalSubscription)

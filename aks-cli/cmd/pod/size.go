@@ -12,7 +12,7 @@ var sizeCmd = &c.Command{
 	Long:  h.Description(`Get pod disk space usage`),
 	Args:  h.RequiredArg("expression (<regex>) to match against name"),
 	Run: func(cmd *c.Command, args []string) {
-		regex := args[0]
+		regex := h.StringArg(0)
 		index := h.IntFlag("index")
 
 		h.CheckCurrentCluster()
@@ -31,7 +31,7 @@ var sizeCmd = &c.Command{
 }
 
 func testCommand(name string, namespace string, command string, tryCommand string) string {
-	if command == "" {
+	if !h.IsSet(command) {
 		output := h.KubectlQueryF(h.Format("exec %s", name), h.KubectlFlags{Namespace: namespace, PostFix: h.Format(" -- %s 2>&1", tryCommand)})
 		if !h.Contains(output, "command terminated with exit code 126") {
 			command = tryCommand
@@ -42,7 +42,7 @@ func testCommand(name string, namespace string, command string, tryCommand strin
 
 func init() {
 	sizeCmd.Flags().IntP("index", "i", 0, "Index of the pod to open shell in")
-	sizeCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	sizeCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	sizeCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	sizeCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	cmd.PodCmd.AddCommand(sizeCmd)
 }

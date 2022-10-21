@@ -14,7 +14,6 @@ var versionCmd = &c.Command{
 		h.CheckCurrentCluster()
 
 		h.WriteInfo("Current AKS cluster version")
-		h.Write("TEMPTEST: " + h.KubernetesNamespaceDescription())
 
 		h.Write(h.AzAksCurrentCommandP("show", h.AzAksFlags{Query: "kubernetesVersion", Output: "tsv"}))
 	},

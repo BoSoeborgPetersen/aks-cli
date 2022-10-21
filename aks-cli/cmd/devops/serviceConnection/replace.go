@@ -12,7 +12,7 @@ var replaceCmd = &c.Command{
 	Long:  h.Description(`Replace Azure DevOps Service-Connection`),
 	Args:  h.RequiredArg("Service Connection <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 		namespace := h.StringFlag("namespace")
 
 		h.WriteInfo("Replacing (delete, then create) Service Connection")

@@ -15,13 +15,13 @@ var checkCmd = &c.Command{
 		h.RequiredArgAt("Azure <global subscription> for Azure Container Registry", 1),
 	),
 	Run: func(cmd *c.Command, args []string) {
-		resourceGroup := args[0]
-		globalSubscription := args[1]
+		resourceGroup := h.StringArg(0)
+		globalSubscription := h.StringArg(1)
 		// TODO: Test
 
-		globalResourceGroup := h.GlobalResourceGroupName(resourceGroup)
+		globalResourceGroup := h.GetConfigStringF(h.GlobalResourceGroupName, h.StringMiddle(resourceGroup))
 		h.AzCheckResourceGroup(globalResourceGroup, globalSubscription)
-		registry := h.RegistryName(resourceGroup)
+		registry := h.GetConfigStringF(h.RegistryName, h.StringMiddle(resourceGroup))
 
 		h.WriteInfo("Checking Registry")
 		h.AzCheckContainerRegistry(registry, globalSubscription)

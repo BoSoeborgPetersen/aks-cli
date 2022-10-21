@@ -16,25 +16,26 @@ var AddCmd = &c.Command{
 		h.RequiredArgAt("Kubernetes <namespace>", 1),
 	),
 	Run: func(cmd *c.Command, args []string) {
-		environment := args[0]
+		environment := h.StringArg(0)
 
 		h.CheckCurrentCluster()
-		namespace := h.NamespaceArgCheck(args, 1)
+		namespace := h.NamespaceArgCheck(1)
 
 		/*serviceEndpoint :=*/
 		serviceConnection.CreateCmd.Run(cmd, []string{environment, namespace})
 		serviceEndpoint := "lksdjf"
 
 		// NOWDO: Fix
-		serviceEndpointId := serviceEndpoint // | jq -r ' .id' // TODO: Fix
-		for serviceEndpointId == "" {
+		// serviceEndpointId := serviceEndpoint // | jq -r ' .id' // TODO: Create JqCommand and use it here
+		serviceEndpointId := h.JqQuery(serviceEndpoint, ".id")[0] // | jq -r ' .id' // TODO: Create JqCommand and use it here
+		for !h.IsSet(serviceEndpointId) {
 			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
 		}
 
 		arguments := map[string]string{
 			"name":              namespace,
 			"namespace":         namespace,
-			"clusterName":       h.CurrentClusterName(),
+			"clusterName":       h.GetGlobalCurrentCluster().Name,
 			"serviceEndpointId": serviceEndpointId,
 		}
 

@@ -18,12 +18,12 @@ var migrateCmd = &c.Command{
 	Run: func(cmd *c.Command, args []string) {
 		// LaterDo: Add a lot more checks.
 		// LaterDo: Allow to run from other subscriptions (add subscription parameter, calculate other variables from that).
-		oldRegistry := args[0]
-		oldRegistryRepo := args[1]
-		newRegistryRepo := args[2]
+		oldRegistry := h.StringArg(0)
+		oldRegistryRepo := h.StringArg(1)
+		newRegistryRepo := h.StringArg(2)
 		newRegistry := h.StringFlag("destRegistry")
 
-		if newRegistry == "" {
+		if !h.IsSet(newRegistry) {
 			newRegistry = oldRegistry
 		}
 

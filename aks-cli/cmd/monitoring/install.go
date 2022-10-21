@@ -13,10 +13,10 @@ var installCmd = &c.Command{
 	Long:  h.Description(`Install Monitoring with Prometheus and Grafana (Helm chart) (uses local config files)`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		cluster := h.CurrentClusterName()
-		resourceGroup := h.CurrentClusterResourceGroup()
-		subscriptionId := h.CurrentSubscription()
-		publicIp := h.PublicIpName("", cluster)
+		cluster := h.GetGlobalCurrentCluster().Name
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		subscriptionId := h.GetGlobalCurrentSubscription().Id
+		publicIp := h.GetConfigStringF(h.PublicIpName, cluster)
 		publicIpId := h.Format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/publicIPAddresses/%s", subscriptionId, resourceGroup, publicIp)
 
 		h.WriteInfo("Create monitoring namespace")

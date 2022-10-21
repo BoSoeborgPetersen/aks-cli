@@ -15,17 +15,22 @@ var installCmd = &c.Command{
 		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
-		deployment := h.VpaDeploymentName()
 
 		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Vertical Pod Autoscaler", operationName))
 
-		if !skipNamespace {
-			h.KubectlCommand(h.Format("create ns %s", deployment))
-		}
-		operation := h.IfElse(upgrade, "upgrade", "install")
-		h.HelmCommandP(operation, h.HelmFlags{Name: deployment, Repo: "cowboysysop/vertical-pod-autoscaler", Namespace: deployment, SetArgs: []string{`nodeSelector."kubernetes\.io/os"=linux`}})
+		InstallFunc(skipNamespace, upgrade)
 	},
+}
+
+func InstallFunc(skipNamespace bool, upgrade bool) {
+	deployment := h.GetConfigString(h.VpaDeploymentName)
+
+	if !skipNamespace {
+		h.KubectlCommand(h.Format("create ns %s", deployment))
+	}
+	operation := h.IfElse(upgrade, "upgrade", "install")
+	h.HelmCommandP(operation, h.HelmFlags{Name: deployment, Repo: "cowboysysop/vertical-pod-autoscaler", Namespace: deployment, SetArgs: []string{`nodeSelector."kubernetes\.io/os"=linux`}})
 }
 
 func init() {

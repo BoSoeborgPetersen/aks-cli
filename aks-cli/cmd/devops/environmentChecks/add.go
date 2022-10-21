@@ -12,7 +12,7 @@ var AddCmd = &c.Command{
 	Long:  h.Description(`Check Azure DevOps environment Check`),
 	Args:  h.RequiredArg("environment <name>"),
 	Run: func(cmd *c.Command, args []string) {
-		name := args[0]
+		name := h.StringArg(0)
 		approver := h.StringFlag("approver")
 
 		h.WriteInfo("Creating Environment")

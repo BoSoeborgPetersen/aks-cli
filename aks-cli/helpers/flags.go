@@ -1,8 +1,8 @@
 package helpers
 
 func StringFlag(name string) string {
-	// return HandleError(cmd.Flags().GetString(name))
-	return HandleError(GlobalCurrentCmd.Flags().GetString(name))
+	f, err := GlobalCurrentCmd.Flags().GetString(name)
+	return IfElse(err != nil, "", f)
 }
 
 func StringFlagPrependWithDash(prefixName string, name string) string {
@@ -17,26 +17,34 @@ func IntFlagRange(name string, min int, max int) int {
 }
 
 func IntFlag(name string) int {
-	return HandleError(GlobalCurrentCmd.Flags().GetInt(name))
+	f, err := GlobalCurrentCmd.Flags().GetInt(name)
+	return IfElse(err != nil, 0, f)
 }
 
 func BoolFlag(name string) bool {
-	return HandleError(GlobalCurrentCmd.Flags().GetBool(name))
+	f, err := GlobalCurrentCmd.Flags().GetBool(name)
+	return IfElse(err != nil, false, f)
 }
 
 func NginxDeploymentNamePrefixFlag() string {
-	prefix := StringFlag("prefix")
-	return NginxDeploymentName(prefix)
+	return PrependWithDash(StringFlag("prefix"), GetConfigString(NginxDeploymentName))
 }
 
-func IntArgRange(args []string, index int, name string, min int, max int) int {
-	count := Atoi(args[index])
+func IntArgRange(index int, name string, min int, max int) int {
+	count := Atoi(GlobalCurrentArgs[index])
 	CheckNumberRange(count, name, min, max)
 	return count
 }
 
-func SubscriptionArgCheck(args []string, index int) string {
-	globalSubscription := args[index]
+func StringArg(index int) string {
+	if len(GlobalCurrentArgs) > index {
+		return GlobalCurrentArgs[index]
+	}
+	return ""
+}
+
+func SubscriptionArgCheck(index int) string {
+	globalSubscription := GlobalCurrentArgs[index]
 	AzCheckSubscription(globalSubscription)
 	return globalSubscription
 }
@@ -46,8 +54,8 @@ func DeploymentFlagCheck(namespace string) string {
 	return KubectlCheckDeployment(deployment, namespace)
 }
 
-func NamespaceArgCheck(args []string, index int) string {
-	namespace := args[index]
+func NamespaceArgCheck(index int) string {
+	namespace := GlobalCurrentArgs[index]
 	KubectlCheckNamespace(namespace)
 	return namespace
 }

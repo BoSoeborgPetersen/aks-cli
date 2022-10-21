@@ -15,8 +15,7 @@ var upgradesCmd = &c.Command{
 
 		h.WriteInfo("Current AKS cluster upgradable versions")
 
-		// NOWDO: Rewrite
-		// h.PrintAzAksCommandF("get-versions", h.AzAksCommandFlags{ Location: location, Query: "orchestrators[].{Version:orchestratorVersion, IsPreview:isPreview}", Output: "table" })
+		// TODO: Rewrite
 		h.Write(h.AzAksCurrentCommandP("get-upgrades", h.AzAksFlags{Query: "controlPlaneProfile.upgrades[].{Version:kubernetesVersion, IsPreview:isPreview}", Output: "table"}))
 		// ($upgrades | ConvertFrom-Json | Sort-Object {[version] $_.kubernetesVersion} | Select-Object @{ name='Version';expression= { "$($_.kubernetesVersion) $($_.isPreview -replace 'True','(Preview)')" }} | Format-Table -HideTableHeaders | Out-String).Trim()
 	},

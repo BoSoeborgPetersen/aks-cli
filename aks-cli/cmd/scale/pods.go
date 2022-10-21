@@ -13,7 +13,7 @@ var podsCmd = &c.Command{
 	Args:  h.RequiredArg("number (<count>) of pods"),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		count := h.IntArgRange(args, 0, "count", 0, 100)
+		count := h.IntArgRange(0, "count", 0, 100)
 		namespace := h.NamespaceFlagCheck()
 		deployment := h.DeploymentFlagCheck(namespace)
 
@@ -25,7 +25,7 @@ var podsCmd = &c.Command{
 
 func init() {
 	podsCmd.Flags().String("deployment", "", "Kubenetes deployment")
-	podsCmd.Flags().String("namespace", "", h.KubernetesNamespaceDescription())
+	podsCmd.Flags().String("namespace", "", h.GetConfigString(h.KubernetesNamespaceDescription))
 
 	cmd.ScaleCmd.AddCommand(podsCmd)
 }

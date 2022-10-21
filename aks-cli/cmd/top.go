@@ -11,16 +11,13 @@ var topCmdValidTypes = map[string]string{
 }
 
 var topCmd = &c.Command{
-	Use:   "top <type> <regex>",
+	Use:   "top <type> [regex]",
 	Short: "Show Kubernetes resource utilization",
 	Long:  h.Description(`Show Kubernetes resource utilization`),
-	Args: h.RequiredAll(
-		h.ValidArg("Kubernetess resource <type>", topCmdValidTypes, false),
-		h.RequiredArgAt("expression (<regex>) to match against name", 1),
-	),
+	Args: h.ValidArg("Kubernetess resource <type>", topCmdValidTypes, false),
 	Run: func(cmd *c.Command, args []string) {
-		resourceType := args[0]
-		regex := args[1]
+		resourceType := h.StringArg(0)
+		regex := h.StringArg(1)
 
 		h.CheckCurrentCluster()
 		match := h.MatchString("po|pod|pods", resourceType)
@@ -28,12 +25,12 @@ var topCmd = &c.Command{
 
 		h.WriteInfoF(h.Format("Show resource utilization of '%s'", resourceType), h.WriteFlags{Regex: regex, Namespace: namespace})
 
-		h.KubectlCommandF(h.Format("top %s", resourceType), h.KubectlFlags{Regex: regex, Namespace: namespace})
+		h.Write(h.KubectlCommandF(h.Format("top %s", resourceType), h.KubectlFlags{Regex: regex, Namespace: namespace}))
 	},
 }
 
 func init() {
-	topCmd.Flags().StringP("namespace", "n", "", h.KubernetesNamespaceDescription())
-	topCmd.Flags().BoolP("all-namespaces", "A", false, h.KubernetesAllNamespacesDescription())
+	topCmd.Flags().StringP("namespace", "n", "", h.GetConfigString(h.KubernetesNamespaceDescription))
+	topCmd.Flags().BoolP("all-namespaces", "A", false, h.GetConfigString(h.KubernetesAllNamespacesDescription))
 	rootCmd.AddCommand(topCmd)
 }

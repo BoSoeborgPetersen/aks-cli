@@ -15,7 +15,7 @@ var installCmd = &c.Command{
 		upgrade := h.BoolFlag("upgrade")
 
 		h.CheckCurrentCluster()
-		deployment := h.KuredDeploymentName()
+		deployment := h.GetConfigString(h.KuredDeploymentName)
 
 		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
 		h.WriteInfo(h.Format("%s Kured (KUbernetes REboot Daemon)", operationName))
@@ -23,7 +23,7 @@ var installCmd = &c.Command{
 		if !skipNamespace {
 			h.KubectlCommand(h.Format("create ns %s", deployment))
 		}
-		h.HelmCommandP(h.IfElse(upgrade, "upgrade", "install"), h.HelmFlags{Name: deployment, Repo: "kured/kured", Namespace: deployment, SetArgs: []string{"nodeSelector.\"kubernetes\\.io/os\"=linux"}})
+		h.HelmCommandP(h.IfElse(upgrade, "upgrade", "install"), h.HelmFlags{Name: deployment, Repo: "kubereboot/kured", Namespace: deployment, SetArgs: []string{"nodeSelector.\"kubernetes\\.io/os\"=linux"}})
 	},
 }
 

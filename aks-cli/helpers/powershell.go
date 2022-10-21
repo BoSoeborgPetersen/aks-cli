@@ -5,11 +5,10 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	v "github.com/spf13/viper"
 )
 
 func IsDevelopmentMode() bool {
-	return FileExists(v.GetString("AksCliDevelopmentPath"))
+	return FileExists(GetConfigString("AksCliDevelopmentPath"))
 }
 
 // func SetDebuggingState(disable bool) {
@@ -67,9 +66,9 @@ func WriteErrorF(message string, f WriteFlags) {
 	// log.Fatal(err)
 	WriteErrorMessage(Format("%s%s%s%s", message, regexString, indexString, namespaceString))
 
-	if f.Exit {
+	// if f.Exit {
 		os.Exit(1)
-	}
+	// }
 }
 
 func WriteInfoMessage(message string) {
@@ -105,7 +104,7 @@ func WriteInfoF(message string, f WriteFlags) {
 }
 
 func UpdateShellWindowTitle() {
-	windowTitle := CurrentClusterName() + If(IsDevelopmentMode(), " (dev)")
+	windowTitle := GetGlobalCurrentCluster().Name + If(IsDevelopmentMode(), " (dev)")
 	fmt.Print("\033]0;" + windowTitle + "\007")
 }
 

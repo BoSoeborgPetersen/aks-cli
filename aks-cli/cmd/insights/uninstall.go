@@ -12,8 +12,8 @@ var uninstallCmd = &c.Command{
 	Long:  h.Description(`Detach Azure Operational Insights Workspace from AKS cluster, and delete it`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		resourceGroup := h.CurrentClusterResourceGroup()
-		insights := h.InsightsName(resourceGroup)
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
+		insights := h.GetConfigStringF(h.InsightsName, resourceGroup)
 		
 		h.WriteInfo(h.Format("Uninstalling Operational Insights '%s'", insights))
 		

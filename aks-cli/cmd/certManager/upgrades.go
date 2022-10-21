@@ -15,7 +15,7 @@ var upgradesCmd = &c.Command{
 
 		h.WriteInfo("Show Certificate Manager upgradable versions")
 
-		h.HelmQuery("search repo jetstack/cert-manager")
+		h.HelmSearchRepoW("jetstack/cert-manager")
 	},
 }
 

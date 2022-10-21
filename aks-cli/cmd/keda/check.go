@@ -12,7 +12,7 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Keda (Kubernetes Event-driven Autoscaling)`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		deployment := h.KedaDeploymentName()
+		deployment := h.GetConfigString(h.KedaDeploymentName)
 		
 		h.WriteInfo("Checking Keda (Kubernetes Event-driven Autoscaling)")
 		

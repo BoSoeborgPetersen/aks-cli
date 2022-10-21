@@ -19,11 +19,11 @@ var versionsCmd = &c.Command{
 			h.AzCheckLocation(location)
 			h.WriteInfo("Available AKS versions for location '" + location + "'")
 		} else {
-			location = h.CurrentClusterLocation()
+			location = h.GetGlobalCurrentCluster().Location
 			h.WriteInfo("Available AKS versions for cluster location '" + location + "'")
 		}
 
-		// NOWDO: Improve
+		// TODO: Improve
 		h.Write(h.AzAksCommandP("get-versions", h.AzAksFlags{Location: location, Query: "orchestrators[].{Version:orchestratorVersion, IsPreview:isPreview}", Output: "table"}))
 		// versions := h.AzAksCommandF("get-versions", h.AzAksCommandFlags{Location: location, Query: "orchestrators", Output: `json | jq -r 'sort_by(.orchestratorVersion) | map(.orchestratorVersion+(.isPreview // \"\") | sub(\"True\";\" (Preview)\"))'`})
 		// sort_by(.orchestratorVersion) | map(.orchestratorVersion+(.isPreview // "") | sub("True";" (Preview)"))
@@ -31,6 +31,6 @@ var versionsCmd = &c.Command{
 }
 
 func init() {
-	versionsCmd.Flags().StringP("location", "l", "", h.AzureLocationDescription("Current AKS cluster location"))
+	versionsCmd.Flags().StringP("location", "l", "", h.GetConfigStringP(h.AzureLocationDescription, "Current AKS cluster location"))
 	rootCmd.AddCommand(versionsCmd)
 }

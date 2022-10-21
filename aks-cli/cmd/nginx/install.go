@@ -25,7 +25,7 @@ var installCmd = &c.Command{
 
 		namespace := "ingress"
 		h.CheckCurrentCluster()
-		resourceGroup := h.CurrentClusterResourceGroup()
+		resourceGroup := h.GetGlobalCurrentCluster().ResourceGroup
 
 		groupName := ""
 		groupName = h.ReplaceAll(groupName, "[0-9]+", "")
@@ -35,8 +35,8 @@ var installCmd = &c.Command{
 		} else {
 			dns = h.PrependWithDash(prefix, groupName)
 		}
-		publicIp := h.PublicIpName(prefix, resourceGroup)
-		deployment := h.NginxDeploymentName(prefix)
+		publicIp := h.PrependWithDash(prefix, h.GetConfigStringF(h.PublicIpName, resourceGroup))
+		deployment := h.PrependWithDash(prefix, h.GetConfigString(h.NginxDeploymentName))
 		configFile := h.PrependWithDash(configPrefix, "nginx-config.yaml")
 
 		operationName := h.IfElse(upgrade, "Upgrading", "Installing")
@@ -46,13 +46,13 @@ var installCmd = &c.Command{
 			if addIp {
 				h.AzCommand(h.Format("network public-ip create -g %s -n %s --allocation-method Static --sku %s --idle-timeout 30", resourceGroup, publicIp, sku))
 			}
-			if ip == "" {
+			if !h.IsSet(ip) {
 				ip = h.AzQueryP(h.Format("network public-ip show -g %s -n %s", resourceGroup, publicIp), h.AzFlags{Query: "[ipAddress]", Output: "tsv"})
 			}
 			h.KubectlCreateNamespace(namespace)
 
 			var extraArgs []string
-			if prefix == "" {
+			if !h.IsSet(prefix) {
 				s01 := h.Format("controller.electionID='%s-ingress-controller-leader'", prefix)
 				s02 := h.Format("controller.ingressClass='%s'", prefix)
 				s03 := h.Format("controller.ingressClassResource.name='%s'", prefix)

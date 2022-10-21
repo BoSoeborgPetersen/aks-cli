@@ -15,7 +15,7 @@ var upgradesCmd = &c.Command{
 
 		h.WriteInfo("Show Nginx upgradable versions")
 
-		h.HelmQuery("search repo ingress-nginx/ingress-nginx")
+		h.HelmSearchRepo("ingress-nginx/ingress-nginx")
 	},
 }
 

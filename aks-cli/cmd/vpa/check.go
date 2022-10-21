@@ -12,7 +12,7 @@ var checkCmd = &c.Command{
 	Long:  h.Description(`Check Vertical Pod Autoscaler`),
 	Run: func(cmd *c.Command, args []string) {
 		h.CheckCurrentCluster()
-		deployment := h.VpaDeploymentName()
+		deployment := h.GetConfigString(h.VpaDeploymentName)
 
 		h.WriteInfo("Checking Vertical Pod Autoscaler")
 
