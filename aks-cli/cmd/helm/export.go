@@ -23,8 +23,8 @@ var exportCmd = &c.Command{
 		for _, name := range h.Fields(names) {
 			h.WriteVerbose(h.Format("Name: %s", name))
 			// version := h.HelmQuery(h.Format("status %s -o json | jq .version", name))
-			json := h.HelmQuery(h.Format("status %s -o json", name))
-			version := h.JqQuery(json, ".version")[0]
+			json := h.HelmQueryP(h.Format("status %s -o json", name), h.HelmFlags{Namespace: namespace})
+			version := h.Format("%v", h.JqObjectToFloat(json, ".version"))
 			h.KubectlSaveHelmSecret(name, version, namespace)
 		}
 	},

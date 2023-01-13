@@ -27,7 +27,7 @@ var AddCmd = &c.Command{
 
 		// NOWDO: Fix
 		// serviceEndpointId := serviceEndpoint // | jq -r ' .id' // TODO: Create JqCommand and use it here
-		serviceEndpointId := h.JqQuery(serviceEndpoint, ".id")[0] // | jq -r ' .id' // TODO: Create JqCommand and use it here
+		serviceEndpointId := h.JqObject(serviceEndpoint, ".id")[0] // | jq -r ' .id' // TODO: Create JqCommand and use it here
 		for !h.IsSet(serviceEndpointId) {
 			serviceEndpointId = h.AzDevOpsQuery("service-endpoint list", h.AzFlags{Query: h.Format("[?name=='%s-%s'].id", environment, namespace), Output: "tsv"})
 		}

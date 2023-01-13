@@ -353,3 +353,11 @@ func Any[T any](list []T, predicate func(T) bool) bool {
 	}
 	return result
 }
+
+func Select[T any, T2 any](list []T, f func(T) T2) []T2 {
+	newList := make([]T2, 0)
+	for _, e := range list {
+		newList = append(newList, f(e))
+	}
+	return newList
+}

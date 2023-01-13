@@ -107,7 +107,7 @@ func KubectlCheckDaemonSet(name string, namespace string) {
 func KubectlGetRegex(resourceType string, regex string, index int, namespace string) (string, string) {
 	index = If(index, index)
 	// resources := JqQuery(KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata | select(.name|test(\"kured.\")) | \"\\(.namespace) \\(.name)\"")
-	resources := JqQuery(KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata | select(.name|test(\"" + regex + ".\")) | \"\\(.namespace) \\(.name)\"")
+	resources := JqList(KubectlQueryF(Format("get %s", resourceType), KubectlFlags{Namespace: namespace, Output: "json"}), ".items[] | .metadata | select(.name|test(\""+regex+".\")) | \"\\(.namespace) \\(.name)\"")
 	resourceCount := len(resources)
 
 	Check(resourceCount > 0, Format("No type '%s' matching '%s' in namespace '%s'", resourceType, regex, namespace))
@@ -160,6 +160,7 @@ func KubectlSaveLastAppliedF(resourceType string, name string, namespace string,
 	SaveFile(lastApplied, fullFilePath)
 }
 
+// TODO: Add file path root/prefix, so it works on Win and Linux
 func KubectlSaveHelmSecret(name string, version string, namespace string) {
 	KubectlSaveHelmSecretF(name, version, namespace, "json", GetConfigString("KubectlHelmSecretPath"))
 }

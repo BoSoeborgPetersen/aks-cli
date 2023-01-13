@@ -75,7 +75,7 @@ func HelmCheck(chart string, namespace string) {
 
 func HelmLatestChartVersion(chart string) string {
 	json := HelmQuery("search repo " + chart + " -o json")
-	results := JqQuery(json, ".[] | select(.name==\""+chart+"\") | .version")
+	results := JqList(json, ".[] | select(.name==\""+chart+"\") | .version")
 	if len(results) > 0 {
 		return Trim(results[0], "v")
 	}
